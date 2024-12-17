@@ -2,16 +2,17 @@
 
 | Audience | Computational skills required| Duration |
 :----------|:----------|:----------|
-| Biologists | [Introduction to R](https://hbctraining.github.io/Intro-to-R-flipped/) | 1-session in-person (~1h 45 min of trainer-led time)|
+| Biologists | [Introduction to R](https://hbctraining.github.io/Intro-to-R-flipped/) | 1 session in-person (~1h 45 min of trainer-led time)|
 
 
 ### Description
 This repository contains materials for a module which is part of a Nanocourse organized by the [Single Cell Core at HMS](https://singlecellcore.hms.harvard.edu/). The nanocourse titled "Spatial Transcriptomics: Key Technologies, Experimental Considerations, and Data Analysis" introduces the fundamentals of data analysis for spatial transcriptomics, including common techniques and tools. **In this module we walk through the analysis workflow for Visium HD data analysis.**
 
 ### Learning Objectives
-- LO1 ...
-- ...
-
+* Describe the steps in a Visium HD analysis workflow
+* Use Seurat and associated tools to perform analysis of spatial transcriptomics data, including QC metric evaluation, normalization, clustering, and marker identification
+* ...
+  
 ### Dataset
 The dataset which is used in the pre-reading activities can be found at the link below.
 
