@@ -1,0 +1,228 @@
+---
+title: "Visium HD Analysis"
+output: html_notebook
+---
+
+# Load Libraries
+
+We load the libraries necessary for processing scRNAseq data.
+
+```{r libraries}
+
+# RUN THIS
+.libPaths(c('/n/app/bcbio/R4.3.1_singlecell_dev/', '/n/app/bcbio/R4.3.1_singlecell'))
+library(Seurat)
+library(ggplot2)
+library(patchwork)
+library(dplyr)
+library(bcbioR)
+library(qs)
+library(Azimuth)
+options(future.globals.maxSize= 891289600)
+
+```
+
+# Preprocess Data
+
+Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
+
+<!-- TODO link to spaceranger report -->
+
+# Create Seurat Object
+
+The Seurat object is a custom list-like object that has well-defined spaces to store specific information/data for single cell experiments, including spatial experiments and Visium HD.
+
+The Seurat package provides a function `Load10X_Spatial` to easily create a Seurat object from the output of Space Ranger.
+
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning.
+
+```{r create object}
+
+# DO NOT RUN
+localdir <- "../final/outs_test/"
+object <- Load10X_Spatial(data.dir = localdir,
+                          filename = 'raw_feature_bc_matrix.h5')
+object <- Load10X_Spatial(data.dir = localdir)
+DefaultAssay(object) <- "Spatial.008um"
+
+```
+
+```{r load seurat object}
+
+# RUN THIS
+object <- qread('../data_processed/visiumhd_intestine_clustered.qs')
+DefaultAssay(object) <- "Spatial.008um"
+
+```
+
+# Quality Control
+
+The main objective of quality control is to filter the data so that we include only true cells that are of high quality. This makes it so that when we cluster our cells, it is easier to identify distinct cell type populations.
+
+Challenges include:
+
+-   Delineating cells that are poor quality from less complex cells
+-   Choosing appropriate thresholds for filtering, so as to keep high quality cells without removing biologically relevant cell types
+
+Various metrics can be used to filter low quality cells from high quality ones, including:
+
+-   UMI counts per bin
+-   Genes detected per bin
+-   Complexity (novelty score)
+-   Mitochondrial counts ratio
+
+Space Ranger applies filtering by default, and for this lesson, we will be working with a Seurat object loaded from Space Ranger's filtered data. However, we can compare plots of UMI counts per cell and genes detected per cell before and after Space Ranger's filtering.
+
+## Pre-Filtering
+
+![](../data_processed/preQC.png)
+
+## Post-Filtering
+
+```{r visualize post qc data}
+
+# RUN THIS
+object_meta <- object@meta.data
+
+p1 <- object_meta %>%
+   ggplot(aes(x=nCount_Spatial.008um)) +
+   geom_density(alpha = 0.2) +
+   scale_x_log10() +
+   theme_classic() +
+   ylab("Cell density") +
+  ggtitle('PostQC Genes/Bin')
+
+p2 <- object_meta %>%
+   ggplot(aes(x=nFeature_Spatial.008um)) +
+   geom_density(alpha = 0.2) +
+   scale_x_log10() +
+   theme_classic() +
+   ylab("Cell density") +
+  ggtitle('PostQC UMIs/Bin')
+
+p3 <- p1 | p2
+p3
+
+```
+
+# Visualize Counts Data
+
+We can visualize the number of counts per bin, both as a distribution and layered on top of the tissue image. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
+
+```{r visualize counts}
+
+# RUN THIS
+vln.plot <- VlnPlot(object, features = "nCount_Spatial.008um", pt.size = 0) + NoLegend()
+count.plot <- SpatialFeaturePlot(object, features = "nCount_Spatial.008um") + theme(legend.position = "right")
+
+vln.plot | count.plot
+```
+
+# Normalize Data
+
+Normalization is important in order to make expression counts comparable across genes and/or sample. Here we use a standard log-normalization for spatial data. We note that the best normalization methods for spatial data are still being developed and evaluated.
+
+```{r normalize}
+# DO NOT RUN
+object <- NormalizeData(object)
+
+```
+
+# Unsupervised Clustering
+
+The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow exhibits improved performance, especially for identifying rare and spatially restricted groups. Sketch-based analyses aim to ‘subsample’ large datasets in a way that preserves rare populations. Here, we sketch the Visium HD dataset, perform clustering on the subsampled cells, and then project the cluster labels back to the full dataset.
+
+```{r create sketch assay}
+
+# DO NOT RUN, takes ~5 mins
+object <- FindVariableFeatures(object)
+object <- ScaleData(object)
+# we select 50,0000 cells and create a new 'sketch' assay
+object <- SketchData(
+  object = object,
+  ncells = 50000,
+  method = "LeverageScore",
+  sketched.assay = "sketch"
+)
+
+```
+
+```{r perform sketched clustering}
+
+# DO NOT RUN, takes ~10 mins
+
+# switch analysis to sketched cells
+DefaultAssay(object) <- "sketch"
+
+# perform clustering workflow
+object <- FindVariableFeatures(object)
+object <- ScaleData(object)
+object <- RunPCA(object, assay = "sketch", reduction.name = "pca.sketch")
+object <- FindNeighbors(object, assay = "sketch", reduction = "pca.sketch", dims = 1:50)
+object <- FindClusters(object, cluster.name = "seurat_cluster.sketched", resolution = .5)
+object <- RunUMAP(object, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
+
+```
+
+```{r project clusters}
+
+# DO NOT RUN, takes a few minutes
+
+object <- ProjectData(
+  object = object,
+  assay = "Spatial.008um",
+  full.reduction = "full.pca.sketch",
+  sketched.assay = "sketch",
+  sketched.reduction = "pca.sketch",
+  umap.model = "umap.sketch",
+  dims = 1:50,
+  refdata = list(seurat_cluster.projected = "seurat_cluster.sketched")
+)
+
+qsave(object, '../data_processed/visiumhd_intestine_clustered.qs')
+```
+
+```{r visualize clusters}
+
+# RUN THIS
+
+DefaultAssay(object) <- "sketch"
+Idents(object) <- "seurat_cluster.sketched"
+p1 <- DimPlot(object, reduction = "umap.sketch", label = F) + ggtitle("Sketched clustering") + theme(legend.position = "bottom")
+
+# switch to full dataset
+DefaultAssay(object) <- "Spatial.008um"
+Idents(object) <- "seurat_cluster.projected"
+p2 <- DimPlot(object, reduction = "full.umap.sketch", label = F, raster = F) + ggtitle("Projected clustering") + theme(legend.position = "bottom")
+
+p1 | p2
+```
+
+```{r visualize clusters on image}
+
+# RUN THIS
+
+p1 <- ImageDimPlot(object, cols = 'polychrome') 
+
+# zoom in
+cropped.coords <- Crop(object[["slice1.008um"]], x = c(1550, 1750), y = c(1250, 1450), coords = "plot")
+object[["zoom"]] <- cropped.coords
+p2 <- ImageDimPlot(object, fov = 'zoom', cols = 'polychrome') 
+
+p1 | p2
+
+```
+
+# Cell Type Identification
+
+Now that we have identified our desired clusters, we can move on to cell type identification, which will allow us to verify the identity of the cells contained in our various clusters.
+
+Azimuth is a web application that uses an annotated reference dataset to automate the processing, analysis, and interpretation of a new single-cell RNA-seq experiment.
+
+```{r run azimuth}
+
+# DO NOT RUN
+
+object <- RunAzimuth(object, reference = "something")
+
+```
