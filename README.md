@@ -28,7 +28,7 @@ The dataset which is used in the pre-reading activities can be found at the link
 #### Applications
 Download the most recent versions of R and RStudio for your laptop:
 
- - [R](http://lib.stat.cmu.edu/R/CRAN/) **(version 4.0.0 or above)**
+ - [R](http://lib.stat.cmu.edu/R/CRAN/) **(version 4.4.0 or above)**
  - [RStudio](https://www.rstudio.com/products/rstudio/download/#download)
 
 #### Packages for R
@@ -44,40 +44,26 @@ Download the most recent versions of R and RStudio for your laptop:
 > **Note 5:** If you see a message in your console along the lines of “binary version available but the source version is later”, followed by a question, **“Do you want to install from sources the package which needs compilation? y/n”, type n for no, and hit enter**.
 
 
-**(1)** Install the 8 packages listed below from **CRAN** using the `install.packages()` function. 
+**(1)** Install the packages listed below from **CRAN** using the `install.packages()` function. 
 
 1. `tidyverse`
-1. `BiocManager`
-1. `Seurat`
-1. `metap`
+2. `Seurat`
+3. `patchwork`
+4. `qs`
 
 **Please install them one-by-one as follows:**
 
 ```r
 install.packages("tidyverse")
-install.packages("BiocManager")
 install.packages("Seurat")
-& so on ...
-```
-
-**(2)** Install the 4 packages listed below from **Bioconductor** using the the `BiocManager::install()` function.
-
-1. `BiocPackage_name`
-
-
-**Please install them one-by-one as follows:**
-
-```r
-BiocManager::install("BiocPackage_name")
-BiocManager::install("BiocPackage_name")
 & so on ...
 ```
 
 **(3)** Finally, please check that all the packages were installed successfully by **loading them one at a time** using the `library()` function.  
 
 ```r
-library(Seurat)
 library(tidyverse)
+library(Seurat)
 ...
 ```
 
