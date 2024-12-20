@@ -1,7 +1,8 @@
----
-title: "Visium HD Analysis"
-output: html_notebook
----
+```         
+   ---
+```
+
+title: "Visium HD Analysis" output: html_notebook ---
 
 # Load Libraries
 
@@ -10,15 +11,16 @@ We load the libraries necessary for processing scRNAseq data.
 ```{r libraries}
 
 # RUN THIS
-.libPaths(c('/n/app/bcbio/R4.3.1_singlecell_dev/', '/n/app/bcbio/R4.3.1_singlecell'))
+# .libPaths(c('/n/app/bcbio/R4.3.1_singlecell_dev/', '/n/app/bcbio/R4.3.1_singlecell'))
+.libPaths('../libs/')
+library(tidyverse)
 library(Seurat)
-library(ggplot2)
 library(patchwork)
-library(dplyr)
-library(bcbioR)
 library(qs)
-library(Azimuth)
-options(future.globals.maxSize= 891289600)
+
+# needed if running full workflow but not for lesson
+# options(future.globals.maxSize= 891289600)
+# library(Azimuth)
 
 ```
 
