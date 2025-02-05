@@ -1,3 +1,9 @@
+---
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
 ```         
    ---
 ```
@@ -12,14 +18,14 @@ We load the libraries necessary for processing scRNAseq data.
 
 # RUN THIS
 # .libPaths(c('/n/app/bcbio/R4.3.1_singlecell_dev/', '/n/app/bcbio/R4.3.1_singlecell'))
-.libPaths('../libs/')
+# .libPaths('../libs/')
 library(tidyverse)
 library(Seurat)
 library(patchwork)
 library(qs)
 
 # needed if running full workflow but not for lesson
-# options(future.globals.maxSize= 891289600)
+options(future.globals.maxSize= 2000000000)
 # library(Azimuth)
 
 ```
@@ -40,20 +46,66 @@ In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 Â
 
 ```{r create object}
 
-# DO NOT RUN
-localdir <- "../final/outs_test/"
+# DO NOT RUN THIS CHUNK
+
+#################### for one sample ############################################
+localdir <- '../final/LIB064899_CRN00296522_MsBrain-FF-A1/spaceranger/outs/'
+# to load raw feature matrix
 object <- Load10X_Spatial(data.dir = localdir,
-                          filename = 'raw_feature_bc_matrix.h5')
+                          filename = 'raw_feature_bc_matrix.h5',
+                          bin.size = 16)
+
+# cropped.coords <- Crop(object[["slice1.016um"]], x = c(500, 1200), y = c(800, 1600), coords = "plot")
+# object[["zoom"]] <- cropped.coords
+# 
+# object_subset <- subset(object, cells = object@images$zoom$centroids@cells)
+# object_subset[["zoom"]] <- NULL
+# 
+# SpatialDimPlot(object_subset)
+
+# to load spaceranger-filtered feature matrix
 object <- Load10X_Spatial(data.dir = localdir)
 DefaultAssay(object) <- "Spatial.008um"
+
+##################### for multiple samples #####################################
+
+localdir <- '../final'
+samples <- list.files(localdir)[grepl('LIB', list.files(localdir))]
+names(samples) <- unlist(transpose(strsplit(samples, '_'))[3])
+for (i in 1:length(samples)){
+  object_sample <- Load10X_Spatial(data.dir = paste0(localdir, '/', samples[i], '/', 'spaceranger/outs/'),
+                                   slice = names(samples)[i],
+                                   filename = 'raw_feature_bc_matrix.h5',
+                                   bin.size = 16)  # need to read in one bin at a time for multiple samples
+  object_sample$orig.ident <- names(samples)[i]
+  assign(paste0(samples[i], "_seurat"),
+         object_sample) # stores Seurat object in variable of corresponding sample name
+}
+seurat_ID <- paste0(samples, "_seurat") # get names of all objects
+
+object <- merge(x = get(seurat_ID[1]),
+                      y = get(seurat_ID[2]),
+                      add.cell.ids = samples,
+                      project = "mouse_brain_visiumhd")
+
+# for more than 2 samples
+rest_of_samples <- get(seurat_ID[2])
+for (i in 3:length(seurat_ID)) {
+  rest_of_samples <- c(rest_of_samples, get(seurat_ID[i]))
+} ## makes a list of all seurat objects
+
+seurat_merge <- merge(x = get(seurat_ID[1]),
+                      y = rest_of_samples,
+                      add.cell.ids = samples,
+                      project = "mouse_brain_visiumhd")
+
 
 ```
 
 ```{r load seurat object}
 
 # RUN THIS
-object <- qread('../data_processed/visiumhd_intestine_clustered.qs')
-DefaultAssay(object) <- "Spatial.008um"
+object <- qread('../data_processed/MsBrain_FF-A1_subset.qs')
 
 ```
 
@@ -73,60 +125,120 @@ Various metrics can be used to filter low quality cells from high quality ones, 
 -   Complexity (novelty score)
 -   Mitochondrial counts ratio
 
-Space Ranger applies filtering by default, and for this lesson, we will be working with a Seurat object loaded from Space Ranger's filtered data. However, we can compare plots of UMI counts per cell and genes detected per cell before and after Space Ranger's filtering.
+For this lesson, we will examine the distributions of UMI counts per bin and genes detected per bin to determine reasonable thresholds for those metrics for QC filtering.
 
 ## Pre-Filtering
 
-![](../data_processed/preQC.png)
+<!-- ![](../data_processed/preQC.png) -->
+
+```{r visualize pre qc data}
+
+# RUN THIS
+object_meta <- object@meta.data
+
+dist_counts_before <- object_meta %>%
+  ggplot(aes(x=nCount_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
+  ggtitle('PostQC Genes/Bin')
+
+dist_features_before <- object_meta %>%
+  ggplot(aes(x=nFeature_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
+  ggtitle('PostQC UMIs/Bin')
+
+dists_before <- dist_counts_before | dist_features_before
+dists_before
+
+```
+
+## Perform Filtering
+
+```{r perform filtering}
+# RUN THIS
+object_filt <- subset(object, (nCount_Spatial.016um > 100) & 
+                        (nFeature_Spatial.016um > 100))
+```
 
 ## Post-Filtering
 
 ```{r visualize post qc data}
 
 # RUN THIS
-object_meta <- object@meta.data
+object_filt_meta <- object_filt@meta.data
 
-p1 <- object_meta %>%
-   ggplot(aes(x=nCount_Spatial.008um)) +
-   geom_density(alpha = 0.2) +
-   scale_x_log10() +
-   theme_classic() +
-   ylab("Cell density") +
+dist_counts_after <- object_filt_meta %>%
+  ggplot(aes(x=nCount_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
   ggtitle('PostQC Genes/Bin')
 
-p2 <- object_meta %>%
-   ggplot(aes(x=nFeature_Spatial.008um)) +
-   geom_density(alpha = 0.2) +
-   scale_x_log10() +
-   theme_classic() +
-   ylab("Cell density") +
+dist_features_after <- object_filt_meta %>%
+  ggplot(aes(x=nFeature_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
   ggtitle('PostQC UMIs/Bin')
 
-p3 <- p1 | p2
-p3
+dists_after <- dist_counts_after | dist_features_after
+dists_after
 
 ```
 
-# Visualize Counts Data
+# Visualize Data
 
 We can visualize the number of counts per bin, both as a distribution and layered on top of the tissue image. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
 
-```{r visualize counts}
+```{r visualize distributions}
 
 # RUN THIS
-vln.plot <- VlnPlot(object, features = "nCount_Spatial.008um", pt.size = 0) + NoLegend()
-count.plot <- SpatialFeaturePlot(object, features = "nCount_Spatial.008um") + theme(legend.position = "right")
+vln_counts_after <- VlnPlot(object_filt, 
+                            features = "nCount_Spatial.016um", 
+                            pt.size = 0, 
+                            group.by = 'orig.ident') + 
+  NoLegend() + scale_y_log10()
 
-vln.plot | count.plot
+vln_features_after <- VlnPlot(object_filt, 
+                            features = "nFeature_Spatial.016um", 
+                            pt.size = 0, 
+                            group.by = 'orig.ident') + 
+  NoLegend() + scale_y_log10()
+
+
+ 
+vln_counts_after | vln_features_after
 ```
+
+```{r visualize on image}
+# RUN THIS
+image_counts <- SpatialFeaturePlot(object_filt, 
+                                   feature = 'nCount_Spatial.016um', 
+                                   pt.size.factor = 8)
+image_features <- SpatialFeaturePlot(object_filt, 
+                                     features = "nFeature_Spatial.016um", 
+                                     pt.size.factor = 8) 
+
+image_counts | image_features
+
+```
+
 
 # Normalize Data
 
-Normalization is important in order to make expression counts comparable across genes and/or sample. Here we use a standard log-normalization for spatial data. We note that the best normalization methods for spatial data are still being developed and evaluated.
+Normalization is important in order to make expression counts comparable across genes and/or sample. We note that the best normalization methods for spatial data are still being developed and evaluated. Here we use a standard log-normalization.
 
 ```{r normalize}
-# DO NOT RUN
-object <- NormalizeData(object)
+# SCTransform takes ~8 mins
+# object_filt <- SCTransform(object_filt, assay = 'Spatial.016um')
+object_filt <- NormalizeData(object_filt, assay = 'Spatial.016um')
 
 ```
 
@@ -136,13 +248,13 @@ The authors of the Seurat package recommend the Seurat v5 sketch clustering work
 
 ```{r create sketch assay}
 
-# DO NOT RUN, takes ~5 mins
-object <- FindVariableFeatures(object)
-object <- ScaleData(object)
-# we select 50,0000 cells and create a new 'sketch' assay
-object <- SketchData(
-  object = object,
-  ncells = 50000,
+object_filt <- FindVariableFeatures(object_filt)
+object_filt <- ScaleData(object_filt)
+# we select 10,000 cells and create a new 'sketch' assay
+object_filt <- SketchData(
+  object = object_filt,
+  assay = 'Spatial.016um',
+  ncells = 10000,
   method = "LeverageScore",
   sketched.assay = "sketch"
 )
@@ -151,28 +263,24 @@ object <- SketchData(
 
 ```{r perform sketched clustering}
 
-# DO NOT RUN, takes ~10 mins
-
 # switch analysis to sketched cells
-DefaultAssay(object) <- "sketch"
+DefaultAssay(object_filt) <- "sketch"
 
 # perform clustering workflow
-object <- FindVariableFeatures(object)
-object <- ScaleData(object)
-object <- RunPCA(object, assay = "sketch", reduction.name = "pca.sketch")
-object <- FindNeighbors(object, assay = "sketch", reduction = "pca.sketch", dims = 1:50)
-object <- FindClusters(object, cluster.name = "seurat_cluster.sketched", resolution = .5)
-object <- RunUMAP(object, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
+object_filt <- FindVariableFeatures(object_filt)
+object_filt <- ScaleData(object_filt)
+object_filt <- RunPCA(object_filt, assay = "sketch", reduction.name = "pca.sketch")
+object_filt <- FindNeighbors(object_filt, assay = "sketch", reduction = "pca.sketch", dims = 1:50)
+object_filt <- FindClusters(object_filt, cluster.name = "seurat_cluster.sketched", resolution = .5)
+object_filt <- RunUMAP(object_filt, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
 
 ```
 
 ```{r project clusters}
 
-# DO NOT RUN, takes a few minutes
-
-object <- ProjectData(
-  object = object,
-  assay = "Spatial.008um",
+object_filt <- ProjectData(
+  object = object_filt,
+  assay = "Spatial.016um",
   full.reduction = "full.pca.sketch",
   sketched.assay = "sketch",
   sketched.reduction = "pca.sketch",
@@ -181,21 +289,29 @@ object <- ProjectData(
   refdata = list(seurat_cluster.projected = "seurat_cluster.sketched")
 )
 
-qsave(object, '../data_processed/visiumhd_intestine_clustered.qs')
+# qsave(object, '../data_processed/visiumhd_intestine_clustered.qs')
 ```
 
 ```{r visualize clusters}
 
 # RUN THIS
 
-DefaultAssay(object) <- "sketch"
-Idents(object) <- "seurat_cluster.sketched"
-p1 <- DimPlot(object, reduction = "umap.sketch", label = F) + ggtitle("Sketched clustering") + theme(legend.position = "bottom")
+object_filt$seurat_cluster.projected <- object_filt$seurat_cluster.projected %>% 
+  as.numeric %>% as.factor()
+
+DefaultAssay(object_filt) <- "sketch"
+Idents(object_filt) <- "seurat_cluster.sketched"
+p1 <- DimPlot(object_filt, reduction = "umap.sketch", label = F, cols = 'polychrome') + 
+  ggtitle("Sketched clustering") + 
+  theme(legend.position = "bottom")
 
 # switch to full dataset
-DefaultAssay(object) <- "Spatial.008um"
-Idents(object) <- "seurat_cluster.projected"
-p2 <- DimPlot(object, reduction = "full.umap.sketch", label = F, raster = F) + ggtitle("Projected clustering") + theme(legend.position = "bottom")
+DefaultAssay(object_filt) <- "Spatial.016um"
+Idents(object_filt) <- "seurat_cluster.projected"
+p2 <- DimPlot(object_filt, reduction = "full.umap.sketch", label = F, raster = F, 
+              cols = 'polychrome') +
+  ggtitle("Projected clustering") + 
+  theme(legend.position = "bottom")
 
 p1 | p2
 ```
@@ -204,14 +320,10 @@ p1 | p2
 
 # RUN THIS
 
-p1 <- ImageDimPlot(object, cols = 'polychrome') 
-
-# zoom in
-cropped.coords <- Crop(object[["slice1.008um"]], x = c(1550, 1750), y = c(1250, 1450), coords = "plot")
-object[["zoom"]] <- cropped.coords
-p2 <- ImageDimPlot(object, fov = 'zoom', cols = 'polychrome') 
-
-p1 | p2
+color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
+                                    palette = "polychrome")
+names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
+SpatialDimPlot(object_filt, pt.size.factor = 8, cols = color_pal) 
 
 ```
 
@@ -223,8 +335,19 @@ Azimuth is a web application that uses an annotated reference dataset to automat
 
 ```{r run azimuth}
 
-# DO NOT RUN
+object_filt <- RunAzimuth(object_filt, reference = "mousecortexref")
 
-object <- RunAzimuth(object, reference = "something")
+```
 
+```{r plot annotations}
+
+color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$predicted.subclass)),
+                                    palette = "polychrome")
+names(color_pal) <- sort(unique(object_filt$predicted.subclass))
+SpatialDimPlot(object_filt, pt.size.factor = 8, group.by = 'predicted.subclass',
+               cols = color_pal) 
+
+ DimPlot(object_filt, group.by = 'predicted.subclass', 
+         reduction = "full.umap.sketch", label = F, raster = F, 
+              cols = 'polychrome')
 ```
