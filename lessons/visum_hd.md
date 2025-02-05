@@ -4,7 +4,7 @@ author: "Alex Bartlett, Meeta Mistry and Will Gammerdinger"
 date: "February 4th, 2025"
 ---
 
-Contributors: List of contributing authors
+Contributors: Alex Bartlett, Meeta Mistry and Will Gammerdinger
 
 Approximate time: XX minutes
 
