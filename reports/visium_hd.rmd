@@ -42,11 +42,11 @@ The Seurat object is a custom list-like object that has well-defined spaces to s
 
 The Seurat package provides a function `Load10X_Spatial` to easily create a Seurat object from the output of Space Ranger.
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning.
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 16µm binning.
 
 ```{r create object}
 
-# DO NOT RUN THIS CHUNK
+# DO NOT RUN THIS CHUNK, for example purposes only
 
 #################### for one sample ############################################
 localdir <- '../final/LIB064899_CRN00296522_MsBrain-FF-A1/spaceranger/outs/'
@@ -129,11 +129,8 @@ For this lesson, we will examine the distributions of UMI counts per bin and gen
 
 ## Pre-Filtering
 
-<!-- ![](../data_processed/preQC.png) -->
-
 ```{r visualize pre qc data}
 
-# RUN THIS
 object_meta <- object@meta.data
 
 dist_counts_before <- object_meta %>%
@@ -160,7 +157,6 @@ dists_before
 ## Perform Filtering
 
 ```{r perform filtering}
-# RUN THIS
 object_filt <- subset(object, (nCount_Spatial.016um > 100) & 
                         (nFeature_Spatial.016um > 100))
 ```
@@ -169,7 +165,6 @@ object_filt <- subset(object, (nCount_Spatial.016um > 100) &
 
 ```{r visualize post qc data}
 
-# RUN THIS
 object_filt_meta <- object_filt@meta.data
 
 dist_counts_after <- object_filt_meta %>%
@@ -199,7 +194,6 @@ We can visualize the number of counts per bin, both as a distribution and layere
 
 ```{r visualize distributions}
 
-# RUN THIS
 vln_counts_after <- VlnPlot(object_filt, 
                             features = "nCount_Spatial.016um", 
                             pt.size = 0, 
@@ -230,14 +224,12 @@ image_counts | image_features
 
 ```
 
-
 # Normalize Data
 
 Normalization is important in order to make expression counts comparable across genes and/or sample. We note that the best normalization methods for spatial data are still being developed and evaluated. Here we use a standard log-normalization.
 
 ```{r normalize}
-# SCTransform takes ~8 mins
-# object_filt <- SCTransform(object_filt, assay = 'Spatial.016um')
+
 object_filt <- NormalizeData(object_filt, assay = 'Spatial.016um')
 
 ```
@@ -289,12 +281,9 @@ object_filt <- ProjectData(
   refdata = list(seurat_cluster.projected = "seurat_cluster.sketched")
 )
 
-# qsave(object, '../data_processed/visiumhd_intestine_clustered.qs')
 ```
 
 ```{r visualize clusters}
-
-# RUN THIS
 
 object_filt$seurat_cluster.projected <- object_filt$seurat_cluster.projected %>% 
   as.numeric %>% as.factor()
@@ -317,8 +306,6 @@ p1 | p2
 ```
 
 ```{r visualize clusters on image}
-
-# RUN THIS
 
 color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
                                     palette = "polychrome")
