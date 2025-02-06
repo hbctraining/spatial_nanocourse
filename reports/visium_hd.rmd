@@ -23,6 +23,8 @@ library(tidyverse)
 library(Seurat)
 library(patchwork)
 library(qs)
+library(Banksy)
+library(SeuratWrappers)
 
 # needed if running full workflow but not for lesson
 options(future.globals.maxSize= 2000000000)
@@ -263,7 +265,7 @@ object_filt <- FindVariableFeatures(object_filt)
 object_filt <- ScaleData(object_filt)
 object_filt <- RunPCA(object_filt, assay = "sketch", reduction.name = "pca.sketch")
 object_filt <- FindNeighbors(object_filt, assay = "sketch", reduction = "pca.sketch", dims = 1:50)
-object_filt <- FindClusters(object_filt, cluster.name = "seurat_cluster.sketched", resolution = .5)
+object_filt <- FindClusters(object_filt, cluster.name = "seurat_cluster.sketched", resolution = .65)
 object_filt <- RunUMAP(object_filt, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
 
 ```
@@ -310,8 +312,13 @@ p1 | p2
 color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
                                     palette = "polychrome")
 names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
-SpatialDimPlot(object_filt, pt.size.factor = 8, cols = color_pal) 
+image_seurat_clusters <- SpatialDimPlot(object_filt, 
+                                        group.by = 'seurat_cluster.projected', 
+                                        pt.size.factor = 8, cols = color_pal) +
+  guides(fill=guide_legend(ncol=2))
 
+
+image_seurat_clusters
 ```
 
 # Cell Type Identification
@@ -337,4 +344,60 @@ SpatialDimPlot(object_filt, pt.size.factor = 8, group.by = 'predicted.subclass',
  DimPlot(object_filt, group.by = 'predicted.subclass', 
          reduction = "full.umap.sketch", label = F, raster = F, 
               cols = 'polychrome')
+```
+
+
+```{r run banksy}
+object_filt <- RunBanksy(object_filt, lambda = 0.8, verbose = T,
+                         assay = 'Spatial.016um', slot = 'data', k_geom = 50)
+object_filt <- RunPCA(object_filt, assay = "BANKSY", 
+                      reduction.name = "pca.banksy", 
+                      features = rownames(object_filt), npcs = 30)
+object_filt <- FindNeighbors(object_filt, reduction = "pca.banksy", 
+                             dims = 1:30)
+object_filt <- FindClusters(object_filt, cluster.name = "banksy_cluster",
+                            resolution = 0.5)
+```
+```{r}
+
+color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$banksy_cluster)),
+                                    palette = "polychrome")
+names(color_pal) <- sort(unique(object_filt$banksy_cluster))
+
+image_banksy_clusters <- SpatialDimPlot(object_filt, group.by = "banksy_cluster", pt.size.factor = 7,
+               cols = color_pal)
+
+image_seurat_clusters | image_banksy_clusters
+
+```
+
+
+```{r}
+cortex <- subset(object_filt, seurat_cluster.projected %in% c(12, 18, 19, 7, 2, 4))
+
+SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected', 
+               pt.size.factor = 8, cols = color_pal)
+```
+
+```{r sketch cortex}
+DefaultAssay(cortex) <- 'Spatial.016um'
+cortex <- FindVariableFeatures(cortex)
+cortex <- SketchData(
+  object = cortex,
+  ncells = 3000,
+  method = "LeverageScore",
+  sketched.assay = "sketch"
+)
+
+DefaultAssay(cortex) <- "sketch"
+cortex <- ScaleData(cortex)
+cortex <- RunPCA(cortex, assay = "sketch", reduction.name = "pca.cortex.sketch", verbose = T)
+cortex <- FindNeighbors(cortex, reduction = "pca.cortex.sketch", dims = 1:50)
+cortex <- RunUMAP(cortex, reduction = "pca.cortex.sketch", reduction.name = "umap.cortex.sketch", return.model = T, dims = 1:50, verbose = T)
+```
+
+```{r}
+ref <- readRDS("../data_processed/allen_scRNAseq_ref.Rds")
+
+
 ```
