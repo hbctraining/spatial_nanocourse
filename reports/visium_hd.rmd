@@ -44,14 +44,16 @@ The Seurat object is a custom list-like object that has well-defined spaces to s
 
 The Seurat package provides a function `Load10X_Spatial` to easily create a Seurat object from the output of Space Ranger.
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 16µm binning.
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. For the purposes of this lesson, we will use the 16µm binning.
 
 ```{r create object}
 
 # DO NOT RUN THIS CHUNK, for example purposes only
 
 #################### for one sample ############################################
-localdir <- '../final/LIB064899_CRN00296522_MsBrain-FF-A1/spaceranger/outs/'
+
+localdir <- '../spaceranger/outs/'
+
 # to load raw feature matrix
 object <- Load10X_Spatial(data.dir = localdir,
                           filename = 'raw_feature_bc_matrix.h5',
@@ -66,14 +68,18 @@ object <- Load10X_Spatial(data.dir = localdir,
 # SpatialDimPlot(object_subset)
 
 # to load spaceranger-filtered feature matrix
-object <- Load10X_Spatial(data.dir = localdir)
-DefaultAssay(object) <- "Spatial.008um"
+object <- Load10X_Spatial(data.dir = localdir,
+                          bin.size = 16)
 
 ##################### for multiple samples #####################################
 
 localdir <- '../final'
+
+# list all samples with spaceranger output (may need to adjust string-parsing)
 samples <- list.files(localdir)[grepl('LIB', list.files(localdir))]
 names(samples) <- unlist(transpose(strsplit(samples, '_'))[3])
+
+# one by one, load samples in to seurat objects
 for (i in 1:length(samples)){
   object_sample <- Load10X_Spatial(data.dir = paste0(localdir, '/', samples[i], '/', 'spaceranger/outs/'),
                                    slice = names(samples)[i],
@@ -85,18 +91,23 @@ for (i in 1:length(samples)){
 }
 seurat_ID <- paste0(samples, "_seurat") # get names of all objects
 
+###### for 2 samples #######
+
+# merge 2 seurat objects into 1 seurat object
 object <- merge(x = get(seurat_ID[1]),
                       y = get(seurat_ID[2]),
                       add.cell.ids = samples,
                       project = "mouse_brain_visiumhd")
 
-# for more than 2 samples
+###### for more than 2 samples #######
+
 rest_of_samples <- get(seurat_ID[2])
 for (i in 3:length(seurat_ID)) {
   rest_of_samples <- c(rest_of_samples, get(seurat_ID[i]))
 } ## makes a list of all seurat objects
 
-seurat_merge <- merge(x = get(seurat_ID[1]),
+# merge more than 2 seurat objects into 1 seurat object
+object <- merge(x = get(seurat_ID[1]),
                       y = rest_of_samples,
                       add.cell.ids = samples,
                       project = "mouse_brain_visiumhd")
@@ -238,7 +249,7 @@ object_filt <- NormalizeData(object_filt, assay = 'Spatial.016um')
 
 # Unsupervised Clustering
 
-The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow exhibits improved performance, especially for identifying rare and spatially restricted groups. Sketch-based analyses aim to ‘subsample’ large datasets in a way that preserves rare populations. Here, we sketch the Visium HD dataset, perform clustering on the subsampled cells, and then project the cluster labels back to the full dataset.
+The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow because it exhibits improved performance, especially for identifying rare and spatially restricted groups. Sketch-based analyses aim to ‘subsample’ large datasets in a way that preserves rare populations. Here, we sketch the Visium HD dataset, perform clustering on the subsampled cells, and then project the cluster labels back to the full dataset.
 
 ```{r create sketch assay}
 
@@ -321,31 +332,9 @@ image_seurat_clusters <- SpatialDimPlot(object_filt,
 image_seurat_clusters
 ```
 
-# Cell Type Identification
+# Spatially-informed Clustering
 
-Now that we have identified our desired clusters, we can move on to cell type identification, which will allow us to verify the identity of the cells contained in our various clusters.
-
-Azimuth is a web application that uses an annotated reference dataset to automate the processing, analysis, and interpretation of a new single-cell RNA-seq experiment.
-
-```{r run azimuth}
-
-object_filt <- RunAzimuth(object_filt, reference = "mousecortexref")
-
-```
-
-```{r plot annotations}
-
-color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$predicted.subclass)),
-                                    palette = "polychrome")
-names(color_pal) <- sort(unique(object_filt$predicted.subclass))
-SpatialDimPlot(object_filt, pt.size.factor = 8, group.by = 'predicted.subclass',
-               cols = color_pal) 
-
- DimPlot(object_filt, group.by = 'predicted.subclass', 
-         reduction = "full.umap.sketch", label = F, raster = F, 
-              cols = 'polychrome')
-```
-
+BANKSY is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual spot’s expression pattern but also the mean and the gradient of gene expression levels in a spot’s broader neighborhood. This makes it valuable for identifying and segmenting spatial tissue domains.
 
 ```{r run banksy}
 object_filt <- RunBanksy(object_filt, lambda = 0.8, verbose = T,
@@ -358,6 +347,7 @@ object_filt <- FindNeighbors(object_filt, reduction = "pca.banksy",
 object_filt <- FindClusters(object_filt, cluster.name = "banksy_cluster",
                             resolution = 0.5)
 ```
+
 ```{r}
 
 color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$banksy_cluster)),
@@ -371,13 +361,23 @@ image_seurat_clusters | image_banksy_clusters
 
 ```
 
+# Cell Type Annotation
+
+Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. We first subset our Seurat object to this region of interest.
 
 ```{r}
-cortex <- subset(object_filt, seurat_cluster.projected %in% c(12, 18, 19, 7, 2, 4))
+cortex <- subset(object_filt, seurat_cluster.projected %in% c(18, 19, 7, 2, 4))
 
+color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
+                                    palette = "polychrome")
+names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
 SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected', 
                pt.size.factor = 8, cols = color_pal)
 ```
+
+To perform accurate annotation of cell types, we must also take into consideration that our 16 um spots may contain one or more cells each. The method Robust Cell Type Deconvolution (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single spot may exhibit multiple cell type profiles.
+
+RCTD takes an scRNA-seq dataset as a reference and a spatial dataset as a query. For a reference, we use a subsampled version of the mouse scRNA-seq dataset from the Allen Brain Atlas. We use our cortex Seurat object as the spatial query. For computational efficiency, we sketch the spatial query dataset, apply RCTD to deconvolute the ‘sketched’ cortical cells and annotate them, and then project these annotations to the full cortical dataset.
 
 ```{r sketch cortex}
 DefaultAssay(cortex) <- 'Spatial.016um'
@@ -396,8 +396,63 @@ cortex <- FindNeighbors(cortex, reduction = "pca.cortex.sketch", dims = 1:50)
 cortex <- RunUMAP(cortex, reduction = "pca.cortex.sketch", reduction.name = "umap.cortex.sketch", return.model = T, dims = 1:50, verbose = T)
 ```
 
-```{r}
-ref <- readRDS("../data_processed/allen_scRNAseq_ref.Rds")
+```{r load ref, prep for RCTD}
+ref_subset <- qread("../data_processed/allen_scRNAseq_ref_subset.qs")
 
+Idents(ref_subset) <- "subclass_label"
+counts <- ref_subset[["RNA"]]$counts
+cluster <- as.factor(ref_subset$subclass_label)
+nUMI <- ref_subset$nCount_RNA
+levels(cluster) <- gsub("/", "-", levels(cluster))
+cluster <- droplevels(cluster)
 
+# create the RCTD reference object
+reference <- Reference(counts, cluster, nUMI)
+
+counts_hd <- cortex[["sketch"]]$counts
+cortex_cells_hd <- colnames(cortex[["sketch"]])
+coords <- GetTissueCoordinates(cortex)[cortex_cells_hd, 1:2]
+
+# create the RCTD query object
+query <- SpatialRNA(coords, counts_hd, colSums(counts_hd))
+
+```
+
+```{r run RCTD}
+
+RCTD <- create.RCTD(query, reference, max_cores = 6)
+RCTD <- run.RCTD(RCTD, doublet_mode = "doublet") # this command takes ~15 mins to run
+
+# add results back to Seurat object
+cortex <- AddMetaData(cortex, metadata = RCTD@results$results_df)
+
+```
+
+```{r project to all cortical cells}
+
+cortex$first_type <- as.character(cortex$first_type)
+cortex$first_type[is.na(cortex$first_type)] <- "Unknown"
+cortex <- ProjectData(
+  object = cortex,
+  assay = "Spatial.016um",
+  full.reduction = "pca.cortex",
+  sketched.assay = "sketch",
+  sketched.reduction = "pca.cortex.sketch",
+  umap.model = "umap.cortex.sketch",
+  dims = 1:50,
+  refdata = list(full_first_type = "first_type")
+)
+```
+
+We can see that the excitatory neurons are located in layers at varying cortical depths, as expected
+
+```{r visualize labels}
+
+Idents(cortex) <- "full_first_type"
+cells <- CellsByIdentities(cortex)
+# Layered (starts with L), excitatory neurons in the cortex
+excitatory_names <- sort(grep("^L.* CTX", names(cells), value = TRUE))
+SpatialDimPlot(cortex, cells.highlight = cells[excitatory_names], 
+               cols.highlight = c("#FFFF00", "grey50"), facet.highlight = T, 
+               combine = T, ncol = 4, pt.size.factor = 8)
 ```
