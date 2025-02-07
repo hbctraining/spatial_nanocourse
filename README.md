@@ -67,7 +67,7 @@ install.packages("patchwork")
 **(2)** Install the packages listed below from **Bioconductor** using the `BiocManager::install()` function.
 
 1. `glmGamPoi`
-2. (Note to Meeta: pretty sure there is one more package here that SeuratWrappers install will fail without but still working on figuring out what it is)
+2. (Note: pretty sure there is one more package here that SeuratWrappers install will fail without but still working on figuring out what it is)
 
 **Please install them one-by-one as follows:**
 
