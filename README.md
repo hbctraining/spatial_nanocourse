@@ -50,14 +50,37 @@ Download the most recent versions of R and RStudio for your laptop:
 2. `Seurat`
 3. `patchwork`
 4. `qs`
+5. `quadprog`
+6. `remotes`
+7. `devtools`
+8. `BiocManager`
 
 **Please install them one-by-one as follows:**
 
 ```r
 install.packages("tidyverse")
 install.packages("Seurat")
+install.packages("patchwork")
 & so on ...
 ```
+
+**(2)** Install the packages listed below from **Bioconductor** using the `BiocManager::install()` function.
+
+1. `glmGamPoi`
+2. (Note to Meeta: pretty sure there is one more package here that SeuratWrappers install will fail without but still working on figuring out what it is)
+
+**Please install them one-by-one as follows:**
+
+```r
+BiocManager::install("glmGamPoi")
+& so on ...
+```
+
+**(3)** Install the packages listed below from GitHub using the given `remotes:install_github` or `devtools::install_github` command.
+
+1. `SeuratWrappers` : `remotes::install_github('satijalab/seurat-wrappers')`
+2. `BANKSY` : `remotes::install_github("prabhakarlab/Banksy@devel")`
+3. `spacexr` : `devtools::install_github("dmcable/spacexr", build_vignettes = FALSE)`
 
 **(3)** Finally, please check that all the packages were installed successfully by **loading them one at a time** using the `library()` function.  
 
