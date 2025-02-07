@@ -15,16 +15,15 @@ We load the libraries necessary for processing scRNAseq data.
 # .libPaths(c('/n/app/bcbio/R4.3.1_singlecell_dev/', '/n/app/bcbio/R4.3.1_singlecell'))
 # .libPaths('../libs/')
 library(tidyverse)
-library(Seurat)
 library(patchwork)
+library(Seurat)
 library(qs)
-library(Banksy)
 library(SeuratWrappers)
+library(Banksy)
+library(quadprog)
 library(spacexr)
 
-# needed if running full workflow but not for lesson
 options(future.globals.maxSize= 2000000000)
-# library(Azimuth)
 
 ```
 
