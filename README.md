@@ -82,7 +82,7 @@ BiocManager::install("glmGamPoi")
 2. `BANKSY` : `remotes::install_github("prabhakarlab/Banksy@devel")`
 3. `spacexr` : `devtools::install_github("dmcable/spacexr", build_vignettes = FALSE)`
 
-**(3)** Finally, please check that all the packages were installed successfully by **loading them one at a time** using the `library()` function.  
+**(4)** Finally, please check that all the packages were installed successfully by **loading them one at a time** using the `library()` function.  
 
 ```r
 library(tidyverse)
@@ -90,7 +90,7 @@ library(Seurat)
 ...
 ```
 
-**(4)** Once all packages have been loaded, run sessionInfo().  
+**(5)** Once all packages have been loaded, run sessionInfo().  
 
 ```r
 sessionInfo()
