@@ -46,14 +46,24 @@ Download the most recent versions of R and RStudio for your laptop:
 
 **(1)** Install the packages listed below from **CRAN** using the `install.packages()` function. 
 
-1. `tidyverse`
-2. `Seurat`
-3. `patchwork`
-4. `qs`
-5. `quadprog`
-6. `remotes`
-7. `devtools`
-8. `BiocManager`
+1. `SFEData`
+2. `scuttle`
+3. `scater`
+4. `scran`
+5. `bluster`
+6. `BiocParallel`
+7. `Voyager`
+8. `fastverse`
+9. `ggplot2`
+10. `pals`
+11. `tidyverse`
+12. `Seurat`
+13. `patchwork`
+14. `qs`
+15. `quadprog`
+16. `remotes`
+17. `devtools`
+18. `BiocManager`
 
 **Please install them one-by-one as follows:**
 
@@ -67,27 +77,47 @@ install.packages("patchwork")
 **(2)** Install the packages listed below from **Bioconductor** using the `BiocManager::install()` function.
 
 1. `glmGamPoi`
-2. (Note: pretty sure there is one more package here that SeuratWrappers install will fail without but still working on figuring out what it is)
 
-**Please install them one-by-one as follows:**
+**Please install `glmGamPoi` as follows:**
 
 ```r
+library(BiocManager)
 BiocManager::install("glmGamPoi")
-& so on ...
+BiocManager::install("pachterlab/SpatialFeatureExperiment", ref = "devel")
 ```
 
 **(3)** Install the packages listed below from GitHub using the given `remotes:install_github` or `devtools::install_github` command.
 
 1. `SeuratWrappers` : `remotes::install_github('satijalab/seurat-wrappers')`
-2. `BANKSY` : `remotes::install_github("prabhakarlab/Banksy@devel")`
+2. `Banksy` : `remotes::install_github("prabhakarlab/Banksy@devel")`
 3. `spacexr` : `devtools::install_github("dmcable/spacexr", build_vignettes = FALSE)`
 
 **(4)** Finally, please check that all the packages were installed successfully by **loading them one at a time** using the `library()` function.  
 
 ```r
+library(SpatialFeatureExperiment)
+library(SFEData)
+library(scuttle)
+library(scater)
+library(scran)
+library(bluster)
+library(BiocParallel)
+library(Voyager)
+library(fastverse)
+library(ggplot2)
+library(pals)
 library(tidyverse)
 library(Seurat)
-...
+library(patchwork)
+library(qs)
+library(quadprog)
+library(remotes)
+library(devtools)
+library(BiocManager)
+library(glmGamPoi)
+library(SeuratWrappers)
+library(Banksy)
+library(spacexr)
 ```
 
 **(5)** Once all packages have been loaded, run sessionInfo().  
