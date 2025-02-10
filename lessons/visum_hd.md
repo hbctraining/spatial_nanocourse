@@ -15,9 +15,25 @@ In this lesson, we will:
 - Visually inspect and compare spatial scRNA-seq data before and after filtering (Learning Objective 2)
 - Interact with the spatial seurat object to superimpose cluster onto the image (Learning Objective 3)
 
-# Overview of lesson
+# NGS-based Spatial Transcriptomics Data Analysis
 
-When doing XYZ...
+## Visium HD 
+
+Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 10 million uniquely-barcoded oligonucleotide squares. These 2 micron tiles are arrayed in a continuous lawn across the entire capture area.
+
+full coding transcriptome probes placed on a gap-less grid, barcoded in 2 μm square regions (bins) which are then grouped into 8 μm square bins for default analysis or annotation. 
+
+The data is accompanied by a matching high resolution bright field (e.g. hematoxylin & eosin, H&E) or fluorescent (e.g. immuno-fluorescence, IF) morphology image. While the 8 μm resolution is a big improvement over original Visium’s ∼55 μm spots, having access to 2 μm bins along with matching morphology information makes it tempting to reconstruct single cells from the data.
+
+
+### Preprocessing Data with Spaceranger
+
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. For the purposes of this lesson, we will use the 16µm binning.
+
+
+Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
+
+**TODO link to spaceranger report**
 
 **Insert figure of workflow here**
 
@@ -53,11 +69,7 @@ library(qs)
 >```
 
 
-# Preprocessing Data
 
-Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
-
-**TODO link to spaceranger report**
 
 # Creating the Seurat Object
 
