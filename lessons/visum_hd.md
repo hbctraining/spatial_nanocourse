@@ -27,25 +27,12 @@ When we get our data, it can be tempting to dig right into it and start analyzin
 
 ## Setting up the directory structure
 
-Let's begin by setting up our our RStudio environment. An important first step in stepping up our RStudio environment is to create the subdirectories will will be using. Let's start this by defining the directory names that we will be using:
+Let's begin by setting up our RStudio environment. Fortunately, we have already set-up the RStudio environment with consideration of good data management practices. Let's start by loading the RProject:
+
 
 ```
-directories <- c("data", "results", "figures")
+# Load R Project command
 ```
-
-Then, we can use the `sapply()` function, in order to iterate over each element in the `directories` vector and make a directory with the respective name:
-
-```
-sapply(directories, dir.create)
-```
-
-I our file's brower pane, it should now look like:
-
-**Insert directory structure image here**
-
-## Open an RScript
-
-
 
 ## Loading Libraries
 
