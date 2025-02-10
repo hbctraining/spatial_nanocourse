@@ -23,7 +23,29 @@ When doing XYZ...
 
 # Setting up our environment
 
-Before we start processing our data, we first need to set-up our R environment...
+When we get our data, it can be tempting to dig right into it and start analyzing it. However, before we do that, we should follow good data management practices. This can help use keep better organization for our work and save us lots of headaches down the road.
+
+## Setting up the directory structure
+
+Let's begin by setting up our our RStudio environment. An important first step in stepping up our RStudio environment is to create the subdirectories will will be using. Let's start this by defining the directory names that we will be using:
+
+```
+directories <- c("data", "results", "figures")
+```
+
+Then, we can use the `sapply()` function, in order to iterate over each element in the `directories` vector and make a directory with the respective name:
+
+```
+sapply(directories, dir.create)
+```
+
+I our file's brower pane, it should now look like:
+
+**Insert directory structure image here**
+
+## Open an RScript
+
+
 
 ## Loading Libraries
 
@@ -36,13 +58,19 @@ Run this `.libPaths()` command in order to...
 .libPaths('../libs/')
 ```
 
-Next, we will need to load these libraries using:
+Next, we will need to load the following libraries using:
 
 ```
 library(tidyverse)
 library(Seurat)
 library(patchwork)
 library(qs)
+library(quadprog)
+library(remotes)
+library(glmGamPoi)
+library(SeuratWrappers)
+library(Banksy)
+library(spacexr)
 ```
 
 > Note: While not necessary for this lesson, if you are running the full workflow, you may want to consider adding these commands to your R Script because...:
