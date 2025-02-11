@@ -53,11 +53,8 @@ Here, we describe downloading and open the R project. screenshot to show the dir
 
 We load the libraries necessary for processing scRNAseq data.
 
-Run this `.libPaths()` command in order to...
-
 ```r
 # Load libraries
-
 library(tidyverse)
 library(patchwork)
 library(Seurat)
@@ -78,18 +75,76 @@ The Seurat object is a custom list-like object that has well-defined spaces to s
 The Seurat package provides a function `Load10X_Spatial() to easily create a Seurat object from the output of Space Ranger. **We will not have you run this code**, as this can take some time and the spaceranger output files are quite large to share. Again, talk about inputs and outputs. 
 
 Put this code in a dropdown. "Click here if you would like the R code used to create the Seurat object".
-```
-# DO NOT RUN
-localdir <- "../final/outs_test/"
+
+```r
+# DO NOT RUN - should this code be cleaned up (do we need the commented lines?)
+localdir <- '../spaceranger/outs/'
+
+# to load raw feature matrix
 object <- Load10X_Spatial(data.dir = localdir,
-                          filename = 'raw_feature_bc_matrix.h5')
-object <- Load10X_Spatial(data.dir = localdir)
-DefaultAssay(object) <- "Spatial.008um"
+                          filename = 'raw_feature_bc_matrix.h5',
+                          bin.size = 16)
+
+# cropped.coords <- Crop(object[["slice1.016um"]], x = c(500, 1200), y = c(800, 1600), coords = "plot")
+# object[["zoom"]] <- cropped.coords
+# 
+# object_subset <- subset(object, cells = object@images$zoom$centroids@cells)
+# object_subset[["zoom"]] <- NULL
+# 
+# SpatialDimPlot(object_subset)
+
+# to load spaceranger-filtered feature matrix
+object <- Load10X_Spatial(data.dir = localdir,
+                          bin.size = 16)
+```
+
+**How do we create a Seurat object with multiple samples?**. Add a drop down 
+
+```r
+localdir <- '~/O2/'
+
+# list all samples with spaceranger output (may need to adjust string-parsing)
+samples <- list.files(localdir)[grepl('LIB', list.files(localdir))]
+names(samples) <- unlist(transpose(strsplit(samples, '_'))[3])
+
+# one by one, load samples in to seurat objects
+# not to run this you will need to have the hdf5r package installed
+for (i in 1:length(samples)){
+  object_sample <- Load10X_Spatial(data.dir = paste0(localdir, '/', samples[i], '/', 'spaceranger/outs/'),
+                                   slice = names(samples)[i],
+                                   filename = 'raw_feature_bc_matrix.h5',
+                                   bin.size = 16)  # need to read in one bin at a time for multiple samples
+  object_sample$orig.ident <- names(samples)[i]
+  assign(paste0(samples[i], "_seurat"),
+         object_sample) # stores Seurat object in variable of corresponding sample name
+}
+seurat_ID <- paste0(samples, "_seurat") # get names of all objects
+
+###### for 2 samples #######
+
+# merge 2 seurat objects into 1 seurat object
+object <- merge(x = get(seurat_ID[1]),
+                      y = get(seurat_ID[2]),
+                      add.cell.ids = samples,
+                      project = "mouse_brain_visiumhd")
+
+###### for more than 2 samples #######
+
+rest_of_samples <- get(seurat_ID[2])
+for (i in 3:length(seurat_ID)) {
+  rest_of_samples <- c(rest_of_samples, get(seurat_ID[i]))
+} ## makes a list of all seurat objects
+
+# merge more than 2 seurat objects into 1 seurat object
+object <- merge(x = get(seurat_ID[1]),
+                      y = rest_of_samples,
+                      add.cell.ids = samples,
+                      project = "mouse_brain_visiumhd")
 ```
 
 ### Explore the object
 
-Let's read in the Seurat onject and talk about some very basic slots that we will be accessing.
+Let's read in the Seurat object and talk about some very basic slots that we will be accessing.
 
 ```
 object <- qread('../data_processed/visiumhd_intestine_clustered.qs')
@@ -108,6 +163,8 @@ This feels like a nice break for an exercise or even a question. I am not sure w
 
 ## Quality Control
 
+**ADD SOME MATERIAL FROM HBC WORKSHOPS**
+
 The main objective of quality control is to filter the data so that we include only true cells that are of high quality. This makes it so that when we cluster our cells, it is easier to identify distinct cell type populations.
 
 Challenges include:
@@ -124,82 +181,88 @@ Various metrics can be used to filter low-quality cells from high-quality ones, 
 - **Complexity (novelty score)** - Elaborate
 - **Mitochondrial counts ratio** - Elaborate
 
-Space Ranger applies filtering by default, and for this lesson, we will be working with a Seurat object loaded from Space Ranger's filtered data. However, we can compare plots of UMI counts per cell and genes detected per cell before and after Space Ranger's filtering. 
+Let's take a quick look at the data and make a decision on whether we need to apply any filtering. We will examine the distributions of UMI counts per bin and genes detected per bin to determine reasonable thresholds for those metrics for QC filtering.
 
-## Pre-filtering
+### Pre-filtering 
+To create some plots first, we will need to create a metadata object using this command:
 
-In the figure below, we can see **XYZ** before filtering on...
+```r
+object_meta <- object@meta.data
+```
+
+Nowe  can plot nUMI and nGnee side-by-side.
+Add some text here - what do we see? What do we expect?
+
+**include vertical threshold lines on the plot?**
+
+```r
+# Create a plot for nUMI
+dist_counts_before <- object_meta %>%
+  ggplot(aes(x=nCount_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
+  ggtitle('PostQC Genes/Bin')
+
+# Create a plot for nGene
+dist_features_before <- object_meta %>%
+  ggplot(aes(x=nFeature_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
+  ggtitle('PostQC UMIs/Bin')
+
+dists_before <- dist_counts_before | dist_features_before
+dists_before
+```
 
 <p align="center">
 <img src="../img/preQC.png" width="600">
 </p>
 
-## Post-Filtering
+### Post-Filtering
 
-Let's compare that with the filtered output from Space Ranger. First, we will need to create a metadata object using this command:
+We will apply very minimal filtering here, with nUMI > 100 and nGene > 100. It has been shown that low expression can be biologically meaningful for spatial context so we won't be as stringent as we normally are with scRNA-seq.
 
+
+```r
+# Create a filtered object
+object_filt <- subset(object, (nCount_Spatial.016um > 100) & 
+                        (nFeature_Spatial.016um > 100))
 ```
-object_meta <- object@meta.data
-```
 
-Next, we will use this metadata object to create some plots to help us compare the filtered data to the pre-filtered data.
+Now we can create simialr plots with filtered data. What do we see?
 
-### Genes per Bin
+```r
 
-In this first plot we can observe the number of genes per bin. We can use the following code to visualize this:
+# Create a new metadata data frame 
+object_filt_meta <- object_filt@meta.data
 
-```
-p1 <- object_meta %>%
-   ggplot(aes(x=nCount_Spatial.008um)) +
-   geom_density(alpha = 0.2) +
-   scale_x_log10() +
-   theme_classic() +
-   ylab("Cell density") +
+# Plot nUMI
+dist_counts_after <- object_filt_meta %>%
+  ggplot(aes(x=nCount_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
   ggtitle('PostQC Genes/Bin')
-```
 
-**Let's make a more descriptive name than p1**
-
-This plot should look like:
-
-<p align="center">
-<img src="../img/genes_per_bin.png" width="600">
-</p>
-
-When we compare this to the pre-filtered data we can see **XYZ**. We expect to see **XYZ** and we can see that this filtering is capturing that. 
-
-### UMIs per Bin
-
-In this next plot we can observe the number of UMIs per bin. We can use the following code to visualize this:
-
-```
-p2 <- object_meta %>%
-   ggplot(aes(x=nFeature_Spatial.008um)) +
-   geom_density(alpha = 0.2) +
-   scale_x_log10() +
-   theme_classic() +
-   ylab("Cell density") +
+# Plot nGene
+dist_features_after <- object_filt_meta %>%
+  ggplot(aes(x=nFeature_Spatial.016um)) +
+  geom_density(alpha = 0.2) +
+  scale_x_log10() +
+  theme_classic() +
+  ylab("Cell density") +
   ggtitle('PostQC UMIs/Bin')
-```
 
-**Let's make a more descriptive name than p2**
-
-This plot should looke like:
-
-```
-<p align="center">
-<img src="../img/UMIs_per_bin.png" width="600">
-</p>
-```
-
-**Explain this code**
+# Combine plots side-by-side
+dists_after <- dist_counts_after | dist_features_after
+dists_after
 
 ```
-p3 <- p1 | p2
-p3
-```
-
-**Let's make a more descriptive name than p3**
 
 
 ### Visualize Counts Data
