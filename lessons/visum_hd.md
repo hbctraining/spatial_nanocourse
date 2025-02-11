@@ -19,6 +19,8 @@ In this lesson, we will:
 
 ## Visium HD 
 
+Talk very briefly about Visium HD and the type of data/inputs we start with.... 
+
 Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 10 million uniquely-barcoded oligonucleotide squares. These 2 micron tiles are arrayed in a continuous lawn across the entire capture area.
 
 full coding transcriptome probes placed on a gap-less grid, barcoded in 2 μm square regions (bins) which are then grouped into 8 μm square bins for default analysis or annotation. 
@@ -26,20 +28,26 @@ full coding transcriptome probes placed on a gap-less grid, barcoded in 2 μm sq
 The data is accompanied by a matching high resolution bright field (e.g. hematoxylin & eosin, H&E) or fluorescent (e.g. immuno-fluorescence, IF) morphology image. While the 8 μm resolution is a big improvement over original Visium’s ∼55 μm spots, having access to 2 μm bins along with matching morphology information makes it tempting to reconstruct single cells from the data.
 
 
-### Preprocessing Data with Spaceranger
+## Preprocessing Data with Spaceranger
+
+Explain the inputs and outputs of space ranger. What is it doing? 
+
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Talk about binning in more detail**.
+
+
+Provide the code in a dropdown. Provide a link to the web summary html, **TODO link to spaceranger report**
 
 In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. For the purposes of this lesson, we will use the 16µm binning.
 
-
 Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
 
-**TODO link to spaceranger report**
+## Analysis workflow
 
 **Insert figure of workflow here**
 
-# Setting up our environment
+## Setting up 
 
-Before we start processing our data, we first need to set-up our R environment...
+Here, we describe downloading and open the R project. screenshot to show the directory structure. Open new R script? Or work directy from notebook?
 
 ## Loading Libraries
 
@@ -47,41 +55,29 @@ We load the libraries necessary for processing scRNAseq data.
 
 Run this `.libPaths()` command in order to...
 
-```
-# .libPaths(c('/n/app/bcbio/R4.3.1_singlecell_dev/', '/n/app/bcbio/R4.3.1_singlecell'))
-.libPaths('../libs/')
-```
+```r
+# Load libraries
 
-Next, we will need to load these libraries using:
-
-```
 library(tidyverse)
-library(Seurat)
 library(patchwork)
+library(Seurat)
 library(qs)
+library(SeuratWrappers)
+library(Banksy)
+library(quadprog)
+library(spacexr)
+
+# do we need them to do this in class?
+options(future.globals.maxSize= 2000000000)
 ```
 
-> Note: While not necessary for this lesson, if you are running the full workflow, you may want to consider adding these commands to your R Script because...:
->
-> ```
->options(future.globals.maxSize= 891289600)
->library(Azimuth)
->```
-
-
-
-
-# Creating the Seurat Object
+## Creating the Seurat Object
 
 The Seurat object is a custom list-like object that has well-defined spaces to store specific information/data for single cell experiments, including spatial experiments and Visium HD.
 
-**Insert picture of Surat object with spatial slots**
+The Seurat package provides a function `Load10X_Spatial() to easily create a Seurat object from the output of Space Ranger. **We will not have you run this code**, as this can take some time and the spaceranger output files are quite large to share. Again, talk about inputs and outputs. 
 
-The Seurat package provides a function `Load10X_Spatial` to easily create a Seurat object from the output of Space Ranger.
-
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning.
-
-**What is this code exactly and why are we running it? Can we put it in a dropdown?**
+Put this code in a dropdown. "Click here if you would like the R code used to create the Seurat object".
 ```
 # DO NOT RUN
 localdir <- "../final/outs_test/"
@@ -91,12 +87,16 @@ object <- Load10X_Spatial(data.dir = localdir)
 DefaultAssay(object) <- "Spatial.008um"
 ```
 
-We will read in a...
+### Explore the object
+
+Let's read in the Seurat onject and talk about some very basic slots that we will be accessing.
 
 ```
 object <- qread('../data_processed/visiumhd_intestine_clustered.qs')
 DefaultAssay(object) <- "Spatial.008um"
 ```
+
+**Insert picture of Seurat object with spatial slots**
 
 ***
 
@@ -106,7 +106,7 @@ This feels like a nice break for an exercise or even a question. I am not sure w
 
 ***
 
-# Quality Control
+## Quality Control
 
 The main objective of quality control is to filter the data so that we include only true cells that are of high quality. This makes it so that when we cluster our cells, it is easier to identify distinct cell type populations.
 
