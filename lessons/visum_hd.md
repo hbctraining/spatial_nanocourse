@@ -318,6 +318,8 @@ image_counts | image_features
 
 **Exercise**
 
+**Not sure we need this** 
+
 Perhaps have participants carry out the same QC plots for complexity and mitochondrial counts and get their impressions on the filtering. You may need to provide the code for creating these plots. This should be reflective of Learning Objective 2 and I am thinking it might be something like "Visually inspect and compare spatial scRNA-seq data before and after filtering"
 
 ***
@@ -337,14 +339,14 @@ The authors of the Seurat package recommend the Seurat v5 sketch clustering work
 
 **Is there a visualization for this workflow that we can include here?**
 
-Let's begin by running some functions that we similarly run for single cell RNA-seq, which includes finding the variable features and scaling the data. _Note that this is being done on all cells in the dataset._
+To help with performance in terms of both speed and quality of results, we will start with defining a set of highly variable genes. Once that is done, we will scale the data. _Note that this is being done on all cells in our object._
 
 ```r
 object_filt <- FindVariableFeatures(object_filt)
 object_filt <- ScaleData(object_filt)
 ```
 
-Next, we select 10,000 cells and create a new sub-sampled 'sketch' assay using the `SketchData()` function. THis data will get stored as a new assay in the object. **Talk about what this function does. Break down each argument in the below command**
+Next, we select 10,000 cells and create a new sub-sampled 'sketch' assay using the `SketchData()` function. This data will get stored as a new assay in the object. **Talk about what this function does. What is the Leverage score? Break down each argument in the below command**. Why couldn't we run sketch without FindVariableFeatures / Scaling? It's unclear what impact this has on subsampling. More detail on sketch might resolve these questions.
 
 ```r
 # we select 10,000 cells and create a new 'sketch' assay
@@ -358,11 +360,18 @@ object_filt <- SketchData(
 
 ```
 
-Now that we have the sub-sampled data, we will switch to the "sketch" assay as our default. We will need to re-run some of the previous commands on this new sub-sampled assay. 
+```
+# switch to analyzing the full dataset (on-disk)
+DefaultAssay(obj) <- "RNA"
+# switch to analyzing the sketched dataset (in-memory)
+DefaultAssay(obj) <- "sketch"
+```
+
+Now that we have the sub-sampled data, we will switch to the "sketch" assay as our default. We will need to re-run some of the previous commands on this new sub-sampled assay.
 
 ```r
 
-# switch analysis to sketched cells
+# Switch analysis to sketched cells
 DefaultAssay(object_filt) <- "sketch"
 
 
@@ -370,7 +379,7 @@ object_filt <- FindVariableFeatures(object_filt)
 object_filt <- ScaleData(object_filt)
 ```
 
-Next, we will run a PCA, FindNeighgbors, Find clusters **we have more detailed explanantion for all of these in our scRNA-seq materials**, bring some of that here.
+Next, we will run a PCA, FindNeighbors, FindClusters **we have more detailed explanation for all of these in our scRNA-seq materials**, port some of that here.
 
 ```r
 object_filt <- RunPCA(object_filt, assay = "sketch", reduction.name = "pca.sketch")
@@ -378,7 +387,7 @@ object_filt <- FindNeighbors(object_filt, assay = "sketch", reduction = "pca.ske
 object_filt <- FindClusters(object_filt, cluster.name = "seurat_cluster.sketched", resolution = .65)
 ```
 
-Finally, let's use UMAP using the principal components as input - **again UMAP explanation can be lifted from scrNA-sew**. Why do we get UMAP projects for the sub-sampled data and not the full dataset? 
+Finally, let's use UMAP using the principal components as input - **again UMAP explanation can be lifted from scRNA-seq**. Why do we get UMAP projects for the sub-sampled data and not the full dataset? 
 **Can we plot the UMAP?**
 
 ```r
