@@ -17,8 +17,9 @@ In this lesson, we will:
 
 # NGS-based Spatial Transcriptomics Data Analysis
 
-## Visium HD 
+## Mouse Brain Visium HD 
 
+Introduce with what is the samepl we are working woth - mouse brain (specific region?), FF, mention that for speed we are using a subset of the original slide (how many cells?)
 Talk very briefly about Visium HD and the type of data/inputs we start with.... 
 
 Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 10 million uniquely-barcoded oligonucleotide squares. These 2 micron tiles are arrayed in a continuous lawn across the entire capture area.
@@ -47,7 +48,9 @@ Sequencing facilities often output scRNAseq data, including spatial scRNAseq dat
 
 ## Setting up 
 
-Here, we describe downloading and open the R project. screenshot to show the directory structure. Open new R script? Or work directy from notebook?
+* Here, we describe downloading and open the R project.
+* Screenshot to show the directory structure.
+* Open new R script? Or work directly from notebook?
 
 ## Loading Libraries
 
@@ -265,29 +268,51 @@ dists_after
 ```
 
 
-### Visualize Counts Data
+### Visualizing Counts Data
 
-**What is the scope of this section? Still post-filtering or is it general QC?**
+We can visualize the number of counts per bin, both as a distribution and layered on top of the tissue image. Let's start with a violin plot to look at the distribution of UMI counts and gene counts. The input is our post-filtered dataset.
 
-We can visualize the number of counts per bin, both as a distribution and layered on top of the tissue image. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
+**What do we hope to see here?** What is good versus bad?
 
-First, we will plot... We are hoping to see...
+```r
+
+# Violin plot of UMI counts
+vln_counts_after <- VlnPlot(object_filt, 
+                            features = "nCount_Spatial.016um", 
+                            pt.size = 0, 
+                            group.by = 'orig.ident') + 
+  NoLegend() + scale_y_log10()
+
+# Violin plot of gene counts
+vln_features_after <- VlnPlot(object_filt, 
+                            features = "nFeature_Spatial.016um", 
+                            pt.size = 0, 
+                            group.by = 'orig.ident') + 
+  NoLegend() + scale_y_log10()
+
+
+# Plot both side by side
+vln_counts_after | vln_features_after
+```
+
+Next, we can look at the same ditributions on teh actual image itself. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
+
+```r
+# Visualizing UMI count across the image
+image_counts <- SpatialFeaturePlot(object_filt, 
+                                   feature = 'nCount_Spatial.016um', 
+                                   pt.size.factor = 8)
+
+# Visualizing gene count across the image
+image_features <- SpatialFeaturePlot(object_filt, 
+                                     features = "nFeature_Spatial.016um", 
+                                     pt.size.factor = 8) 
+
+# Plot the two side-by-side
+image_counts | image_features
 
 ```
-vln.plot <- VlnPlot(object, features = "nCount_Spatial.008um", pt.size = 0) + NoLegend()
-```
 
-Next, we will plot... We are hoping to see... 
-
-```
-count.plot <- SpatialFeaturePlot(object, features = "nCount_Spatial.008um") + theme(legend.position = "right")
-```
-
-**What is this code doing?**
-
-```
-vln.plot | count.plot
-```
 
 ***
 
@@ -297,126 +322,73 @@ Perhaps have participants carry out the same QC plots for complexity and mitocho
 
 ***
 
-# Normalize Data
+## Normalize Data
 
-Normalization is important in order to make expression counts comparable across genes and/or sample. Here we use a standard log-normalization for spatial data. We note that the best normalization methods for spatial data are still being developed and evaluated. Below we provide the code for doing this, but do not run this because XYZ...
+Normalization is important in order to make expression counts comparable across genes and/or sample. Here we use a standard log-normalization for spatial data. We note that the best normalization methods for spatial data are still being developed and evaluated. 
 
-```
-# DO NOT RUN
-object <- NormalizeData(object)
-```
-
-In the interest of computational time and memory resources, ee will provide you with the output of this normalization step below...
-
-# Unsupervised Clustering
-
-The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow exhibits improved performance, especially for identifying rare and spatially restricted groups. Sketch-based analyses aim to ‘subsample’ large datasets in a way that preserves rare populations. Here, we sketch the Visium HD dataset, perform clustering on the subsampled cells, and then project the cluster labels back to the full dataset. Below we provide the code for doing this, but do not run this because it may take about 5 minutes to run.
-
-## Sketch the Visium HD Dataset
-
-This first step is doing... because...
-
-**Can we get a figure of what this is doing?**
+```r
+object_filt <- NormalizeData(object_filt, assay = 'Spatial.016um')
 
 ```
-# DO NOT RUN
-object <- FindVariableFeatures(object)
+
+## Unsupervised Clustering
+
+The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow exhibits improved performance, especially for identifying rare and spatially restricted groups. Sketch-based analyses aim to ‘subsample’ large datasets in a way that preserves rare populations. 
+
+**Is there a visualization for this workflow that we can include here?**
+
+Let's begin by running some functions that we similarly run for single cell RNA-seq, which includes finding the variable features and scaling the data. _Note that this is being done on all cells in the dataset._
+
+```r
+object_filt <- FindVariableFeatures(object_filt)
+object_filt <- ScaleData(object_filt)
 ```
 
-Next, we are doing... because...
+Next, we select 10,000 cells and create a new sub-sampled 'sketch' assay using the `SketchData()` function. THis data will get stored as a new assay in the object. **Talk about what this function does. Break down each argument in the below command**
 
-```
-# DO NOT RUN
-object <- ScaleData(object)
-```
-
-**Can we get a figure or a sample table of what this is doing?**
-
-Lastly, we are selecting 50,0000 cells and creating a new 'sketch' assay in order to... 
-
-```
-# DO NOT RUN
-object <- SketchData(
-  object = object,
-  ncells = 50000,
+```r
+# we select 10,000 cells and create a new 'sketch' assay
+object_filt <- SketchData(
+  object = object_filt,
+  assay = 'Spatial.016um',
+  ncells = 10000,
   method = "LeverageScore",
   sketched.assay = "sketch"
 )
+
 ```
 
-**Break down each argument in the above command**
+Now that we have the sub-sampled data, we will switch to the "sketch" assay as our default. We will need to re-run some of the previous commands on this new sub-sampled assay. 
 
-**Can we give participants an intermediate object here to explore?**
+```r
 
-## Perform clustering on subsampled cells
-
-This next step will take ~10 minutes to run, so we will provide you with this object at the end...
-
-First we need to make out default assay in the Seurat object be `sketch` using:
-```
-# DO NOT RUN
 # switch analysis to sketched cells
-DefaultAssay(object) <- "sketch"
+DefaultAssay(object_filt) <- "sketch"
+
+
+object_filt <- FindVariableFeatures(object_filt)
+object_filt <- ScaleData(object_filt)
 ```
 
-Similiarly to earlier, we will need to find variable features in order to...
+Next, we will run a PCA, FindNeighgbors, Find clusters **we have more detailed explanantion for all of these in our scRNA-seq materials**, bring some of that here.
 
-```
-# DO NOT RUN
-object <- FindVariableFeatures(object)
-```
-
-We will also need to scale our data because...
-
-```
-# DO NOT RUN
-object <- ScaleData(object)
+```r
+object_filt <- RunPCA(object_filt, assay = "sketch", reduction.name = "pca.sketch")
+object_filt <- FindNeighbors(object_filt, assay = "sketch", reduction = "pca.sketch", dims = 1:50)
+object_filt <- FindClusters(object_filt, cluster.name = "seurat_cluster.sketched", resolution = .65)
 ```
 
-**Could we provide the object here and have particpants do the next steps?**
-
-Now we would like to perform a PC analysis in order to determine...
-
-```
-# DO NOT RUN?
-object <- RunPCA(object, assay = "sketch", reduction.name = "pca.sketch")
-```
-
-**Break down each argument in the above command**
-
-**Can we plot the PCA?**
-
-Next, we need to find our nearest neighbors in order to...
-
-```
-# DO NOT RUN?
-object <- FindNeighbors(object, assay = "sketch", reduction = "pca.sketch", dims = 1:50)
-```
-
-**Break down each argument in the above command**
-
-Now, we can find clusters...
-
-```
-# DO NOT RUN?
-object <- FindClusters(object, cluster.name = "seurat_cluster.sketched", resolution = .5)
-```
-
-**Break down each argument in the above command**
-
-```
-# DO NOT RUN?
-object <- RunUMAP(object, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
-```
-
-**Break down each argument in the above command**
-
+Finally, let's use UMAP using the principal components as input - **again UMAP explanation can be lifted from scrNA-sew**. Why do we get UMAP projects for the sub-sampled data and not the full dataset? 
 **Can we plot the UMAP?**
+
+```r
+object_filt <- RunUMAP(object_filt, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
+```
 
 
 ## Project cluster labels back to the full dataset
 
-Now that we have our clusters from our subsampled dataset, we need to project these onto the full dataset. **Talk more about why?** This next step may take a few so, we will prvoide you with the completed object. But the code to do this would be:
+Now that we have our clusters from our subsampled dataset, we need to project these onto the full dataset. **How does this function work? Talk more about why?** 
 
 ```
 # DO NOT RUN
