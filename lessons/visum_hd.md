@@ -354,7 +354,6 @@ Normalization is important in order to make expression counts comparable across 
 
 ```r
 object_filt <- NormalizeData(object_filt, assay = 'Spatial.016um')
-
 ```
 
 ## Unsupervised Clustering
@@ -381,31 +380,24 @@ object_filt <- SketchData(
   method = "LeverageScore",
   sketched.assay = "sketch"
 )
+```
+Now that we have the sub-sampled data, we will switch to the "sketch" assay as our default. We will need to re-run some of the previous commands on this new sub-sampled assay.**Revisit `assays` and show how this has changed?**
 
 ```
+object_filt@assays
 
-```
 # switch to analyzing the full dataset (on-disk)
-DefaultAssay(obj) <- "RNA"
+DefaultAssay(object_filt) <- "Spatial.016um"
+
 # switch to analyzing the sketched dataset (in-memory)
-DefaultAssay(obj) <- "sketch"
+DefaultAssay(object_filt) <- "sketch"
 ```
 
-Now that we have the sub-sampled data, we will switch to the "sketch" assay as our default. We will need to re-run some of the previous commands on this new sub-sampled assay.
+Next, we will run previous commands **FindVariables an Scale**, this time on the sketch - for  a PCA, FindNeighbors, FindClusters **we have more detailed explanation for all of these in our scRNA-seq materials**, port some of that here.
 
 ```r
-
-# Switch analysis to sketched cells
-DefaultAssay(object_filt) <- "sketch"
-
-
 object_filt <- FindVariableFeatures(object_filt)
 object_filt <- ScaleData(object_filt)
-```
-
-Next, we will run a PCA, FindNeighbors, FindClusters **we have more detailed explanation for all of these in our scRNA-seq materials**, port some of that here.
-
-```r
 object_filt <- RunPCA(object_filt, assay = "sketch", reduction.name = "pca.sketch")
 object_filt <- FindNeighbors(object_filt, assay = "sketch", reduction = "pca.sketch", dims = 1:50)
 object_filt <- FindClusters(object_filt, cluster.name = "seurat_cluster.sketched", resolution = .65)
@@ -416,7 +408,14 @@ Finally, let's use UMAP using the principal components as input - **again UMAP e
 
 ```r
 object_filt <- RunUMAP(object_filt, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
+
+# Plot UMAP
+DimPlot(object_filt, label = T, label.size = 3, reduction = "umap.sketch") + NoLegend()
 ```
+
+<p align="center">
+<img src="../img/umap_sketch_assay.png" width="600">
+</p> 
 
 
 ## Project cluster labels back to the full dataset
