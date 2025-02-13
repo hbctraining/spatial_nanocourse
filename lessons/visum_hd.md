@@ -33,10 +33,11 @@ The data is accompanied by a matching high resolution bright field (e.g. hematox
 
 Explain the inputs and outputs of space ranger. What is it doing? 
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Talk about binning in more detail**.
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Is this a good psot to talk about binning in more detail**.
 
 
-Provide the code in a dropdown. Provide a link to the web summary html, **TODO link to spaceranger report**
+* **Provide the spaceranger code in a dropdown.**
+* *Provide a link to the web summary html, **TODO link to spaceranger report**
 
 In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. For the purposes of this lesson, we will use the 16µm binning.
 
@@ -77,7 +78,7 @@ The Seurat object is a custom list-like object that has well-defined spaces to s
 
 The Seurat package provides a function `Load10X_Spatial() to easily create a Seurat object from the output of Space Ranger. **We will not have you run this code**, as this can take some time and the spaceranger output files are quite large to share. Again, talk about inputs and outputs. 
 
-Put this code in a dropdown. "Click here if you would like the R code used to create the Seurat object".
+**Put this code in a dropdown.** "Click here if you would like the R code used to create the Seurat object".
 
 ```r
 # DO NOT RUN - should this code be cleaned up (do we need the commented lines?)
@@ -101,10 +102,10 @@ object <- Load10X_Spatial(data.dir = localdir,
                           bin.size = 16)
 ```
 
-**How do we create a Seurat object with multiple samples?**. Add a drop down 
+**Dropdown - How do we create a Seurat object with multiple samples?**. 
 
 ```r
-localdir <- '~/O2/'
+localdir <- '../spaceranger/outs/'
 
 # list all samples with spaceranger output (may need to adjust string-parsing)
 samples <- list.files(localdir)[grepl('LIB', list.files(localdir))]
@@ -147,10 +148,15 @@ object <- merge(x = get(seurat_ID[1]),
 
 ### Explore the object
 
-Let's read in the Seurat object and talk about some very basic slots that we will be accessing.
+Let's read in the Seurat object and talk about some very basic slots that we will be accessing. 
+
+**Why are we setting assay, when there is only one?** - Do we want to show them slots here? and then show that these change as we proceed through the workflow.
 
 ```
+# Load in Seurat object
 object <- qread('../data_processed/visiumhd_intestine_clustered.qs')
+
+# Set assay
 DefaultAssay(object) <- "Spatial.008um"
 ```
 
@@ -199,6 +205,7 @@ Add some text here - what do we see? What do we expect?
 **include vertical threshold lines on the plot?**
 
 ```r
+
 # Create a plot for nUMI
 dist_counts_before <- object_meta %>%
   ggplot(aes(x=nCount_Spatial.016um)) +
@@ -206,7 +213,8 @@ dist_counts_before <- object_meta %>%
   scale_x_log10() +
   theme_classic() +
   ylab("Cell density") +
-  ggtitle('PostQC Genes/Bin')
+  xlab("Number of UMIs per bin") +
+  ggtitle('Pre-QC Genes/Bin') 
 
 # Create a plot for nGene
 dist_features_before <- object_meta %>%
@@ -215,14 +223,15 @@ dist_features_before <- object_meta %>%
   scale_x_log10() +
   theme_classic() +
   ylab("Cell density") +
-  ggtitle('PostQC UMIs/Bin')
+  xlab("Number of genes per bin") +
+  ggtitle('Pre-QC UMIs/Bin') 
 
 dists_before <- dist_counts_before | dist_features_before
 dists_before
 ```
 
 <p align="center">
-<img src="../img/preQC.png" width="600">
+<img src="../img/preQC_UMI_genes_plot.png" width="600">
 </p>
 
 ### Post-Filtering
@@ -236,7 +245,7 @@ object_filt <- subset(object, (nCount_Spatial.016um > 100) &
                         (nFeature_Spatial.016um > 100))
 ```
 
-Now we can create simialr plots with filtered data. What do we see?
+Now we can create simialr plots with filtered data. **What do we see?** Comment here.
 
 ```r
 
@@ -250,6 +259,7 @@ dist_counts_after <- object_filt_meta %>%
   scale_x_log10() +
   theme_classic() +
   ylab("Cell density") +
+  xlab("Number of UMIs per bin") +
   ggtitle('PostQC Genes/Bin')
 
 # Plot nGene
@@ -259,6 +269,7 @@ dist_features_after <- object_filt_meta %>%
   scale_x_log10() +
   theme_classic() +
   ylab("Cell density") +
+  xlab("Number of genes per bin") +
   ggtitle('PostQC UMIs/Bin')
 
 # Combine plots side-by-side
@@ -266,6 +277,11 @@ dists_after <- dist_counts_after | dist_features_after
 dists_after
 
 ```
+
+
+<p align="center">
+<img src="../img/postQC_UMI_genes_plot.png" width="600">
+</p> 
 
 
 ### Visualizing Counts Data
@@ -281,21 +297,25 @@ vln_counts_after <- VlnPlot(object_filt,
                             features = "nCount_Spatial.016um", 
                             pt.size = 0, 
                             group.by = 'orig.ident') + 
-  NoLegend() + scale_y_log10()
+  NoLegend() + scale_y_log10() + ggtitle('nUMI') + xlab('')
 
 # Violin plot of gene counts
 vln_features_after <- VlnPlot(object_filt, 
                             features = "nFeature_Spatial.016um", 
                             pt.size = 0, 
                             group.by = 'orig.ident') + 
-  NoLegend() + scale_y_log10()
+  NoLegend() + scale_y_log10() + + ggtitle('nGene') +  xlab('')
 
 
 # Plot both side by side
 vln_counts_after | vln_features_after
 ```
 
-Next, we can look at the same ditributions on teh actual image itself. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
+<p align="center">
+<img src="../img/violin_plot_UMI_genes.png" width="600">
+</p> 
+
+Next, we can look at the same metrics and the distribution on the actual image itself. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
 
 ```r
 # Visualizing UMI count across the image
@@ -312,6 +332,10 @@ image_features <- SpatialFeaturePlot(object_filt,
 image_counts | image_features
 
 ```
+
+<p align="center">
+<img src="../img/spatial_plot_UMI_genes.png" width="600">
+</p> 
 
 
 ***
