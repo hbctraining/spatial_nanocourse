@@ -19,39 +19,75 @@ In this lesson, we will:
 
 ## Mouse Brain Visium HD 
 
-Introduce with what is the samepl we are working woth - mouse brain (specific region?), FF, mention that for speed we are using a subset of the original slide (how many cells?)
+Introduce with what is the sampel we are working woth - mouse brain (specific region?), FF, mention that for speed we are using a subset of the original slide (how many cells?)
 Talk very briefly about Visium HD and the type of data/inputs we start with.... 
 
 Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 10 million uniquely-barcoded oligonucleotide squares. These 2 micron tiles are arrayed in a continuous lawn across the entire capture area.
 
 full coding transcriptome probes placed on a gap-less grid, barcoded in 2 μm square regions (bins) which are then grouped into 8 μm square bins for default analysis or annotation. 
 
-The data is accompanied by a matching high resolution bright field (e.g. hematoxylin & eosin, H&E) or fluorescent (e.g. immuno-fluorescence, IF) morphology image. While the 8 μm resolution is a big improvement over original Visium’s ∼55 μm spots, having access to 2 μm bins along with matching morphology information makes it tempting to reconstruct single cells from the data.
+The data is accompanied by a matching high resolution bright field (e.g. hematoxylin & eosin, H&E) or fluorescent (e.g. immuno-fluorescence, IF) morphology image. While the 8 μm resolution is a big improvement over original Visium’s ∼55 μm spots, having access to 2 μm bins along with matching morphology information provides great potential to reconstruct single cells from the data.
 
 
 ## Preprocessing Data with Spaceranger
 
 Explain the inputs and outputs of space ranger. What is it doing? 
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Is this a good psot to talk about binning in more detail**.
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Is this a good spot to talk about binning in more detail?**.
 
 
 * **Provide the spaceranger code in a dropdown.**
 * *Provide a link to the web summary html, **TODO link to spaceranger report**
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. For the purposes of this lesson, we will use the 16µm binning.
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Talk about the limitations of 2µm binning. For the purposes of this lesson, we will use the 16µm binning.
 
 Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
 
 ## Analysis workflow
 
-**Insert figure of workflow here**
+**Insert figure of workflow here** - can create this after the lesson is complete.
 
 ## Setting up 
 
 * Here, we describe downloading and open the R project.
-* Screenshot to show the directory structure.
-* Open new R script? Or work directly from notebook?
+* Screenshot to show the directory structure (can create later)
+* Open up a new R script and give it a header.
+
+Some example text taken from scRNA-seq "Setup"
+
+
+## Set up
+
+For this module, we will be working within an RStudio project. In order to follow along you should have **downloaded the R project**.
+
+> If you haven't done this already, the project can be accessed using [this link]().
+
+Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your computer (likely, in your `Downloads` folder). 
+
+1. Unzip this file. It will result in a folder of the same name. 
+2. **Move the folder to the location on your computer where you would like to perform the analysis.**
+3. Open up the folder. The contents will look like the screenshot below. 
+4. **Locate the `.Rproj file` and double-click on it.** This will open up RStudio with the "single_cell_rnaseq" project loaded. 
+
+<p align="center">
+<img src="../img/proj_screenshot.png" width="500">
+</p>
+
+
+Next, open a new Rscript file, and start with some comments to indicate what this file is going to contain:
+
+```r
+# July/August 2021
+# HBC single-cell RNA-seq workshop
+
+# Single-cell RNA-seq analysis - QC
+```
+
+Save the Rscript as `visiumHD.R`. Your working directory should look something like this:
+
+<p align="center">
+<img src="../img/Rstudio_singlecell.png" width="400">
+</p>
 
 ## Loading Libraries
 
