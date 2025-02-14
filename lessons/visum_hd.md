@@ -498,6 +498,10 @@ image_seurat_clusters <- SpatialDimPlot(object_filt,
 image_seurat_clusters
 ```
 
+<p align="center">
+<img src="../img/spatial_plot_projected_clust.png" width="600">
+</p>
+
 
 
 ## Cell Type Identification
