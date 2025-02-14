@@ -381,9 +381,13 @@ object_filt <- SketchData(
   sketched.assay = "sketch"
 )
 ```
-Now that we have the sub-sampled data, we will switch to the "sketch" assay as our default. We will need to re-run some of the previous commands on this new sub-sampled assay.**Revisit `assays` and show how this has changed?**
+Now that we have the sub-sampled data, we will switch to the "sketch" assay as our default. We will need to re-run some of the previous commands on this new sub-sampled assay. **Revisit `assays` and show how this has changed? We can also open the metadata to show that there is a column for leverage score**
 
 ```
+# check metadata
+object_filt@meta.data %>% View()
+
+# check for new assays
 object_filt@assays
 
 # switch to analyzing the full dataset (on-disk)
@@ -410,7 +414,9 @@ Finally, let's use UMAP using the principal components as input - **again UMAP e
 object_filt <- RunUMAP(object_filt, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
 
 # Plot UMAP
-DimPlot(object_filt, label = T, label.size = 3, reduction = "umap.sketch") + NoLegend()
+DimPlot(object_filt, reduction = "umap.sketch", label = T,  cols = 'polychrome') + 
+  ggtitle("Sketched clustering") + 
+  theme(legend.position = "none")
 ```
 
 <p align="center">
@@ -420,12 +426,12 @@ DimPlot(object_filt, label = T, label.size = 3, reduction = "umap.sketch") + NoL
 
 ## Project cluster labels back to the full dataset
 
-Now that we have our clusters from our subsampled dataset, we need to project these onto the full dataset. **How does this function work? Talk more about why?** 
+Now that we have our clusters from our subsampled dataset, we need to project these onto the full dataset. **How does this function work? Talk more about why?**  Note that the projected score for each spot will be saved as a column in the metadata. Actually opening up the metadata again gives the opportunity to look at the `seurat_cluster.sketched` column and see many NA values, because it is only on a subset of cells. The `seurat_cluster.projected` shows values for every spot/bin.
 
 ```
-# DO NOT RUN
-object <- ProjectData(
-  object = object,
+
+object_filt <- ProjectData(
+  object = object_filt,
   assay = "Spatial.008um",
   full.reduction = "full.pca.sketch",
   sketched.assay = "sketch",
@@ -437,140 +443,64 @@ object <- ProjectData(
 ```
 **Break down each argument in the above command**
 
-Because this is a large object, we wil use `qsave` from the `qs` package...
+Let's save this object to file. **Now or later?**
 
 ```
-# DO NOT RUN
 qsave(object, '../data_processed/visiumhd_intestine_clustered.qs')
 ```
 
-### Visualizing the clusters
+### Visualizing the projected clusters on UMAP
 
-We can now visualize our clusters...
+We can now visualize our clusters from the projected assignments.
 
-First we will need to set our default assay for the Seurat object to `sketch` using:
+```r
+# switch to full dataset assay
+DefaultAssay(object_filt) <- "Spatial.016um"
+
+# Change the idents to the projected cluster assignments
+Idents(object_filt) <- "seurat_cluster.projected"
+
+# Plot the UMAP
+DimPlot(object_filt, reduction = "full.umap.sketch", label = T, raster = F, 
+              cols = 'polychrome') +
+  ggtitle("Projected clustering") + 
+  theme(legend.position = "none")
 
 ```
-DefaultAssay(object) <- "sketch"
-```
 
-Next, we will assign the string of ...
-
-```
-Idents(object) <- "seurat_cluster.sketched"
-```
-
-Now we can create a `DimPlot` in order to show...
-
-```
-p1 <- DimPlot(object, reduction = "umap.sketch", label = F) +
-        ggtitle("Sketched clustering") +
-        theme(legend.position = "bottom")
-```
-
-**I think p1 already exists in this workflow and also can we call this something more informative?**
-
-This figure should look like:
 
 <p align="center">
-<img src="../img/DimPlot.png" width="600">
+<img src="../img/umap_projected_assay.png" width="600">
 </p>
 
-From this `Dimplot` we can see that...
 
-Now we will swtich our default assay to `patial.008um` switch to full dataset because...
 
-```
-DefaultAssay(object) <- "Spatial.008um"
-```
+### Visualizing projected clusters on the image
 
-We will need to change the string of... because...
+In order to see the clusters superimposed on our image we can use the `SpatialDimPlot()` function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically in the figure.
 
-```
-Idents(object) <- "seurat_cluster.projected"
-```
+```r
 
-```
-p2 <- DimPlot(object, reduction = "full.umap.sketch", label = F, raster = F)+
-        ggtitle("Projected clustering") +
-        theme(legend.position = "bottom")
-```
-**I think p2 already exists in this workflow and also can we call this something more informative?**
+# Arrange so clusters get listed in numerical order
+object_filt$seurat_cluster.projected <- object_filt$seurat_cluster.projected %>% 
+  as.numeric %>% as.factor()
 
-**Break down each argument in the above command**
+# Set color palette
+color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
+                                    palette = "polychrome")
+names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
+image_seurat_clusters <- SpatialDimPlot(object_filt, 
+                                        group.by = 'seurat_cluster.projected', 
+                                        pt.size.factor = 8, cols = color_pal) +
+  guides(fill=guide_legend(ncol=2))
 
-**What is this code below doing?**
 
-```
-p1 | p2
+image_seurat_clusters
 ```
 
-### Visualizing Clusters on Image
 
-In order to see the clusters superimposed on our image we need to...
 
-```
-p1 <- ImageDimPlot(object, cols = 'polychrome') 
-```
-
-**I think p1 already exists in this workflow and also can we call this something more informative?**
-
-This figure should look like:
-
-<p align="center">
-<img src="../img/Image_DimPlot_1.png" width="600">
-</p>
-
-#### Zooming in on clusters of interest
-
-In order to zoom in on an area of interest, we first need to crop the coordiantes using the `Crop` function in the `XYZ` package like:
-
-```
-cropped.coords <- Crop(object[["slice1.008um"]],
-                       x = c(1550, 1750),
-                       y = c(1250, 1450),
-                       coords = "plot")
-```
-
-**Break down each argument in the above command**
-
-Next, we need to assign these cropped coordiantes to the object canmed `zoom` in ...
-
-```
-object[["zoom"]] <- cropped.coords
-```
-
-Next, we need to ... in order to....
-
-```
-p2 <- ImageDimPlot(object,
-                   fov = 'zoom',
-                   cols = 'polychrome') 
-```
-
-**Break down each argument in the above command**
-
-This figure should look like:
-
-<p align="center">
-<img src="../img/Image_DimPlot_2.png" width="600">
-</p>
-
-**What is this code doing?**
-
-```
-p1 | p2
-```
-
-***
-
-**Exercise**
-
-Zoom in on a different area of interest and this should reflect the goals of Learning Objective 3, which might be something like "Interact with the spatial seurat object to superimpose cluster onto the image"
-
-***
-
-# Cell Type Identification
+## Cell Type Identification
 
 Now that we have identified our desired clusters, we can move on to cell type identification, which will allow us to verify the identity of the cells contained in our various clusters.
 
