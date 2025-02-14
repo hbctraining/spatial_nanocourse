@@ -97,9 +97,7 @@ object <- Load10X_Spatial(data.dir = localdir,
 # 
 # SpatialDimPlot(object_subset)
 
-# to load spaceranger-filtered feature matrix
-object <- Load10X_Spatial(data.dir = localdir,
-                          bin.size = 16)
+
 ```
 
 **Dropdown - How do we create a Seurat object with multiple samples?**. 
@@ -154,7 +152,7 @@ Let's read in the Seurat object and talk about some very basic slots that we wil
 
 ```
 # Load in Seurat object
-object <- qread('../data_processed/visiumhd_intestine_clustered.qs')
+object <- qread( 'data_processed/MsBrain_FF-A1_subset.qs')
 
 # Set assay
 DefaultAssay(object) <- "Spatial.008um"
