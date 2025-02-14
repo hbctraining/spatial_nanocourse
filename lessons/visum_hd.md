@@ -81,7 +81,7 @@ The Seurat package provides a function `Load10X_Spatial() to easily create a Seu
 **Put this code in a dropdown.** "Click here if you would like the R code used to create the Seurat object".
 
 ```r
-# DO NOT RUN - should this code be cleaned up (do we need the commented lines?)
+# remove commented lines; but have a sctipt in repo on how we created the objects
 localdir <- '../spaceranger/outs/'
 
 # to load raw feature matrix
