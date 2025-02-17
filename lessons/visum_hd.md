@@ -8,7 +8,9 @@ Contributors: Alex Bartlett, Meeta Mistry and Will Gammerdinger
 
 Approximate time: XX minutes
 
-# Learning Objectives 
+## Learning Objectives 
+
+**Revisit these when the materials are more complete**
 
 In this lesson, we will:
 - Describe the elements of the Seurat object that are unique to spatial technologies (Learning Objective 1)
@@ -19,7 +21,7 @@ In this lesson, we will:
 
 ## Mouse Brain Visium HD 
 
-Introduce with what is the sampel we are working woth - mouse brain (specific region?), FF, mention that for speed we are using a subset of the original slide (how many cells?)
+Introduce with what is the sample we are working with - mouse brain (specific region?), FF, mention that for speed we are using a subset of the original slide (how many cells?)
 Talk very briefly about Visium HD and the type of data/inputs we start with.... 
 
 Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 10 million uniquely-barcoded oligonucleotide squares. These 2 micron tiles are arrayed in a continuous lawn across the entire capture area.
@@ -31,17 +33,15 @@ The data is accompanied by a matching high resolution bright field (e.g. hematox
 
 ## Preprocessing Data with Spaceranger
 
-Explain the inputs and outputs of space ranger. What is it doing? 
+Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
+Explain the inputs and outputs of spaceranger. What is it doing? 
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Is this a good spot to talk about binning in more detail?**.
+In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Is this a good spot to talk about binning in more detail?**. Talk about the limitations of 2µm binning. For the purposes of this lesson, we will use the 16µm binning.
 
 
 * **Provide the spaceranger code in a dropdown.**
 * *Provide a link to the web summary html, **TODO link to spaceranger report**
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Talk about the limitations of 2µm binning. For the purposes of this lesson, we will use the 16µm binning.
-
-Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
 
 ## Analysis workflow
 
@@ -53,10 +53,8 @@ Sequencing facilities often output scRNAseq data, including spatial scRNAseq dat
 * Screenshot to show the directory structure (can create later)
 * Open up a new R script and give it a header.
 
-Some example text taken from scRNA-seq "Setup"
+Some example text taken from scRNA-seq "Setup" is provided below:
 
-
-## Set up
 
 For this module, we will be working within an RStudio project. In order to follow along you should have **downloaded the R project**.
 
@@ -67,7 +65,7 @@ Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your 
 1. Unzip this file. It will result in a folder of the same name. 
 2. **Move the folder to the location on your computer where you would like to perform the analysis.**
 3. Open up the folder. The contents will look like the screenshot below. 
-4. **Locate the `.Rproj file` and double-click on it.** This will open up RStudio with the "single_cell_rnaseq" project loaded. 
+4. **Locate the `.Rproj file` and double-click on it.** This will open up RStudio with the "visiumHD_nanocourse" project loaded. 
 
 <p align="center">
 <img src="../img/proj_screenshot.png" width="500">
@@ -77,10 +75,8 @@ Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your 
 Next, open a new Rscript file, and start with some comments to indicate what this file is going to contain:
 
 ```r
-# July/August 2021
-# HBC single-cell RNA-seq workshop
-
-# Single-cell RNA-seq analysis - QC
+# February 18th, 2025
+# Spatial transcriptomics nanocourse - or somethine else?
 ```
 
 Save the Rscript as `visiumHD.R`. Your working directory should look something like this:
@@ -117,13 +113,19 @@ The Seurat package provides a function `Load10X_Spatial() to easily create a Seu
 **Put this code in a dropdown.** "Click here if you would like the R code used to create the Seurat object".
 
 ```r
-# remove commented lines; but have a sctipt in repo on how we created the objects
-localdir <- '../spaceranger/outs/'
+# the dropdown will only contain code for one sample
+localdir <- '../path_to/spaceranger/outs/'
 
 # to load raw feature matrix
 object <- Load10X_Spatial(data.dir = localdir,
                           filename = 'raw_feature_bc_matrix.h5',
                           bin.size = 16)
+
+
+```
+
+```
+## Add this code as a script to the code folder. Add it as a part of a complete script that could reproduce the object we begin with
 
 # cropped.coords <- Crop(object[["slice1.016um"]], x = c(500, 1200), y = c(800, 1600), coords = "plot")
 # object[["zoom"]] <- cropped.coords
@@ -133,10 +135,9 @@ object <- Load10X_Spatial(data.dir = localdir,
 # 
 # SpatialDimPlot(object_subset)
 
-
 ```
 
-**Dropdown - How do we create a Seurat object with multiple samples?**. 
+**Add another script to `code` folder whicche deals with mutliple samples.**
 
 ```r
 localdir <- '../spaceranger/outs/'
