@@ -344,7 +344,8 @@ After normalization, we see that there is now a "data" layer in our Seurat objec
 
 The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow because it exhibits improved performance for large datasets, especially for identifying rare and spatially restricted groups. Sketch-based analyses aim to ‘subsample’ large datasets in a way that preserves rare populations. 
 
-**Is there a visualization for this workflow that we can include here?**
+**Is there a visualization for this workflow that we can include here?** No, not from Seurat
+**TODO: make visualization?**
 
 We will start with defining a set of highly variable genes. _Note that this is being done on all bins in our object._ Using this list of genes will help us to quantify the variability and similarity between bins. 
 
