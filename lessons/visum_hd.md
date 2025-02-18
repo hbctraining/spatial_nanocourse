@@ -110,7 +110,7 @@ The Seurat object is a custom list-like object that has well-defined spaces to s
 
 The Seurat package provides a function `Load10X_Spatial() to easily create a Seurat object from the output of Space Ranger. **We will not have you run this code**, as this can take some time and the spaceranger output files are quite large to share. Again, talk about inputs and outputs. 
 
-**Put this code in a dropdown.** "Click here if you would like the R code used to create the Seurat object".
+**Put this code in a dropdown.** "Click here for R code used to create the Seurat object".
 
 ```r
 # the dropdown will only contain code for one sample
@@ -137,7 +137,7 @@ object <- Load10X_Spatial(data.dir = localdir,
 
 ```
 
-**Add another script to `code` folder whicche deals with mutliple samples.**
+**Add another script to `code` folder which deals with mutliple samples.**
 
 ```r
 localdir <- '../spaceranger/outs/'
@@ -539,26 +539,83 @@ image_seurat_clusters
 
 
 
-## Cell Type Identification
+## Spatially-informed Clustering
 
-Now that we have identified our desired clusters, we can move on to cell type identification, which will allow us to verify the identity of the cells contained in our various clusters.
+BANKSY is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual spot’s expression pattern but also the mean and the gradient of gene expression levels in a spot’s broader neighborhood. This makes it valuable for identifying and segmenting spatial tissue domains.
 
-[Azimuth](https://azimuth.hubmapconsortium.org/) is a web application that uses an annotated reference dataset to automate the processing, analysis, and interpretation of a new single-cell RNA-seq experiment. While we won't run it on this dataset because **XYZ**, you would be able to run it on your data using the following command:
+
+
+```r
+# Run Banksy
+object_filt <- RunBanksy(object_filt, lambda = 0.8, verbose = T,
+                         assay = 'Spatial.016um', slot = 'data', k_geom = 50)
 
 ```
-# DO NOT RUN
-object <- RunAzimuth(object, reference = "something")
+
+Show that we now have another assay? Uses only 4000 features?
+
+```
+$BANKSY
+Assay data with 4000 features for 41818 cells
+First 10 features:
+ Ttr, Enpp2, Sst, Igf2, Ecrg4, Ptgds, Npy, Prlr, Clic6, Hbb-bs 
+
 ```
 
-**Can we show an image of these annotations on the figre that we've created?**
+Now continue through previous steps - running on the BANKSY assay
 
-***
+```r
+object_filt <- RunPCA(object_filt, assay = "BANKSY", 
+                      reduction.name = "pca.banksy", 
+                      features = rownames(object_filt), npcs = 30)
+object_filt <- FindNeighbors(object_filt, reduction = "pca.banksy", 
+                             dims = 1:30)
+object_filt <- FindClusters(object_filt, cluster.name = "banksy_cluster",
+                            resolution = 0.5)
+```
 
-You have now completed your visualization of Visium HD ...
+Let's visualize the banksy clusters alongside the Seurat clusters for a side-by-side comparison:
 
-***
+```
 
-[Back to Schedule](../schedule/README.md)
+color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$banksy_cluster)),
+                                    palette = "polychrome")
+names(color_pal) <- sort(unique(object_filt$banksy_cluster))
+
+image_banksy_clusters <- SpatialDimPlot(object_filt, group.by = "banksy_cluster", pt.size.factor = 7,
+               cols = color_pal)
+
+image_seurat_clusters | image_banksy_clusters
+
+```
+
+<p align="center">
+<img src="../img/banksy_clustering.png" width="600">
+</p>
+
+
+**Add some comments here on a compare/contrast.**
+
+
+## Celltype Annotation
+Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. We first subset our Seurat object to this region of interest. **Add some information here on wy you chose the clusters below to be defined as cortex?**
+
+```{r}
+cortex <- subset(object_filt, seurat_cluster.projected %in% c(18, 19, 7, 2, 4))
+
+color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
+                                    palette = "polychrome")
+names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
+SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected', 
+               pt.size.factor = 8, cols = color_pal)
+```
+
+To perform accurate annotation of cell types, we must also take into consideration that our 16 um spots may contain one or more cells each. The method Robust Cell Type Deconvolution (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single spot may exhibit multiple cell type profiles.
+
+RCTD takes an scRNA-seq dataset as a reference and a spatial dataset as a query. For a reference, we use a subsampled version of the mouse scRNA-seq dataset from the Allen Brain Atlas. We use our cortex Seurat object as the spatial query. For computational efficiency, we sketch the spatial query dataset, apply RCTD to deconvolute the ‘sketched’ cortical cells and annotate them, and then project these annotations to the full cortical dataset.
+
+
+
 
 ***
 
