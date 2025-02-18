@@ -1,12 +1,12 @@
 ---
 title: "Visium HD Analysis"
-author: "Alex Bartlett, Meeta Mistry and Will Gammerdinger"
+authors: "Alex Bartlett, Meeta Mistry, and Will Gammerdinger"
 date: "February 4th, 2025"
 ---
 
-Contributors: Alex Bartlett, Meeta Mistry and Will Gammerdinger
+Contributors: Alex Bartlett, Meeta Mistry, and Will Gammerdinger
 
-Approximate time: XX minutes
+Approximate time: 2 hours 45 minutes
 
 ## Learning Objectives 
 
@@ -21,26 +21,43 @@ In this lesson, we will:
 
 ## Mouse Brain Visium HD 
 
-Introduce with what is the sample we are working with - mouse brain (specific region?), FF, mention that for speed we are using a subset of the original slide (how many cells?)
-Talk very briefly about Visium HD and the type of data/inputs we start with.... 
+The Visium HD platform is compatible with human and mouse fresh frozen, fixed frozen, and formalin-fixed parrafin-embedded (FFPE) tissue sections. For this lesson, we will be working with data from a fresh frozen coronal section of a mouse brain sample.
 
-Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 10 million uniquely-barcoded oligonucleotide squares. These 2 micron tiles are arrayed in a continuous lawn across the entire capture area.
+Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 11 million tiles. These 2 um x 2 um squares are arrayed in a continuous lawn across the entire capture area. The squares are each uniquely barcoded with an oligonucleotide and contain probes allowing for the detection of the full coding transcriptome. 
 
-full coding transcriptome probes placed on a gap-less grid, barcoded in 2 μm square regions (bins) which are then grouped into 8 μm square bins for default analysis or annotation. 
+![visium hd slide graphic](../img/visium_hd_slide_graphic.png)
 
 
 ## Preprocessing Data with Spaceranger
 
-Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images.
-Explain the inputs and outputs of spaceranger. What is it doing? 
+Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X Genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the ```spaceranger count``` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode. 
 
-In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Is this a good spot to talk about binning in more detail?**. Talk about the limitations of 2µm binning. For the purposes of this lesson, we will use the 16µm binning.
-The data is accompanied by a matching high resolution bright field (e.g. hematoxylin & eosin, H&E) or fluorescent (e.g. immuno-fluorescence, IF) morphology image. While the 8 μm resolution is a big improvement over original Visium’s ∼55 μm spots, having access to 2 μm bins along with matching morphology information provides great potential to reconstruct single cells from the data.
+**put this code in a dropdown** An example ```spaceranger count``` command is as follows:
 
+```
+ spaceranger count --id=hd_count \
+   --transcriptome=/path/to/refdata-gex-GRCh38-2020-A \
+   --fastqs=/path/to/fastq \
+   --probe-set=/path/to/Visium_Human_Transcriptome_Probe_Set_v2.0_GRCh38-2020-A.csv \
+   --slide=H1-YD7CDZK \
+   --area=A1 \
+   --cytaimage=/path/to/CAVG10539_2023-11-16_14-56-24_APPS115_H1-YD7CDZK_A1_S11088.tif \
+   --image=/path/to/APPS115_11088_rescan_01.btf \
+   --create-bam=false
 
+```
 
-* **Provide the spaceranger code in a dropdown.**
-* *Provide a link to the web summary html, **TODO link to spaceranger report**
+Note that Space Ranger requires a Linux system with at least 32 cores, 64GB of RAM, and 1TB of disk space. 
+
+When ```spaceranger count``` completes successfully, it will generate output similar to the following, which will enable the analyst to perform further analysis in R or Python or using the proprietary Loupe browser from 10X. 
+
+<img src="../img/spaceranger_output.svg" alt="spaceranger output" width="600"/>
+
+In the Visium HD assay, in addition to providing data at the level of the 2 um squares, Space Ranger also bins the 2 um squares into 8 um x 8 um and 16 um x 16 um bins. Most of the above output is produced for each binning resolution. 
+
+While the single-digit micron resolution is a big technological improvement over original Visium’s original ∼55 μm spots, the higher resolution also presents challenges. Having access to 2 μm bins along with matching morphology information provides great potential to reconstruct single cells from the data, which is undoubtedly very powerful. However, because the 2 um squares (and even the 8 um bins) are so small, there is a potential for very little biological signal to be captured per-bin. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources. **For the purposes of this lesson, we will use the 16µm binning.**
+
+We can view and explore the web summary HTML of our data [here](web_summary.html)
 
 
 ## Analysis workflow
