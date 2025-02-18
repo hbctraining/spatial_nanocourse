@@ -1,7 +1,7 @@
 ---
 title: "Visium HD Analysis"
 authors: "Alex Bartlett, Meeta Mistry, and Will Gammerdinger"
-date: "February 4th, 2025"
+date: "February 26th, 2025"
 ---
 
 Contributors: Alex Bartlett, Meeta Mistry, and Will Gammerdinger
