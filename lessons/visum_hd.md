@@ -69,15 +69,6 @@ We can view and explore the web summary HTML of our data [here](../reports/web_s
 
 ### Setting up 
 
-* Here, we describe downloading and open the R project.
-* Screenshot to show the directory structure (can create later)
-* Open up a new R script and give it a header.
-
-**TODO set up project for download, update this text**
-
-Some example text taken from scRNA-seq "Setup" is provided below:
-
-
 For this module, we will be working within an RStudio project. In order to follow along you should have **downloaded the R project**.
 
 > If you haven't done this already, the project can be accessed using [this link]().
