@@ -98,7 +98,7 @@ Next, open a new Rscript file, and start with some comments to indicate what thi
 
 ```
 # February 26th, 2025
-# Spatial transcriptomics nanocourse: Session 2
+# Spatial Transcriptomics: Session 2
 ```
 
 Save the Rscript as `visiumHD.R`. Your working directory should look something like this:
