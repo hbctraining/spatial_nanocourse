@@ -613,8 +613,9 @@ query <- SpatialRNA(coords, counts_hd, colSums(counts_hd))
 
 ```
 
-### 2) load and format the reference dataset
+### 2) Load and format the reference dataset
 ```
+mem.maxVSize(15000)
 ref_subset <- qread("../data_processed/allen_scRNAseq_ref_subset.qs")
 
 Idents(ref_subset) <- "subclass_label"
@@ -629,7 +630,10 @@ reference <- Reference(counts, cluster, nUMI)
 
 ```
 
-### 3) apply RCTD to deconvolute the ‘sketched’ cortical cells and annotate them
+### 3) Apply RCTD to deconvolute the ‘sketched’ cortical cells and annotate them
+
+Note that ```run.RCTD``` takes 10-15 minutes to complete on a laptop using 6 cores
+
 ```
 # run RCTD
 RCTD <- create.RCTD(query, reference, max_cores = 6)
@@ -640,7 +644,7 @@ cortex <- AddMetaData(cortex, metadata = RCTD@results$results_df)
 
 ```
 
-### 4) project RCTD labels to all cortical cells
+### 4) Project RCTD labels to all cortical cells
 
 ```
 cortex$first_type <- as.character(cortex$first_type)
