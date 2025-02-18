@@ -45,68 +45,12 @@ In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 Â
 
 # DO NOT RUN THIS CHUNK, for example purposes only
 
-#################### for one sample ############################################
-
 localdir <- '../spaceranger/outs/'
 
 # to load raw feature matrix
 object <- Load10X_Spatial(data.dir = localdir,
                           filename = 'raw_feature_bc_matrix.h5',
                           bin.size = 16)
-
-# cropped.coords <- Crop(object[["slice1.016um"]], x = c(500, 1200), y = c(800, 1600), coords = "plot")
-# object[["zoom"]] <- cropped.coords
-# 
-# object_subset <- subset(object, cells = object@images$zoom$centroids@cells)
-# object_subset[["zoom"]] <- NULL
-# 
-# SpatialDimPlot(object_subset)
-
-# to load spaceranger-filtered feature matrix
-object <- Load10X_Spatial(data.dir = localdir,
-                          bin.size = 16)
-
-##################### for multiple samples #####################################
-
-localdir <- '../final'
-
-# list all samples with spaceranger output (may need to adjust string-parsing)
-samples <- list.files(localdir)[grepl('LIB', list.files(localdir))]
-names(samples) <- unlist(transpose(strsplit(samples, '_'))[3])
-
-# one by one, load samples in to seurat objects
-for (i in 1:length(samples)){
-  object_sample <- Load10X_Spatial(data.dir = paste0(localdir, '/', samples[i], '/', 'spaceranger/outs/'),
-                                   slice = names(samples)[i],
-                                   filename = 'raw_feature_bc_matrix.h5',
-                                   bin.size = 16)  # need to read in one bin at a time for multiple samples
-  object_sample$orig.ident <- names(samples)[i]
-  assign(paste0(samples[i], "_seurat"),
-         object_sample) # stores Seurat object in variable of corresponding sample name
-}
-seurat_ID <- paste0(samples, "_seurat") # get names of all objects
-
-###### for 2 samples #######
-
-# merge 2 seurat objects into 1 seurat object
-object <- merge(x = get(seurat_ID[1]),
-                      y = get(seurat_ID[2]),
-                      add.cell.ids = samples,
-                      project = "mouse_brain_visiumhd")
-
-###### for more than 2 samples #######
-
-rest_of_samples <- get(seurat_ID[2])
-for (i in 3:length(seurat_ID)) {
-  rest_of_samples <- c(rest_of_samples, get(seurat_ID[i]))
-} ## makes a list of all seurat objects
-
-# merge more than 2 seurat objects into 1 seurat object
-object <- merge(x = get(seurat_ID[1]),
-                      y = rest_of_samples,
-                      add.cell.ids = samples,
-                      project = "mouse_brain_visiumhd")
-
 
 ```
 
@@ -202,20 +146,22 @@ We can visualize the number of counts per bin, both as a distribution and layere
 
 ```{r visualize distributions}
 
+# Violin plot of UMI counts
 vln_counts_after <- VlnPlot(object_filt, 
                             features = "nCount_Spatial.016um", 
                             pt.size = 0, 
                             group.by = 'orig.ident') + 
-  NoLegend() + scale_y_log10()
+  NoLegend() + scale_y_log10() + ggtitle('nUMI') + xlab('') + ylim(c(100, 15000))
 
+# Violin plot of gene counts
 vln_features_after <- VlnPlot(object_filt, 
                             features = "nFeature_Spatial.016um", 
                             pt.size = 0, 
                             group.by = 'orig.ident') + 
-  NoLegend() + scale_y_log10()
+  NoLegend() + scale_y_log10() + ggtitle('nGene') +  xlab('') + ylim(c(100, 15000))
 
 
- 
+# Plot both side by side
 vln_counts_after | vln_features_after
 ```
 
@@ -249,7 +195,6 @@ The authors of the Seurat package recommend the Seurat v5 sketch clustering work
 ```{r create sketch assay}
 
 object_filt <- FindVariableFeatures(object_filt)
-object_filt <- ScaleData(object_filt)
 # we select 10,000 cells and create a new 'sketch' assay
 object_filt <- SketchData(
   object = object_filt,
@@ -389,6 +334,14 @@ cortex <- ScaleData(cortex)
 cortex <- RunPCA(cortex, assay = "sketch", reduction.name = "pca.cortex.sketch", verbose = T)
 cortex <- FindNeighbors(cortex, reduction = "pca.cortex.sketch", dims = 1:50)
 cortex <- RunUMAP(cortex, reduction = "pca.cortex.sketch", reduction.name = "umap.cortex.sketch", return.model = T, dims = 1:50, verbose = T)
+
+counts_hd <- cortex[["sketch"]]$counts
+cortex_cells_hd <- colnames(cortex[["sketch"]])
+coords <- GetTissueCoordinates(cortex)[cortex_cells_hd, 1:2]
+
+# create the RCTD query object
+query <- SpatialRNA(coords, counts_hd, colSums(counts_hd))
+
 ```
 
 ```{r load ref, prep for RCTD}
@@ -404,12 +357,6 @@ cluster <- droplevels(cluster)
 # create the RCTD reference object
 reference <- Reference(counts, cluster, nUMI)
 
-counts_hd <- cortex[["sketch"]]$counts
-cortex_cells_hd <- colnames(cortex[["sketch"]])
-coords <- GetTissueCoordinates(cortex)[cortex_cells_hd, 1:2]
-
-# create the RCTD query object
-query <- SpatialRNA(coords, counts_hd, colSums(counts_hd))
 
 ```
 
