@@ -71,7 +71,8 @@ We can view and explore the web summary HTML of our data [here](../reports/web_s
 
 For this module, we will be working within an RStudio project. In order to follow along you should have **downloaded the R project**.
 
-> If you haven't done this already, the project can be accessed using [this link]().
+> If you haven't done this already, the project can be accessed using [this link](https://www.dropbox.com/scl/fo/as0nesuy7tm0lhia4zwc7/AEGMJasxRKSqCcW3zmpvmHI?rlkey=o1bcx8ygqx32xlwpnazi7i5on&st=zp34pdef&dl=0). The project is located in "Dataset for workshop" > 
+"Day 2- NGS-based- VisiumHD".
 
 Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your computer (likely, in your `Downloads` folder). 
 
@@ -92,8 +93,9 @@ Next, open a new Rscript file, and start with some comments to indicate what thi
 # Spatial Transcriptomics: Session 2
 ```
 
-Save the Rscript as `visiumHD.R`. Your working directory should look something like this:
+Save the Rscript in the `code` folder as `visiumHD.R`. Your working directory should look something like this:
 
+**TODO: a gif showing the project directory in the files pane of rstudio, then click in the code folder and see the new rscript. Pretty please, Will?**
 <p align="center">
 <img src="../img/Rstudio_singlecell.png" width="400">
 </p>
