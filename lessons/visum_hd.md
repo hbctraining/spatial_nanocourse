@@ -73,7 +73,8 @@ We can view and explore the web summary HTML of our data [here](../reports/web_s
 * Screenshot to show the directory structure (can create later)
 * Open up a new R script and give it a header.
 
-# TODO set up project for download, update this text
+**TODO set up project for download, update this text**
+
 Some example text taken from scRNA-seq "Setup" is provided below:
 
 
