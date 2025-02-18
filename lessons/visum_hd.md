@@ -137,7 +137,6 @@ The Seurat package provides a function ```Load10X_Spatial()``` to easily create 
 **TODO Put this code in a dropdown.** "Click here for R code used to create the Seurat object".
 
 ```
-# the dropdown will only contain code for one sample
 localdir <- '../path/to/spaceranger/outs/'
 
 # to load raw feature matrix
