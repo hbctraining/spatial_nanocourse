@@ -28,8 +28,6 @@ Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium pr
 
 full coding transcriptome probes placed on a gap-less grid, barcoded in 2 μm square regions (bins) which are then grouped into 8 μm square bins for default analysis or annotation. 
 
-The data is accompanied by a matching high resolution bright field (e.g. hematoxylin & eosin, H&E) or fluorescent (e.g. immuno-fluorescence, IF) morphology image. While the 8 μm resolution is a big improvement over original Visium’s ∼55 μm spots, having access to 2 μm bins along with matching morphology information provides great potential to reconstruct single cells from the data.
-
 
 ## Preprocessing Data with Spaceranger
 
@@ -37,6 +35,8 @@ Sequencing facilities often output scRNAseq data, including spatial scRNAseq dat
 Explain the inputs and outputs of spaceranger. What is it doing? 
 
 In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 µm squares. By default, the Space Ranger pipeline creates 8x8 µm and 16x16 µm bins of gene expression data. Our Seurat object will have data from both of these binnings, but for the purposes of this lesson, we will use the 8µm binning. **Is this a good spot to talk about binning in more detail?**. Talk about the limitations of 2µm binning. For the purposes of this lesson, we will use the 16µm binning.
+The data is accompanied by a matching high resolution bright field (e.g. hematoxylin & eosin, H&E) or fluorescent (e.g. immuno-fluorescence, IF) morphology image. While the 8 μm resolution is a big improvement over original Visium’s ∼55 μm spots, having access to 2 μm bins along with matching morphology information provides great potential to reconstruct single cells from the data.
+
 
 
 * **Provide the spaceranger code in a dropdown.**
@@ -47,7 +47,7 @@ In the Visium HD assay, the barcodes are patterned in a continuous grid of 2x2 �
 
 **Insert figure of workflow here** - can create this after the lesson is complete.
 
-## Setting up 
+### Setting up 
 
 * Here, we describe downloading and open the R project.
 * Screenshot to show the directory structure (can create later)
@@ -76,7 +76,7 @@ Next, open a new Rscript file, and start with some comments to indicate what thi
 
 ```r
 # February 18th, 2025
-# Spatial transcriptomics nanocourse - or somethine else?
+# Spatial transcriptomics nanocourse - or something else?
 ```
 
 Save the Rscript as `visiumHD.R`. Your working directory should look something like this:
@@ -87,7 +87,7 @@ Save the Rscript as `visiumHD.R`. Your working directory should look something l
 
 ## Loading Libraries
 
-We load the libraries necessary for processing scRNAseq data.
+We load the libraries necessary...
 
 ```r
 # Load libraries
@@ -102,6 +102,7 @@ library(spacexr)
 
 # do we need them to do this in class?
 options(future.globals.maxSize= 2000000000)
+
 ```
 
 ## Creating the Seurat Object
