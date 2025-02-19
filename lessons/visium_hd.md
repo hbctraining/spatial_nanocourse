@@ -556,6 +556,14 @@ image_seurat_clusters | image_banksy_clusters
 
 We can see that, as expected, the BANKSY clusters are more spatially restricted than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label. 
 
+
+**TODO: put this line and the following image in a dropdown** If we had run BANKSY with `lambda = 0.2`, as recommended for cell type clustering instead of `lambda = 0.8` for spatial domain clustering, the resultant clusters would be less spatially restricted and more similar to our Seurat clustering. 
+
+<p align="center">
+<img src="../img/banksy_clustering_lambda_0.2.png" width="450">
+</p>
+
+
 ## Cell Type Annotation
 Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. We first subset our Seurat object to this region of interest. There are multiple ways of subsetting a Seurat object to a region of interest, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we subset the object to include only cells that are assigned these cluster numbers. 
 
