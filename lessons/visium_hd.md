@@ -60,7 +60,7 @@ In the Visium HD assay, in addition to providing data at the level of the 2 um s
 While the single-digit micron resolution is a big technological improvement over original Visium’s original ∼55 μm spots, the higher resolution also presents challenges. Having access to 2 μm bins along with matching morphology information provides great potential to reconstruct single cells from the data, which is undoubtedly very powerful. However, because the 2 um squares (and even the 8 um bins) are so small, there is a potential for very little biological signal to be captured per-bin. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources. **For the purposes of this lesson, we will use the 16µm binning.**
 
 **TODO fix this link**
-We can view and explore the web summary HTML of our data [here](../reports/web_summary.html)
+We can view and explore the web summary HTML of our data found in the "reports" folder of your project. 
 
 
 ## Analysis workflow
