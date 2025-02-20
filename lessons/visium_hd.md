@@ -323,7 +323,7 @@ image_counts | image_features
 ```
 
 <p align="center">
-<img src="../img/spatial_plot_UMI_genes.png" width="600">
+<img src="../img/spatial_plot_UMI_genes.png" width="900">
 </p> 
 
 
@@ -380,11 +380,11 @@ We can also see that the leverage score has been added as a column to the meta d
 
 Next, we will peform a standard clustering workflow on our sketch of 10,000 cells:
 
-* ```FindVariableFeatures```: as before, this generates a list of highly variable genes, which may be slighly different for the sketched dataset than for the full dataset
-* ```ScaleData```: Highly variable genes will be confounded with the most highly expressed genes, so we need to adjust for this
-* unPCA```: perform principal component analysis using our scaled data and variable genes, this will emphasize variation in gene expression as well as similarity across bins
-* ```FindNeighbors```: determine the Euclidean distance between bins in PCA space
-* ```FindClusters```: iteratively group bins together based on neighborhood distances. higher resolution = more groups. 
+* `FindVariableFeatures`: as before, this generates a list of highly variable genes, which may be slighly different for the sketched dataset than for the full dataset
+* `ScaleData`: Highly variable genes will be confounded with the most highly expressed genes, so we need to adjust for this
+* `RunPCA`: perform principal component analysis using our scaled data and variable genes, this will emphasize variation in gene expression as well as similarity across bins
+* `FindNeighbors`: determine the Euclidean distance between bins in PCA space
+* `FindClusters`: iteratively group bins together based on neighborhood distances. higher resolution = more groups. 
 
 
 ```
