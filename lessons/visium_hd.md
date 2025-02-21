@@ -33,9 +33,9 @@ Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium pr
 Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X Genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the ```spaceranger count``` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode. 
 
 <details>
-<summary><b>Click here to see an example of the <kbd>spaceranger count</kbd> command</b></summary>
+<summary><b>Click here to see an example of the <code>spaceranger count</code> command</b></summary>
 <br>
-A sample command for running <kbd>spaceranger count</kbd> is:<br><br>
+A sample command for running <code>spaceranger count</code> is:<br><br>
 <pre>
 spaceranger count --id=hd_count \
    --transcriptome=/path/to/refdata-gex-GRCh38-2020-A \
@@ -559,7 +559,7 @@ We can see that, as expected, the BANKSY clusters are more spatially restricted 
 
 <details>
 <summary><b>Click here to see BANKSY using a lambda value of 0.2</b></summary>
-<br>If we had run BANKSY with `lambda = 0.2`, as recommended for cell type clustering instead of `lambda = 0.8` for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words more compact and less distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using <code>lamba=0.2</code> in BANKSY rather than 0.8:<br><br>
+<br>If we had run BANKSY with <code>lambda = 0.2</code>, as recommended for cell type clustering instead of <code>lambda = 0.8</code> for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words more compact and less distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using <code>lamba=0.2</code> in BANKSY rather than 0.8:<br><br>
 <p align="center">
 <img src="../img/banksy_clustering_lambda_0.2.png" width="450">
 </p>
