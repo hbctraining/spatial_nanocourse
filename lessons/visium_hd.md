@@ -32,10 +32,12 @@ Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium pr
 
 Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X Genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the ```spaceranger count``` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode. 
 
-**TODO put this code in a dropdown** An example ```spaceranger count``` command is as follows:
-
-```
- spaceranger count --id=hd_count \
+<details>
+<summary><b>Click here to see an example of the <kbd>spaceranger count</kbd> command</b></summary>
+<br>
+A sample command for running <kbd>spaceranger count</kbd> is:<br><br>
+<pre>
+spaceranger count --id=hd_count \
    --transcriptome=/path/to/refdata-gex-GRCh38-2020-A \
    --fastqs=/path/to/fastq \
    --probe-set=/path/to/Visium_Human_Transcriptome_Probe_Set_v2.0_GRCh38-2020-A.csv \
@@ -44,8 +46,9 @@ Sequencing facilities often output scRNAseq data, including spatial scRNAseq dat
    --cytaimage=/path/to/CAVG10539_2023-11-16_14-56-24_APPS115_H1-YD7CDZK_A1_S11088.tif \
    --image=/path/to/APPS115_11088_rescan_01.btf \
    --create-bam=false
-
-```
+</pre>
+<hr />
+</details>
 
 Note that Space Ranger requires a Linux system with at least 32 cores, 64GB of RAM, and 1TB of disk space. 
 
@@ -95,14 +98,13 @@ Next, open a new Rscript file, and start with some comments to indicate what thi
 
 Save the Rscript in the `code` folder as `visiumHD.R`. Your working directory should look something like this:
 
-**TODO: a gif showing the project directory in the files pane of rstudio, then click in the code folder and see the new rscript. Pretty please, Will?**
 <p align="center">
-<img src="../img/Rstudio_singlecell.png" width="400">
+<img src="../img/Code_folder.gif" width="700">
 </p>
 
 ## Loading Libraries
 
-We load the libraries necessary...
+Next, we will need to be sure to load the libraries that we will be using:
 
 ```
 # Load libraries
@@ -116,7 +118,6 @@ library(quadprog)
 library(spacexr)
 
 options(future.globals.maxSize= 2000000000)
-
 ```
 
 ## Creating the Seurat Object
@@ -127,18 +128,18 @@ The Seurat package provides a function ```Load10X_Spatial()``` to easily create 
 
 **We will not have you run this code**, as this can take some time and the Space Ranger output files are quite large to share. Instead, you will load the pre-made Seurat object. 
 
-**TODO Put this code in a dropdown.** "Click here for R code used to create the Seurat object".
-
-```
-localdir <- '../path/to/spaceranger/outs/'
-
-# to load raw feature matrix
+<details>
+<summary><b>Click here to see the R code used to create the Seurat object</b></summary>
+<br>The code to create the Seurat object is:<br><br>
+<pre>
+localdir <- '../path/to/spaceranger/outs/'<br>
+&#35; Load the raw feature matrix
 object <- Load10X_Spatial(data.dir = localdir,
                           filename = 'raw_feature_bc_matrix.h5',
                           bin.size = 16)
-
-
-```
+</pre>
+<hr />
+</details>
 
 ### Explore the object
 
@@ -556,12 +557,14 @@ image_seurat_clusters | image_banksy_clusters
 
 We can see that, as expected, the BANKSY clusters are more spatially restricted than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label. 
 
-
-**TODO: put this line and the following image in a dropdown** If we had run BANKSY with `lambda = 0.2`, as recommended for cell type clustering instead of `lambda = 0.8` for spatial domain clustering, the resultant clusters would be less spatially restricted and more similar to our Seurat clustering. 
-
+<details>
+<summary><b>Click here to see BANKSY using a lambda value of 0.2</b></summary>
+<br>If we had run BANKSY with `lambda = 0.2`, as recommended for cell type clustering instead of `lambda = 0.8` for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words more compact and less distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using <code>lamba=0.2</code> in BANKSY rather than 0.8:<br><br>
 <p align="center">
 <img src="../img/banksy_clustering_lambda_0.2.png" width="450">
 </p>
+<hr />
+</details>
 
 
 ## Cell Type Annotation
