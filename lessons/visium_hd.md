@@ -237,7 +237,7 @@ dists_before
 
 Using the distribution plots in the app below, what do you think would be good minimum thresholds for nGenes and nUMI? 
 
-<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_threshold_question_2/?showcase=0" width="600px" height="250px" data-external="1"> </iframe></p>
+<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_threshold_question_2/?showcase=0" width="900px" height="500px" data-external="1"> </iframe></p>
 
 
 ***
