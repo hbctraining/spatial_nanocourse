@@ -162,7 +162,7 @@ There are 3 things about our Seurat object printout that would be different if w
 
 <details>
 <summary><b>Click here to use an app that lets you explore different bin sizes for this Seurat object</b></summary>
-<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_resolution_question_1/?showcase=0" width="300px" height="200px" data-external="1"> </iframe></p>
+<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_resolution_question_1/?showcase=0" width="600px" height="300px" data-external="1"> </iframe></p>
 </details>
 
 ***
