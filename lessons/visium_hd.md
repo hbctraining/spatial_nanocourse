@@ -159,7 +159,7 @@ object
 Now we can examine its major features, which we will add to and alter throughout the lesson:
 
 <p align="center">
-<img src="../../img/Base_seurat_object_labelled.png" width="700">
+<img src="../img/Base_seurat_object_labelled.png" width="1000">
 </p>
 
 
@@ -364,7 +364,7 @@ object_filt
 And we can see that there is now a "data" layer in our Seurat object. 
 
 <p align="center">
-<img src="../../img/Seurat_object_with_normalized_data_labelled.png" width="700">
+<img src="../img/Seurat_object_with_normalized_data_labelled.png" width="700">
 </p>
 
 
@@ -387,7 +387,7 @@ object_filt
 ```
 
 <p align="center">
-<img src="../../img/Seurat_object_variable_features_labelled.png" width="700">
+<img src="../img/Seurat_object_variable_features_labelled.png" width="700">
 </p>
 
 Next, we select 10,000 cells and create a new sub-sampled 'sketch' assay using the `SketchData()` function. The function takes a normalized single-cell dataset containing set of variable features. It returns a Seurat object with a new assay (sketch), consisting of 10,000 bins selected based off a ‘leverage score’ for each bin. The leverage score reflects the magnitude of its contribution to the gene-covariance matrix, and its importance to the overall dataset, with rare populations earning a higher leverage score. This means that our 10,000 cells selected for the sketch will oversample rare populations, retaining the biological complexity of the sample while drastically compressing the dataset.
@@ -408,11 +408,11 @@ Now that we have the sketched data, we can call the Seurat object:
 object_flit
 ```
 
-We can see four makjor changes:
+We can see four major changes:
 - 
 
 <p align="center">
-<img src="../../img/Seurat_object_sketch_labelled.png" width="700">
+<img src="../img/Seurat_object_sketch_labelled.png" width="700">
 </p>
 
 We can also see that the leverage score has been added as a column to the meta data of our object.
