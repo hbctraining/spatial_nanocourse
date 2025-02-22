@@ -150,19 +150,28 @@ Let's read in the Seurat object and talk about some very basic slots that we wil
 object <- qread('data_processed/MsBrain_FF-A1_subset.qs')
 ```
 
-We can print the Seurat object and examine its major features, which we will add to and alter throughout the lesson. 
+We can print the Seurat object by using:
 
-![seurat object](../img/seurat_object.png)
+```
+object
+```
+
+Now we can examine its major features, which we will add to and alter throughout the lesson:
+
+<p align="center">
+<img src="../../img/Base_seurat_object_labelled.png" width="700">
+</p>
+
 
 ***
 
 **Exercise**
 
-There are 3 things about our Seurat object printout that would be different if we were using the 8 um binning instead of the 16 um binning--what are they?
+There are 3 things about our Seurat object printout that would be different if we were using the 8µm binning instead of the 16µm binning. What are these three difference?
 
 <details>
 <summary><b>Click here to use an app that lets you explore different bin sizes for this Seurat object</b></summary>
-<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_resolution_question_1/?showcase=0" width="600px" height="300px" data-external="1"> </iframe></p>
+<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_resolution_question_1/?showcase=0" width="600px" height="250px" data-external="1"> </iframe></p>
 </details>
 
 ***
@@ -226,7 +235,10 @@ dists_before
 
 **Exercise**
 
-Based on the distribution plots, what do you think might be good minimum thresholds for nGenes and nUMI? 
+Using the distribution plots in the app below, what do you think would be good minimum thresholds for nGenes and nUMI? 
+
+<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_threshold_question_2/?showcase=0" width="600px" height="250px" data-external="1"> </iframe></p>
+
 
 ***
 
@@ -343,9 +355,18 @@ Normalization is important in order to make expression counts comparable across 
 object_filt <- NormalizeData(object_filt, assay = 'Spatial.016um')
 ```
 
-After normalization, we see that there is now a "data" layer in our Seurat object. 
+After normalization, we can call our Seurat object with:
 
-![seurat object normalized](../img/seurat_object_normalized.png)
+```
+object_filt
+```
+
+And we can see that there is now a "data" layer in our Seurat object. 
+
+<p align="center">
+<img src="../../img/Seurat_object_with_normalized_data_labelled.png" width="700">
+</p>
+
 
 ## Unsupervised Clustering
 
@@ -361,8 +382,13 @@ object_filt <- FindVariableFeatures(object_filt)
 ```
 We can examine our object and see that ```FindVariableFeatures()``` has added 2000 variable features.
 
-![seurat object var](../img/seurat_object_var.png)
+```
+object_filt
+```
 
+<p align="center">
+<img src="../../img/Seurat_object_variable_features_labelled.png" width="700">
+</p>
 
 Next, we select 10,000 cells and create a new sub-sampled 'sketch' assay using the `SketchData()` function. The function takes a normalized single-cell dataset containing set of variable features. It returns a Seurat object with a new assay (sketch), consisting of 10,000 bins selected based off a ‘leverage score’ for each bin. The leverage score reflects the magnitude of its contribution to the gene-covariance matrix, and its importance to the overall dataset, with rare populations earning a higher leverage score. This means that our 10,000 cells selected for the sketch will oversample rare populations, retaining the biological complexity of the sample while drastically compressing the dataset.
 
@@ -376,9 +402,18 @@ object_filt <- SketchData(
   sketched.assay = "sketch"
 )
 ```
-Now that we have the sketched data, we can see that it has been added to the Seurat object as the active assay.
+Now that we have the sketched data, we can call the Seurat object:
 
-![seurat object sketch](../img/seurat_object_sketch.png)
+```
+object_flit
+```
+
+We can see four makjor changes:
+- 
+
+<p align="center">
+<img src="../../img/Seurat_object_sketch_labelled.png" width="700">
+</p>
 
 We can also see that the leverage score has been added as a column to the meta data of our object.
 
