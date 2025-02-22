@@ -159,6 +159,12 @@ We can print the Seurat object and examine its major features, which we will add
 **Exercise**
 
 There are 3 things about our Seurat object printout that would be different if we were using the 8 um binning instead of the 16 um binning--what are they?
+
+<details>
+<summary><b>Click here to use an app that lets you explore different bin sizes for this Seurat object</b></summary>
+<p align="center"><iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_resolution_question_1/?showcase=0" width="300px" height="200px" data-external="1"> </iframe></p>
+</details>
+
 ***
 
 ## Quality Control
