@@ -23,7 +23,7 @@ In this lesson, we will:
 
 The Visium HD platform is compatible with human and mouse fresh frozen, fixed frozen, and formalin-fixed parrafin-embedded (FFPE) tissue sections. For this lesson, we will be working with data from a fresh frozen coronal section of a mouse brain sample.
 
-Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 11 million tiles. These 2 um x 2 um squares are arrayed in a continuous lawn across the entire capture area. The squares are each uniquely barcoded with an oligonucleotide and contain probes allowing for the detection of the full coding transcriptome. 
+Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 11 million tiles. These 2µm x 2µm squares are arrayed in a continuous lawn across the entire capture area. The squares are each uniquely barcoded with an oligonucleotide and contain probes allowing for the detection of the full coding transcriptome. 
 
 ![visium hd slide graphic](../img/visium_hd_slide_graphic.png)
 
@@ -54,13 +54,13 @@ Note that Space Ranger requires a Linux system with at least 32 cores, 64GB of R
 
 When ```spaceranger count``` completes successfully, it will generate output similar to the following, which will enable the analyst to perform further analysis in R or Python or using the proprietary Loupe browser from 10X. 
 
-
+<p align="center">
 <img src="../img/spaceranger_output.svg" alt="spaceranger output" width="600"/>
+</p>
 
+In the Visium HD assay, in addition to providing data at the level of the 2 um squares, Space Ranger also bins the 2µm squares into 8µm x 8µm and 16µm x 16µm bins. Most of the above output is produced for each binning resolution. 
 
-In the Visium HD assay, in addition to providing data at the level of the 2 um squares, Space Ranger also bins the 2 um squares into 8 um x 8 um and 16 um x 16 um bins. Most of the above output is produced for each binning resolution. 
-
-While the single-digit micron resolution is a big technological improvement over original Visium’s original ∼55 μm spots, the higher resolution also presents challenges. Having access to 2 μm bins along with matching morphology information provides great potential to reconstruct single cells from the data, which is undoubtedly very powerful. However, because the 2 um squares (and even the 8 um bins) are so small, there is a potential for very little biological signal to be captured per-bin. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources. **For the purposes of this lesson, we will use the 16µm binning.**
+While the single-digit micron resolution is a big technological improvement over original Visium’s original ∼55 μm spots, the higher resolution also presents challenges. Having access to 2μm bins along with matching morphology information provides great potential to reconstruct single cells from the data, which is undoubtedly very powerful. However, because the 2µm squares (and even the 8µm bins) are so small, there is a potential for very little biological signal to be captured per-bin. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources. **For the purposes of this lesson, we will use the 16µm binning.**
 
 **TODO fix this link**
 We can view and explore the web summary HTML of our data found in the "reports" folder of your project. 
@@ -79,24 +79,24 @@ For this module, we will be working within an RStudio project. In order to follo
 
 Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your computer (likely, in your `Downloads` folder). 
 
-1. Unzip this file. It will result in a folder of the same name. 
+1. **Unzip this file.** It will result in a folder of the same name. 
 2. **Move the folder to the location on your computer where you would like to perform the analysis.**
-3. Open up the folder. The contents will look like the screenshot below. 
-4. **Locate the `.Rproj file` and double-click on it.** This will open up RStudio with the "visiumHD_nanocourse" project loaded. 
+3. **Open up the folder.** The contents will look like the screenshot below. 
 
 <p align="center">
 <img src="../img/proj_screenshot.png" width="500">
 </p>
 
-
-Next, open a new Rscript file, and start with some comments to indicate what this file is going to contain:
+4. **Locate the `.Rproj file` and double-click on it.** This will open up RStudio with the "visiumHD_nanocourse" project loaded. 
+5. **Open a new Rscript file.**
+6. **Start with some comments to indicate what this file is going to contain:**
 
 ```
 # February 26th, 2025
 # Spatial Transcriptomics: Session 2
 ```
 
-Save the Rscript in the `code` folder as `visiumHD.R`. Your working directory should look something like this:
+7. **Save the Rscript in the `code` folder as `visiumHD.R`.** Your working directory should look something like this:
 
 <p align="center">
 <img src="../img/Code_folder.gif" width="700">
@@ -408,8 +408,12 @@ Now that we have the sketched data, we can call the Seurat object:
 object_flit
 ```
 
-We can see four major changes:
-- 
+We will see that there are four major changes that have taken place:
+
+- The number of features in the second line has double, because we have added a new assay
+- Accordingly, the number of assays has increased from one to two
+- The active assay has change from `Spatial.016um` to `sketch`
+- There is a new line listing additional assays that exist in the Seurat object
 
 <p align="center">
 <img src="../img/Seurat_object_sketch_labelled.png" width="700">
@@ -417,7 +421,15 @@ We can see four major changes:
 
 We can also see that the leverage score has been added as a column to the meta data of our object.
 
-![seurat object metadata leverage](../img/seurat_object_metadata_leverage.png)
+```
+head(object_filt@meta.data)
+```
+
+Should return:
+
+<p align="center">
+<img src="../img/seurat_object_metadata_leverage.png" width="700">
+</p>
 
 
 Next, we will peform a standard clustering workflow on our sketch of 10,000 cells:
@@ -455,13 +467,22 @@ DimPlot(object_filt, reduction = "umap.sketch", label = T,  cols = 'polychrome')
 
 We can also examine our object after these manipulations and note the addition of the scale.data layer as well as the sketch PCA and UMAP dimensional reductions. 
 
-![seurat object sketched processed](../img/seurat_object_sketch_processed.png)
+```
+object_filt
+```
+
+Should return:
+
+<p align="center">
+<img src="../img/Seurat_object_scale_data_PCA_UMAP_labelled.png" width="700">
+</p>
+
 
 ## Project cluster labels back to the full dataset
 
-Now that we have our clusters and dimensional reductions from our sketched dataset, we need to extend these to the full dataset.  The ```ProjectData``` function projects all the bins in the dataset (the "Spatial.016um" assay) onto the sketch assay. 
-```
+Now that we have our clusters and dimensional reductions from our sketched dataset, we need to extend these to the full dataset.  The `ProjectData` function projects all the bins in the dataset (the "Spatial.016um" assay) onto the sketch assay. 
 
+```
 object_filt <- ProjectData(
   object = object_filt,
   assay = "Spatial.016um",
@@ -474,20 +495,28 @@ object_filt <- ProjectData(
 )
 ```
 
-Using the sketch PCA and UMAP, the ```ProjectData``` function returns a Seurat object that includes:
+Using the sketch PCA and UMAP, the `ProjectData` function returns a Seurat object that includes:
 * Dimensional reduction (PCA): The "full.pca.sketch" dimensional reduction extends the pca reduction on the sketched cells to all bins in the dataset
 * Dimensional reduction (UMAP): The "full.umap.sketch" dimensional reduction extends the umap reduction on the sketched cells to all bins in the dataset
 * Cluster labels: The seurat_cluster.projected column in the object metadata now labels all cells in the dataset with one of the cluster labels derived from the sketched cells
 
 We can now see the additional full-dataset reductions in the object.
 
-![seurat object projected](../img/seurat_object_projected.png)
+```
+object_filt
+```
+
+Should return:
+
+<p align="center">
+<img src="../img/Seurat_object_projected_data_labelled.png" width="700">
+</p>
 
 Note that a score for the projection of each bin will be saved as a column in the metadata. Actually opening up the metadata again gives the opportunity to look at the `seurat_cluster.sketched` column and see many NA values, because it was only calculated for 10,000 bins. The `seurat_cluster.projected` shows values for every spot/bin.
 
-![seurat object metadata projected](../img/seurat_object_metadata_projected.png)
-
-
+<p align="center">
+<img src="../img/seurat_object_metadata_projected.png" width="700">
+</p>
 
 ### Visualizing the projected clusters on UMAP
 
@@ -505,35 +534,29 @@ DimPlot(object_filt, reduction = "full.umap.sketch", label = T, raster = F,
               cols = 'polychrome') +
   ggtitle("Projected clustering") + 
   theme(legend.position = "none")
-
 ```
-
 
 <p align="center">
 <img src="../img/umap_projected_assay.png" width="600">
 </p>
-
-
 
 ### Visualizing projected clusters on the image
 
 In order to see the clusters superimposed on our image we can use the `SpatialDimPlot()` function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically in the figure.
 
 ```
-
 # Arrange so clusters get listed in numerical order
 object_filt$seurat_cluster.projected <- object_filt$seurat_cluster.projected %>% 
   as.numeric %>% as.factor()
 
 # Set color palette
-color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
+color_pal <- Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
                                     palette = "polychrome")
 names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
 image_seurat_clusters <- SpatialDimPlot(object_filt, 
                                         group.by = 'seurat_cluster.projected', 
                                         pt.size.factor = 8, cols = color_pal) +
   guides(fill=guide_legend(ncol=2))
-
 
 image_seurat_clusters
 ```
@@ -542,8 +565,6 @@ image_seurat_clusters
 <img src="../img/spatial_plot_projected_clust.png" width="600">
 </p>
 
-
-
 ## Spatially-informed Clustering
 
 [BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual spot’s expression pattern but also the mean and the gradient of gene expression levels in a spot’s broader neighborhood. This makes it valuable for identifying and segmenting spatial tissue domains.
@@ -551,7 +572,6 @@ image_seurat_clusters
 We use the ```RunBanksy``` function to create a new "BANKSY" assay based on a default of 4,000 variable features, which can be used for dimensional reduction and clustering. Two parameters of importance are:
 * ```k_geom``` : Local neighborhood size. Larger values will yield larger domains
 * ```lambda``` : Influence of the neighborhood. Larger values yield more spatially coherent domains. The authors recommend using 0.8 to identify broader spatial domains. 
-
 
 ```
 # Run Banksy
@@ -562,7 +582,9 @@ object_filt <- RunBanksy(object_filt, lambda = 0.8, verbose = T,
 
 We can see the new BANKSY assay in our object
 
-![seurat object banksy](../img/seurat_object_banksy.png)
+<p align="center">
+<img src="../img/Seurat_object_BANKSY_labelled.png" width="700">
+</p>
 
 We perform a simplified clustering workflow on the BANKSY assay.
 
@@ -580,7 +602,7 @@ Let's visualize the banksy clusters alongside the Seurat clusters for a side-by-
 
 ```
 
-color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$banksy_cluster)),
+color_pal <- Seurat::DiscretePalette(n = length(unique(object_filt$banksy_cluster)),
                                     palette = "polychrome")
 names(color_pal) <- sort(unique(object_filt$banksy_cluster))
 
@@ -614,7 +636,7 @@ Perhaps we are particularly interested in understanding the organization of cell
 ```{r}
 cortex <- subset(object_filt, seurat_cluster.projected %in% c(18, 19, 7, 2, 4))
 
-color_pal = Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
+color_pal <- Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
                                     palette = "polychrome")
 names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
 SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected', 
@@ -626,7 +648,7 @@ SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected',
 </p>
 
 
-To perform accurate annotation of cell types, we must also take into consideration that our 16 um spots may contain one or more cells each. The method [Robust Cell Type Deconvolution](https://www.nature.com/articles/s41587-021-00830-w) (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single spot may exhibit multiple cell type profiles.
+To perform accurate annotation of cell types, we must also take into consideration that our 16m spots may contain one or more cells each. The method [Robust Cell Type Deconvolution](https://www.nature.com/articles/s41587-021-00830-w) (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single spot may exhibit multiple cell type profiles.
 
 RCTD takes a cell-type-annotated scRNA-seq dataset as a reference and a spatial dataset as a query. For our reference, we use a subsampled version of the mouse scRNA-seq dataset from the Allen Brain Atlas.
 We use our cortex Seurat object as the spatial query. As an overview, the process is as follows:
