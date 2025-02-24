@@ -206,8 +206,7 @@ To create some plots first, we will need to create a metadata object using this 
 object_meta <- object@meta.data
 ```
 
-Now we can plot the number of UMIs (nUMI) and the number of genes (nGene) side-by-side.
-**Add some text here - what do we see? What do we expect?**
+Now we can plot the number of UMIs (nUMI) and the number of genes (nGene) side-by-side. For both of the plots, we expect to see a bimodal distribution, with one peak representing bins containing lower-quality cells with fewer genes and UMIs and another peak representing bins containing healthy cells with more genes and UMIs. Ideally, the peak representing lower-quality and dying cells is small and the peak representing healthy cells is large.
 
 ```
 # Create a plot for nUMI
