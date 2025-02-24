@@ -20,7 +20,7 @@ The dataset which is used in the pre-reading activities can be found at the link
 
 ### Lessons
 
-[Workshop schedule (trainer-led learning)](essons/visium_hd.md)
+[Workshop schedule (trainer-led learning)](lessons/visium_hd.md)
 
 
 ### Installation Requirements
