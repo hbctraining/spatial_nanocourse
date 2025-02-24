@@ -651,7 +651,7 @@ We can see that, as expected, the BANKSY clusters are more spatially-restricted,
 Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. 
 
 <p align="center">
-<img src="../img/Cell_type_annotations.png" width="600">
+<img src="../img/Cell_type_annotations.png" width="800">
 </p>
 
 We first subset our Seurat object to this region of interest. There are multiple ways of subsetting a Seurat object to a region of interest, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we will subset the object to only include cells that are assigned these cluster numbers. 
