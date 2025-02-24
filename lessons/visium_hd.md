@@ -23,7 +23,9 @@ The Visium HD platform is compatible with human and mouse fresh frozen, fixed fr
 
 Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 11 million tiles. These 2µm x 2µm squares are arrayed in a continuous lawn across the entire capture area. The squares are each uniquely barcoded with an oligonucleotide and contain probes allowing for the detection of the full coding transcriptome. 
 
-![visium hd slide graphic](../img/visium_hd_slide_graphic.png)
+<p align="center">
+<img src="../img/visium_hd_slide_graphic.png" width="800">
+</p>
 
 
 ## Preprocessing Data with Spaceranger
@@ -65,7 +67,9 @@ We can view and explore the web summary HTML of our data found in the "reports" 
 
 ## Analysis workflow
 
-**TODO Insert figure of workflow here** - can create this after the lesson is complete.
+<p align="center">
+<img src="../img/Full_workflow.png" width="800">
+</p>
 
 ### Setting up 
 
@@ -176,6 +180,10 @@ There are 3 things about our Seurat object printout that would be different if w
 ## Quality Control
 
 The main objective of quality control is to filter the data so that we include only data from bins that are of high-quality. This makes it so that when we cluster our bins, it is easier to identify distinct cell type populations.
+
+<p align="center">
+<img src="../img/QC_workflow.png" width="800">
+</p>
 
 In Visium HD data, the main challenge is in **delineating bins that are poor quality from bins containing reads from less complex cells**. If you expect a particular cell type in your dataset to be less transcriptionally active as compared other cell types in your dataset, the bins underneath this cell type will naturally have fewer detected genes and transcripts. However, having fewer detected genes and transcripts can also be a technical artifact and not a result of biological signal. 
 
@@ -379,8 +387,9 @@ And we can see that there is now a new "data" layer in the Seurat object.
 
 The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow because it exhibits improved performance for large datasets, especially for identifying rare and spatially-restricted groups. Sketch-based analyses aim to "subsample" large datasets in a way that preserves rare populations. 
 
-**Is there a visualization for this workflow that we can include here?** No, not from Seurat
-**TODO: make visualization?**
+<p align="center">
+<img src="../img/Standard_clustering.png" width="800">
+</p>
 
 We will start by defining a set of highly variable genes. _Note that this is being done on all bins in our object._ Using this list of genes will help us to quantify the variability and similarity between bins. 
 
@@ -638,9 +647,16 @@ We can see that, as expected, the BANKSY clusters are more spatially-restricted,
 
 
 ## Cell Type Annotation
-Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. We first subset our Seurat object to this region of interest. There are multiple ways of subsetting a Seurat object to a region of interest, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we will subset the object to only include cells that are assigned these cluster numbers. 
 
-```{r}
+Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. 
+
+<p align="center">
+<img src="../img/Cell_type_annotations.png" width="600">
+</p>
+
+We first subset our Seurat object to this region of interest. There are multiple ways of subsetting a Seurat object to a region of interest, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we will subset the object to only include cells that are assigned these cluster numbers. 
+
+```
 cortex <- subset(object_filt, seurat_cluster.projected %in% c(18, 19, 7, 2, 4))
 
 color_pal <- Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
