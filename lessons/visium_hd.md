@@ -4,18 +4,18 @@ authors: "Alex Bartlett, Meeta Mistry, and Will Gammerdinger"
 date: "February 26th, 2025"
 ---
 
-Contributors: Alex Bartlett, Meeta Mistry, and Will Gammerdinger
+Contributors: Alex Bartlett, Meeta Mistry and Will Gammerdinger
 
-Approximate time: 2 hours 45 minutes
+Approximate time: 2 hours and 45 minutes
 
 ## Learning Objectives 
 
 **TODO: Revisit these when the materials are more complete**
 
 In this lesson, we will:
-- Describe the elements of the Seurat object that are unique to spatial technologies (Learning Objective 1)
-- Visually inspect and compare spatial scRNA-seq data before and after filtering (Learning Objective 2)
-- Interact with the spatial seurat object to superimpose cluster onto the image (Learning Objective 3)
+- Describe the elements of the Seurat object that are unique to spatial technologies
+- Visually inspect and compare spatial scRNA-seq data before and after filtering
+- Interact with the spatial Seurat object to superimpose clusters onto the image
 
 # NGS-based Spatial Transcriptomics Data Analysis
 
@@ -30,7 +30,7 @@ Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium pr
 
 ## Preprocessing Data with Spaceranger
 
-Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is VisiumHD data from 10X Genomics, we use their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the ```spaceranger count``` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode. 
+Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is Visium HD data from 10X Genomics, we used their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the ```spaceranger count``` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode. 
 
 <details>
 <summary><b>Click here to see an example of the <code>spaceranger count</code> command</b></summary>
@@ -52,15 +52,15 @@ spaceranger count --id=hd_count \
 
 Note that Space Ranger requires a Linux system with at least 32 cores, 64GB of RAM, and 1TB of disk space. 
 
-When ```spaceranger count``` completes successfully, it will generate output similar to the following, which will enable the analyst to perform further analysis in R or Python or using the proprietary Loupe browser from 10X. 
+When ```spaceranger count``` completes successfully, it will generate output similar to the following, which will enable the analyst to perform further analysis in R or Python or using the proprietary Loupe browser from 10X Genomics. 
 
 <p align="center">
 <img src="../img/spaceranger_output.svg" alt="spaceranger output" width="600"/>
 </p>
 
-In the Visium HD assay, in addition to providing data at the level of the 2 um squares, Space Ranger also bins the 2µm squares into 8µm x 8µm and 16µm x 16µm bins. Most of the above output is produced for each binning resolution. 
+In the Visium HD assay, in addition to providing data at the level of the 2µm x 2µm squares, Space Ranger also bins the 2µm x 2µm squares into 8µm x 8µm and 16µm x 16µm bins. Most of the above output is produced for each binning resolution. 
 
-While the single-digit micron resolution is a big technological improvement over original Visium’s original ∼55 μm spots, the higher resolution also presents challenges. Having access to 2μm bins along with matching morphology information provides great potential to reconstruct single cells from the data, which is undoubtedly very powerful. However, because the 2µm squares (and even the 8µm bins) are so small, there is a potential for very little biological signal to be captured per-bin. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources. **For the purposes of this lesson, we will use the 16µm binning.**
+While the single-digit micron resolution is a big technological improvement over original Visium’s original ∼55μm spots, the higher resolution also presents challenges. Having access to 2μm bins along with matching morphology information provides a great opportunity for reconstructing single cells from the data, which is undoubtedly very powerful. However, because the 2µm  x 2µm squares (and even the 8µm x 8µm bins) are so small, there is a potential for very little biological signal to be captured per bin. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources. **For the purposes of this lesson, we will use the 16µm x 16µm bins.**
 
 **TODO fix this link**
 We can view and explore the web summary HTML of our data found in the "reports" folder of your project. 
@@ -74,33 +74,32 @@ We can view and explore the web summary HTML of our data found in the "reports" 
 
 For this module, we will be working within an RStudio project. In order to follow along you should have **downloaded the R project**.
 
-> If you haven't done this already, the project can be accessed using [this link](https://www.dropbox.com/scl/fo/as0nesuy7tm0lhia4zwc7/AEGMJasxRKSqCcW3zmpvmHI?rlkey=o1bcx8ygqx32xlwpnazi7i5on&st=zp34pdef&dl=0). The project is located in "Dataset for workshop" > 
-"Day 2- NGS-based- VisiumHD".
+> If you haven't done this already, the project can be accessed using [this link](https://www.dropbox.com/scl/fo/as0nesuy7tm0lhia4zwc7/AEGMJasxRKSqCcW3zmpvmHI?rlkey=o1bcx8ygqx32xlwpnazi7i5on&st=zp34pdef&dl=0). The project is located in "Dataset for workshop" -> "Day 2- NGS-based- VisiumHD".
 
 Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your computer (likely, in your `Downloads` folder). 
 
-1. **Unzip this file.** It will result in a folder of the same name. 
+1. **Unzip this file.** This will result in a folder of the same name. 
 2. **Move the folder to the location on your computer where you would like to perform the analysis.**
-3. **Open up the folder.** The contents will look like the screenshot below. 
+3. **Open up the folder.** The contents will look like the screenshot below:
 
-<p align="center">
-<img src="../img/proj_screenshot.png" width="500">
-</p>
+   <p align="center">
+   <img src="../img/proj_screenshot.png" width="500">
+   </p>
 
 4. **Locate the `.Rproj file` and double-click on it.** This will open up RStudio with the "visiumHD_nanocourse" project loaded. 
 5. **Open a new Rscript file.**
 6. **Start with some comments to indicate what this file is going to contain:**
 
-```
-# February 26th, 2025
-# Spatial Transcriptomics: Session 2
-```
+   ```
+   # February 26th, 2025
+   # Spatial Transcriptomics: Session 2
+   ```
 
 7. **Save the Rscript in the `code` folder as `visiumHD.R`.** Your working directory should look something like this:
 
-<p align="center">
-<img src="../img/Code_folder.gif" width="700">
-</p>
+   <p align="center">
+   <img src="../img/Code_folder.gif" width="700">
+   </p>
 
 ## Loading Libraries
 
