@@ -74,7 +74,7 @@ We can view and explore the web summary HTML of our data found in the "reports" 
 
 For this module, we will be working within an RStudio project. In order to follow along you should have **downloaded the R project**.
 
-> If you haven't done this already, the project can be accessed using [this link](https://www.dropbox.com/scl/fo/as0nesuy7tm0lhia4zwc7/AEGMJasxRKSqCcW3zmpvmHI?rlkey=o1bcx8ygqx32xlwpnazi7i5on&st=zp34pdef&dl=0). The project is located in "Dataset for workshop" -> "Day 2- NGS-based- VisiumHD".
+> If you haven't done this already, the project is located in "Dataset for workshop" -> "Day 2- NGS-based- VisiumHD" in the course DropBox.
 
 Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your computer (likely, in your `Downloads` folder). 
 
