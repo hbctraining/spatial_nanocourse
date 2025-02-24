@@ -193,7 +193,11 @@ Various metrics can be used to filter low-quality cells from high-quality ones, 
 
    If there are many captured transcripts (high nUMI) and a low number of genes detected in a bin, this likely means that you only captured a low number of genes and simply sequenced transcripts from those lower number of genes over and over again. These low complexity (low novelty) bins could represent a specific cell type (i.e. red blood cells, which lack a typical transcriptome), or could be due to an artifact or contamination. Generally, we expect the complexity score to be above 0.80 for good-quality bins.
 
-- **Mitochondrial counts ratio** - This metric can identify whether there is a large amount of mitochondrial contamination from dead or dying cells. We define poor-quality samples for mitochondrial counts as bins which surpass the 0.2 mitochondrial ratio threshold, unless of course you are expecting this in your sample.
+- **Mitochondrial counts ratio** - This metric can identify whether there is a large amount of mitochondrial contamination from dead or dying cells. We define poor-quality samples for mitochondrial counts as bins which surpass the 0.2 mitochondrial ratio threshold, unless of course you are expecting this in your sample. This ratio is computed as:
+
+   <p align="center">
+   <img src="https://latex.codecogs.com/svg.image?\text{Mitochondiral&space;Ratio}=\frac{\text{Number&space;of&space;reads&space;aligning&space;to&space;mitochondrial&space;genes}}{\text{Total&space;reads}}" />
+   </p>
 
 Let's take a quick look at the data and make a decision on whether we need to apply any filtering. We will examine the distributions of UMI counts per bin and genes detected per bin to determine reasonable thresholds for those metrics to implement during QC filtering.
 
