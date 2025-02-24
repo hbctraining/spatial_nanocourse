@@ -220,7 +220,8 @@ dist_counts_before <- object_meta %>%
   theme_classic() +
   ylab("Cell density") +
   xlab("Number of UMIs per bin") +
-  ggtitle('Pre-QC Genes/Bin') 
+  ggtitle('Pre-QC UMIs/Bin') +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Create a plot for nGene
 dist_features_before <- object_meta %>%
@@ -230,7 +231,8 @@ dist_features_before <- object_meta %>%
   theme_classic() +
   ylab("Cell density") +
   xlab("Number of genes per bin") +
-  ggtitle('Pre-QC UMIs/Bin') 
+  ggtitle('Pre-QC Genes/Bin') +
+  theme(plot.title = element_text(hjust = 0.5))
 
 dists_before <- dist_counts_before | dist_features_before
 dists_before
@@ -265,7 +267,6 @@ object_filt <- subset(object, (nCount_Spatial.016um > 100) &
 Now, we can create similar plots with filtered data. As expected, we see that the small left peak in the distribution has vanished, leaving the higher quality bins, which are the majority of the data. 
 
 ```
-
 # Create a new metadata data frame 
 object_filt_meta <- object_filt@meta.data
 
@@ -277,7 +278,8 @@ dist_counts_after <- object_filt_meta %>%
   theme_classic() +
   ylab("Cell density") +
   xlab("Number of UMIs per bin") +
-  ggtitle('PostQC Genes/Bin')
+  ggtitle('PostQC UMIs/Bin') +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Plot nGene
 dist_features_after <- object_filt_meta %>%
@@ -287,14 +289,13 @@ dist_features_after <- object_filt_meta %>%
   theme_classic() +
   ylab("Cell density") +
   xlab("Number of genes per bin") +
-  ggtitle('PostQC UMIs/Bin')
+  ggtitle('PostQC Genes/Bin') +
+  theme(plot.title = element_text(hjust = 0.5))
 
 # Combine plots side-by-side
 dists_after <- dist_counts_after | dist_features_after
 dists_after
-
 ```
-
 
 <p align="center">
 <img src="../img/postQC_UMI_genes_plot.png" width="600">
