@@ -10,12 +10,10 @@ Approximate time: 2 hours and 45 minutes
 
 ## Learning Objectives 
 
-**TODO: Revisit these when the materials are more complete**
-
 In this lesson, we will:
-- Describe the elements of the Seurat object that are unique to spatial technologies
+- Describe the elements of the Seurat object and how they are generated
 - Visually inspect and compare spatial scRNA-seq data before and after filtering
-- Interact with the spatial Seurat object to superimpose clusters onto the image
+- Execute clustering workflows and visualize results on a tissue section
 
 # NGS-based Spatial Transcriptomics Data Analysis
 
@@ -580,7 +578,7 @@ image_seurat_clusters
 [BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual bin’s expression pattern but also the mean and the gradient of gene expression levels in a bin’s broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.
 
 We use the `RunBanksy` function to create a new "BANKSY" assay based on a default of the 4,000 most highly variable features, which can be used for dimensionality reduction and clustering. Two parameters of importance are:
-* `k_geom` - Local neighborhood size. Larger values will yield larger domains
+* `k_geom` - Number of bins to consider for the local neighborhood. Larger values will yield larger domains.
 * `lambda` - Influence of the neighborhood. Larger values yield more spatially coherent domains. The authors recommend using 0.8 to identify broader spatial domains. 
 
 ```
