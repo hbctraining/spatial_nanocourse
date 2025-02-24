@@ -186,7 +186,14 @@ Various metrics can be used to filter low-quality cells from high-quality ones, 
 
 - **UMI counts per bin** - This is the number of unique transcripts detected per bin. Because the bins are very small, this number is less than what we would expect for non-spatial scRNAseq data.
 - **Genes detected per bin** - This is the number of unique genes detected per bin. Again, because the bins are very small, this number is less than what we would expect for non-spatial scRNAseq data.
-- **Complexity (novelty score)** - The novelty score is computed by taking the ratio of nGenes over nUMI. If there are many captured transcripts (high nUMI) and a low number of genes detected in a bin, this likely means that you only captured a low number of genes and simply sequenced transcripts from those lower number of genes over and over again. These low complexity (low novelty) bins could represent a specific cell type (i.e. red blood cells which lack a typical transcriptome), or could be due to an artifact or contamination. Generally, we expect the novelty score to be above 0.80 for good quality bins.
+- **Complexity (novelty score)** - The novelty score is computed as shown below:
+
+   <p align="center">
+   <img src="https://latex.codecogs.com/svg.image?\text{Complexity&space;Score}=\frac{\text{Number&space;of&space;Genes}}{\text{Number&space;of&space;UMIs}}" />
+   </p>
+
+   If there are many captured transcripts (high nUMI) and a low number of genes detected in a bin, this likely means that you only captured a low number of genes and simply sequenced transcripts from those lower number of genes over and over again. These low complexity (low novelty) bins could represent a specific cell type (i.e. red blood cells which lack a typical transcriptome), or could be due to an artifact or contamination. Generally, we expect the novelty score to be above 0.80 for good quality bins.
+
 - **Mitochondrial counts ratio** - This metric can identify whether there is a large amount of mitochondrial contamination from dead or dying cells. We define poor quality samples for mitochondrial counts as bins which surpass the 0.2 mitochondrial ratio mark, unless of course you are expecting this in your sample.
 
 Let's take a quick look at the data and make a decision on whether we need to apply any filtering. We will examine the distributions of UMI counts per bin and genes detected per bin to determine reasonable thresholds for those metrics for QC filtering.
@@ -294,7 +301,7 @@ dists_after
 
 ### Visualizing Counts Data
 
-We can visualize the number of counts per bin, both as a distribution and layered on top of the tissue image. Let's start with a violin plot to look at the distribution of UMI counts and gene counts. The input is our post-filtered dataset.
+We can visualize the number of UMI and gene counts per bin, both as a distribution and layered on top of the tissue image. Let's start with a violin plot to look at the distribution of UMI counts and gene counts. The input is our post-filtered dataset.
 
 We see that both distributions have a similar peak but that the nUMI distribution has a much longer tail. This is expected, because while the small physical size of the bins means that most genes will be detected only once or twice, a minority of bins under very transcriptionally active cells may exhibit multiple transcriptions of the same gene. 
 
@@ -542,7 +549,7 @@ DimPlot(object_filt, reduction = "full.umap.sketch", label = T, raster = F,
 
 ### Visualizing projected clusters on the image
 
-In order to see the clusters superimposed on our image we can use the `SpatialDimPlot()` function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically in the figure.
+In order to see the clusters superimposed on our image we can use the `SpatialDimPlot()` function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically rather than lexicographically in the figure.
 
 ```
 # Arrange so clusters get listed in numerical order
@@ -567,11 +574,11 @@ image_seurat_clusters
 
 ## Spatially-informed Clustering
 
-[BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual spot’s expression pattern but also the mean and the gradient of gene expression levels in a spot’s broader neighborhood. This makes it valuable for identifying and segmenting spatial tissue domains.
+[BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual spot’s expression pattern but also the mean and the gradient of gene expression levels in a spot’s broader neighborhood. This makes it valuable for identifying and spatial regions of interest.
 
-We use the ```RunBanksy``` function to create a new "BANKSY" assay based on a default of 4,000 variable features, which can be used for dimensional reduction and clustering. Two parameters of importance are:
-* ```k_geom``` : Local neighborhood size. Larger values will yield larger domains
-* ```lambda``` : Influence of the neighborhood. Larger values yield more spatially coherent domains. The authors recommend using 0.8 to identify broader spatial domains. 
+We use the `RunBanksy` function to create a new "BANKSY" assay based on a default of the 4,000 most highly variable features, which can be used for dimensionality reduction and clustering. Two parameters of importance are:
+* `k_geom` - Local neighborhood size. Larger values will yield larger domains
+* `lambda` - Influence of the neighborhood. Larger values yield more spatially coherent domains. The authors recommend using 0.8 to identify broader spatial domains. 
 
 ```
 # Run Banksy
@@ -618,7 +625,7 @@ image_seurat_clusters | image_banksy_clusters
 </p>
 
 
-We can see that, as expected, the BANKSY clusters are more spatially restricted than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label. 
+We can see that, as expected, the BANKSY clusters are more spatially-restricted, or more compact, than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label. 
 
 <details>
 <summary><b>Click here to see BANKSY using a lambda value of 0.2</b></summary>
@@ -647,6 +654,7 @@ SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected',
 <img src="../img/spatial_plot_cortex.png" width="600">
 </p>
 
+> Note: Your colors may be different than the ones in the above figure.
 
 To perform accurate annotation of cell types, we must also take into consideration that our 16m spots may contain one or more cells each. The method [Robust Cell Type Deconvolution](https://www.nature.com/articles/s41587-021-00830-w) (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single spot may exhibit multiple cell type profiles.
 
@@ -685,7 +693,7 @@ query <- SpatialRNA(coords, counts_hd, colSums(counts_hd))
 ### 2) Load and format the reference dataset
 ```
 mem.maxVSize(15000)
-ref_subset <- qread("../data_processed/allen_scRNAseq_ref_subset.qs")
+ref_subset <- qread("data_processed/allen_scRNAseq_ref_subset.qs")
 
 Idents(ref_subset) <- "subclass_label"
 counts <- ref_subset[["RNA"]]$counts
