@@ -166,7 +166,7 @@ Now we can examine its major features, which we will add to and alter throughout
 
 **Exercise**
 
-There are 3 things about our Seurat object printout that would be different if we were using the 8µm x 8µm binning instead of the 16µm x 16µm binning. What are these three difference?
+There are 3 things about our Seurat object printout that would be different if we were using the 8µm x 8µm binning instead of the 16µm x 16µm binning. What are these three differences?
 
 <details>
 <summary><b>Click here to use an app that lets you explore different bin sizes for this Seurat object</b></summary>
