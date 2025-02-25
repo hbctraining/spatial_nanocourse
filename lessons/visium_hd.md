@@ -650,7 +650,7 @@ We can see that, as expected, the BANKSY clusters are more spatially-restricted,
 
 <details>
 <summary><b>Click here to see BANKSY using a lambda value of 0.2</b></summary>
-<br>If we had run BANKSY with <code>lambda = 0.2</code>, as recommended for cell type clustering instead of <code>lambda = 0.8</code> for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words more compact and less distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using <code>lamba=0.2</code> in BANKSY rather than <code>lamba=0.8</code>:<br><br>
+<br>If we had run BANKSY with <code>lambda = 0.2</code>, as recommended for cell type clustering instead of <code>lambda = 0.8</code> for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words less compact and more distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using <code>lamba=0.2</code> in BANKSY rather than <code>lamba=0.8</code>:<br><br>
 <p align="center">
 <img src="../img/banksy_clustering_lambda_0.2.png" width="450">
 </p>
