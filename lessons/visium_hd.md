@@ -30,7 +30,7 @@ Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium pr
 
 ## Preprocessing Data with Spaceranger
 
-Sequencing facilities often output scRNAseq data, including spatial scRNAseq data, in FASTQ format. Because this is Visium HD data from 10X Genomics, we used their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the ```spaceranger count``` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode. 
+Sequencing facilities often output scRNA-seq data, including spatial scRNA-seq data, in FASTQ format. Because this is Visium HD data from 10X Genomics, we used their proprietary preprocessing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the ```spaceranger count``` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode. 
 
 <details>
 <summary><b>Click here to see an example of the <code>spaceranger count</code> command</b></summary>
@@ -187,7 +187,7 @@ The main objective of quality control is to filter the data so that we include o
 
 In Visium HD data, the main challenge is in **delineating bins that are poor quality from bins containing reads from less complex cells**. If you expect a particular cell type in your dataset to be less transcriptionally active as compared other cell types in your dataset, the bins underneath this cell type will naturally have fewer detected genes and transcripts. However, having fewer detected genes and transcripts can also be a technical artifact and not a result of biological signal. 
 
-Various metrics can be used to filter low-quality cells from high-quality ones, including:
+Various metrics can be used to filter low-quality bins from high-quality ones, including:
 
 - **UMI counts per bin** - This is the number of unique transcripts detected per bin. Because the bins are very small, this number is less than what we would expect for non-spatial scRNA-seq data.
 - **Genes detected per bin** - This is the number of unique genes detected per bin. Again, because the bins are very small, this number is less than what we would expect for non-spatial scRNA-seq data.
@@ -465,7 +465,7 @@ object_filt <- FindNeighbors(object_filt, assay = "sketch", reduction = "pca.ske
 object_filt <- FindClusters(object_filt, cluster.name = "seurat_cluster.sketched", resolution = .65)
 ```
 
-Finally, let's use UMAP using the principal components as input. UMAP is a method that aims to place cells with similar local neighborhoods in high-dimensional space together in low-dimensional space, which is useful for visualizing our newly calculated clusters. We observe good separation between groups annotated as separate clusters, which is sign that our clustering indeed represents various cell types. 
+Finally, let's creage a UMAP using the principal components as input. UMAP is a method that aims to place cells with similar local neighborhoods in high-dimensional space together in low-dimensional space, which is useful for visualizing our newly calculated clusters. We observe good separation between groups annotated as separate clusters, which is sign that our clustering indeed represents various cell types. 
 
 ```
 object_filt <- RunUMAP(object_filt, reduction = "pca.sketch", reduction.name = "umap.sketch", return.model = T, dims = 1:50)
@@ -529,6 +529,12 @@ Should return:
 </p>
 
 Note that a score for the projection of each bin will be saved as a column in the metadata. Actually opening up the metadata again gives the opportunity to look at the `seurat_cluster.sketched` column and see many NA values, because it was only calculated for 10,000 bins. The `seurat_cluster.projected` shows values for every bin.
+
+```
+head(object_filt@meta.data)
+```
+
+Should return:
 
 <p align="center">
 <img src="../img/seurat_object_metadata_projected.png" width="700">
@@ -596,7 +602,13 @@ object_filt <- RunBanksy(object_filt, lambda = 0.8, verbose = T,
 
 ```
 
-We can see the new BANKSY assay in our object
+We can see the new BANKSY assay in our object by calling:
+
+```
+object_filt
+```
+
+Which should return:
 
 <p align="center">
 <img src="../img/Seurat_object_BANKSY_labelled.png" width="700">
@@ -672,7 +684,7 @@ SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected',
 
 > Note: Your colors may be different than the ones in the above figure.
 
-To perform accurate annotation of cell types, we must also take into consideration that our 16µm x 16µm bins may contain one or more cells each. The method [Robust Cell Type Deconvolution](https://www.nature.com/articles/s41587-021-00830-w) (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single spot may exhibit multiple cell type profiles.
+To perform accurate annotation of cell types, we must also take into consideration that our 16µm x 16µm bins may contain one or more cells each. The method [Robust Cell Type Deconvolution](https://www.nature.com/articles/s41587-021-00830-w) (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single bin may exhibit multiple cell type profiles.
 
 RCTD takes a cell-type-annotated scRNA-seq dataset as a reference and a spatial dataset as a query. For our reference, we will use a subsampled version of the mouse scRNA-seq dataset from the Allen Brain Atlas. We will use our cortex Seurat object as the spatial query. As an overview, the process is as follows:
 
