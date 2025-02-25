@@ -421,7 +421,7 @@ object_filt <- SketchData(
 Now that we have the sketched data, we can call the Seurat object:
 
 ```
-object_flit
+object_filt
 ```
 
 We will see that there are four major changes that have taken place:
