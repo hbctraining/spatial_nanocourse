@@ -1,6 +1,6 @@
 ## Loupe Browser
 
-Loupe Browser is a  visualization software from 10X genomics that allows you to explore and analyze your 10x Genomics Chromium and Visium data. You can also convert your Seurat objects into Loupe Browser files using the LoupeR package.
+[Loupe Browser](https://www.10xgenomics.com/support/software/loupe-browser/latest) is a  visualization software from 10X genomics that allows you to explore and analyze your 10x Genomics Chromium and Visium data. You can also convert your Seurat objects into Loupe Browser files using the LoupeR package.
 
 ### Load in the data
 We will use the cloupe file created by spaceranger, as you will notice this the full image and not the cropped image we have been using so far in class.
