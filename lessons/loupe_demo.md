@@ -21,6 +21,7 @@ On the left hand side you have the **Tool selector**:
 * Default is set to Clusters - these are clusters determined by spaceranger (similar to what we observed in the spaceranger report)
   * The graph-based clustering algorithm consists of building a sparse nearest-neighbor graph, followed by Louvain Modularity Optimization - most similar to what is performed in Seurat
   * k-means clustering, standard k-means where you need to specify the number k clusters you want
+  * Use the "Create new group" to upload a csv of your own cluster labels. First column, cellular barcodes and second column is cell annotation. The first column's contents must match at least a subset of the barcodes in the .cloupe file
 
 1. Hover over image, see the different clusters
 2. De-select all and pick and choose select clusters (e.g. Cluster 16)
