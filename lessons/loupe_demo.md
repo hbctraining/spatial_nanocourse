@@ -32,10 +32,13 @@ On the left hand side you have the **Tool selector**:
 * Use the search box to look for the Prox1 gene; from the Allen Brain Atlas is observed to increased expression in Hippocampus. Defaults to log2 scale. Can change to linear scale. Turn on "Filter barcodes" and set the minimum to 1. This will omit bins with zero counts and help see where the gene is expressed exclusively on the tissue slide
 * Try the same with Crlf1
 * Try the same with Pkp2. See that different parts of the hippocampus are illuminated with each gene.
-* Save this list of genes by "Edit list name" - Hippocampus
-* Click combine all below
-* Go back and select all clusters, then take a look at expression distribution
+* Save this list of genes by "Edit list name" - HIP
+   * Click combine all below and look at expression on the image. Filter barcodes for 0.25.
+   * Save barcodes allows you to create a new cluster as part of a new group (HIP name of selected cluster; create a new group called "Celltype by marker expression).
+   * Go back to the Clusters tool
+* Take a look at expression distribution below - violin plots might highlight other clusters which should be included
 
+  
 **Advanced selection**
 
 * Allows you to create rules. Do this using the same three hippocampal genes.
