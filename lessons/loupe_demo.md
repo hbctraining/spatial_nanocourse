@@ -24,8 +24,8 @@ On the left hand side you have the **Tool selector**:
   * Use the "Create new group" to upload a csv of your own cluster labels. First column, cellular barcodes and second column is cell annotation. The first column's contents must match at least a subset of the barcodes in the .cloupe file
 
 1. Hover over image, see the different clusters
-2. De-select all and pick and choose select clusters (e.g. Cluster 16)
-3. See the Differential expression output table below and genes that have the highest FC
+2. De-select all and pick and choose select clusters (e.g. Cluster 14, 16 and 17) which outline the hippocampal region
+3. See the Differential expression output table below and genes that have the highest FC in each cluster. Can export that data and filter to find consensus genes if we thought they were all one celltype. (cannot rename to categorize in Loupe; need unique names)
 
 **Features**
 
