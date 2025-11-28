@@ -1,0 +1,49 @@
+project:
+  type: website
+  output-dir: docs
+  resources:
+    - img/
+    - css/
+    - slides/
+
+
+website:
+  title: "Spatial Transcriptomics Nanocourse"
+  page-footer: >
+      This lesson has been developed by members of the teaching team at the [Harvard Chan Bioinformatics Core (HBC)](http://bioinformatics.sph.harvard.edu/). <br>
+      These are open access materials distributed under the terms of the [Creative Commons Attribution license](https://creativecommons.org/licenses/by/4.0/) (CC BY 4.0), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited. <br>
+  
+  navbar:
+    left:
+      - text: "Schedule"
+        href: index.qmd
+    right:
+      - text: "HBC"
+        href: https://bioinformatics.sph.harvard.edu/
+      - text: "GitHub"
+        href: https://github.com/hbctraining/spatial_nanocourse/
+      - text: "Contact us"
+        href: mailto:hbctraining@hsph.harvard.edu
+  
+format:
+  html:
+    theme: simplex
+    css: css/styles.css
+    fig-align: "center"
+    toc: true
+    number-sections: false
+    code-block-bg: true
+    code-copy: true      # enables copy button (default in most themes)
+    code-tools: true     # enables the copy button!
+    code-line-wrap: wrap
+    google-analytics: UA-150953419-1
+    prompt: true
+
+# Global Execution Defaults
+execute:
+  echo: true               # show code
+  eval: true               # run code
+  warning: false           # show warnings
+  error: false             # show errors
+  message: false           # show messages
+  prompt: true
