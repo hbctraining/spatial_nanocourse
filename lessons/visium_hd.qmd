@@ -253,6 +253,10 @@ dists_before <- dist_counts_before | dist_features_before
 dists_before
 ```
 
+<p align="center">
+<img src="../img/preQC_UMI_genes_plot.png" width="600">
+</p>
+
 :::{.callout-tip}
 # Exercise
 

@@ -486,6 +486,9 @@ Click here to use an app that lets you explore different bin sizes for this Seur
 <span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>dists_before <span class="ot">&lt;-</span> dist_counts_before <span class="sc">|</span> dist_features_before</span>
 <span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>dists_before</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<p align="center">
+<img src="../img/preQC_UMI_genes_plot.png" width="600">
+</p>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -1680,551 +1683,555 @@ Note
 <span id="cb38-269"><a href="#cb38-269" aria-hidden="true" tabindex="-1"></a>dists_before</span>
 <span id="cb38-270"><a href="#cb38-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-271"><a href="#cb38-271" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-272"><a href="#cb38-272" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
-<span id="cb38-273"><a href="#cb38-273" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exercise</span></span>
-<span id="cb38-274"><a href="#cb38-274" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-275"><a href="#cb38-275" aria-hidden="true" tabindex="-1"></a>Using the distribution plots in the app below, what do you think would be good minimum thresholds for nGene and nUMI? </span>
-<span id="cb38-276"><a href="#cb38-276" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-277"><a href="#cb38-277" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;&lt;</span><span class="kw">iframe</span><span class="ot"> src</span><span class="op">=</span><span class="st">"https://hcbc.connect.hms.harvard.edu/Spatial_threshold_question_2/?showcase=0"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"800px"</span><span class="ot"> height</span><span class="op">=</span><span class="st">"410px"</span><span class="ot"> data-external</span><span class="op">=</span><span class="st">"1"</span><span class="dt">&gt;</span> <span class="dt">&lt;/</span><span class="kw">iframe</span><span class="dt">&gt;&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-272"><a href="#cb38-272" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-273"><a href="#cb38-273" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/preQC_UMI_genes_plot.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-274"><a href="#cb38-274" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-275"><a href="#cb38-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-276"><a href="#cb38-276" aria-hidden="true" tabindex="-1"></a>:::{.callout-tip}</span>
+<span id="cb38-277"><a href="#cb38-277" aria-hidden="true" tabindex="-1"></a><span class="fu"># Exercise</span></span>
 <span id="cb38-278"><a href="#cb38-278" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-279"><a href="#cb38-279" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb38-279"><a href="#cb38-279" aria-hidden="true" tabindex="-1"></a>Using the distribution plots in the app below, what do you think would be good minimum thresholds for nGene and nUMI? </span>
 <span id="cb38-280"><a href="#cb38-280" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-281"><a href="#cb38-281" aria-hidden="true" tabindex="-1"></a><span class="fu">### Post-Filtering</span></span>
+<span id="cb38-281"><a href="#cb38-281" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;&lt;</span><span class="kw">iframe</span><span class="ot"> src</span><span class="op">=</span><span class="st">"https://hcbc.connect.hms.harvard.edu/Spatial_threshold_question_2/?showcase=0"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"800px"</span><span class="ot"> height</span><span class="op">=</span><span class="st">"410px"</span><span class="ot"> data-external</span><span class="op">=</span><span class="st">"1"</span><span class="dt">&gt;</span> <span class="dt">&lt;/</span><span class="kw">iframe</span><span class="dt">&gt;&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
 <span id="cb38-282"><a href="#cb38-282" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-283"><a href="#cb38-283" aria-hidden="true" tabindex="-1"></a>We will apply very minimal filtering here, with nUMI &gt; 100 and nGene &gt; 100. It has been shown that low expression can be biologically meaningful for spatial context so we won't be as stringent as we normally are with scRNA-seq.</span>
+<span id="cb38-283"><a href="#cb38-283" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb38-284"><a href="#cb38-284" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-285"><a href="#cb38-285" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-288"><a href="#cb38-288" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-289"><a href="#cb38-289" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
-<span id="cb38-290"><a href="#cb38-290" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a filtered object</span></span>
-<span id="cb38-291"><a href="#cb38-291" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">subset</span>(object, </span>
-<span id="cb38-292"><a href="#cb38-292" aria-hidden="true" tabindex="-1"></a>                      <span class="at">subset =</span> (nCount_Spatial<span class="fl">.016</span>um <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">&amp;</span> </span>
-<span id="cb38-293"><a href="#cb38-293" aria-hidden="true" tabindex="-1"></a>                        (nFeature_Spatial<span class="fl">.016</span>um <span class="sc">&gt;</span> <span class="dv">100</span>))</span>
-<span id="cb38-294"><a href="#cb38-294" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-295"><a href="#cb38-295" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-296"><a href="#cb38-296" aria-hidden="true" tabindex="-1"></a>Now, we can create similar plots with filtered data. As expected, we see that the small left peak in the distribution has vanished, leaving the higher quality bins, which are the majority of the data. </span>
-<span id="cb38-297"><a href="#cb38-297" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-300"><a href="#cb38-300" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-301"><a href="#cb38-301" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new metadata data frame </span></span>
-<span id="cb38-302"><a href="#cb38-302" aria-hidden="true" tabindex="-1"></a>object_filt_meta <span class="ot">&lt;-</span> object_filt<span class="sc">@</span>meta.data</span>
-<span id="cb38-303"><a href="#cb38-303" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-304"><a href="#cb38-304" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot nUMI</span></span>
-<span id="cb38-305"><a href="#cb38-305" aria-hidden="true" tabindex="-1"></a>dist_counts_after <span class="ot">&lt;-</span> object_filt_meta <span class="sc">%&gt;%</span></span>
-<span id="cb38-306"><a href="#cb38-306" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>nCount_Spatial<span class="fl">.016</span>um)) <span class="sc">+</span></span>
-<span id="cb38-307"><a href="#cb38-307" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb38-308"><a href="#cb38-308" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
-<span id="cb38-309"><a href="#cb38-309" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb38-310"><a href="#cb38-310" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Cell density"</span>) <span class="sc">+</span></span>
-<span id="cb38-311"><a href="#cb38-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Number of UMIs per bin"</span>) <span class="sc">+</span></span>
-<span id="cb38-312"><a href="#cb38-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'PostQC UMIs/Bin'</span>) <span class="sc">+</span></span>
-<span id="cb38-313"><a href="#cb38-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb38-314"><a href="#cb38-314" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-315"><a href="#cb38-315" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot nGene</span></span>
-<span id="cb38-316"><a href="#cb38-316" aria-hidden="true" tabindex="-1"></a>dist_features_after <span class="ot">&lt;-</span> object_filt_meta <span class="sc">%&gt;%</span></span>
-<span id="cb38-317"><a href="#cb38-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>nFeature_Spatial<span class="fl">.016</span>um)) <span class="sc">+</span></span>
-<span id="cb38-318"><a href="#cb38-318" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb38-319"><a href="#cb38-319" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
-<span id="cb38-320"><a href="#cb38-320" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb38-321"><a href="#cb38-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Cell density"</span>) <span class="sc">+</span></span>
-<span id="cb38-322"><a href="#cb38-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Number of genes per bin"</span>) <span class="sc">+</span></span>
-<span id="cb38-323"><a href="#cb38-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'PostQC Genes/Bin'</span>) <span class="sc">+</span></span>
-<span id="cb38-324"><a href="#cb38-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
-<span id="cb38-325"><a href="#cb38-325" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-326"><a href="#cb38-326" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine plots side-by-side</span></span>
-<span id="cb38-327"><a href="#cb38-327" aria-hidden="true" tabindex="-1"></a>dists_after <span class="ot">&lt;-</span> dist_counts_after <span class="sc">|</span> dist_features_after</span>
-<span id="cb38-328"><a href="#cb38-328" aria-hidden="true" tabindex="-1"></a>dists_after</span>
-<span id="cb38-329"><a href="#cb38-329" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-330"><a href="#cb38-330" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-331"><a href="#cb38-331" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-332"><a href="#cb38-332" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/postQC_UMI_genes_plot.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
-<span id="cb38-333"><a href="#cb38-333" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
+<span id="cb38-285"><a href="#cb38-285" aria-hidden="true" tabindex="-1"></a><span class="fu">### Post-Filtering</span></span>
+<span id="cb38-286"><a href="#cb38-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-287"><a href="#cb38-287" aria-hidden="true" tabindex="-1"></a>We will apply very minimal filtering here, with nUMI &gt; 100 and nGene &gt; 100. It has been shown that low expression can be biologically meaningful for spatial context so we won't be as stringent as we normally are with scRNA-seq.</span>
+<span id="cb38-288"><a href="#cb38-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-289"><a href="#cb38-289" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-292"><a href="#cb38-292" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-293"><a href="#cb38-293" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb38-294"><a href="#cb38-294" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a filtered object</span></span>
+<span id="cb38-295"><a href="#cb38-295" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">subset</span>(object, </span>
+<span id="cb38-296"><a href="#cb38-296" aria-hidden="true" tabindex="-1"></a>                      <span class="at">subset =</span> (nCount_Spatial<span class="fl">.016</span>um <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">&amp;</span> </span>
+<span id="cb38-297"><a href="#cb38-297" aria-hidden="true" tabindex="-1"></a>                        (nFeature_Spatial<span class="fl">.016</span>um <span class="sc">&gt;</span> <span class="dv">100</span>))</span>
+<span id="cb38-298"><a href="#cb38-298" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-299"><a href="#cb38-299" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-300"><a href="#cb38-300" aria-hidden="true" tabindex="-1"></a>Now, we can create similar plots with filtered data. As expected, we see that the small left peak in the distribution has vanished, leaving the higher quality bins, which are the majority of the data. </span>
+<span id="cb38-301"><a href="#cb38-301" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-304"><a href="#cb38-304" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-305"><a href="#cb38-305" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a new metadata data frame </span></span>
+<span id="cb38-306"><a href="#cb38-306" aria-hidden="true" tabindex="-1"></a>object_filt_meta <span class="ot">&lt;-</span> object_filt<span class="sc">@</span>meta.data</span>
+<span id="cb38-307"><a href="#cb38-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-308"><a href="#cb38-308" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot nUMI</span></span>
+<span id="cb38-309"><a href="#cb38-309" aria-hidden="true" tabindex="-1"></a>dist_counts_after <span class="ot">&lt;-</span> object_filt_meta <span class="sc">%&gt;%</span></span>
+<span id="cb38-310"><a href="#cb38-310" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>nCount_Spatial<span class="fl">.016</span>um)) <span class="sc">+</span></span>
+<span id="cb38-311"><a href="#cb38-311" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb38-312"><a href="#cb38-312" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb38-313"><a href="#cb38-313" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb38-314"><a href="#cb38-314" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Cell density"</span>) <span class="sc">+</span></span>
+<span id="cb38-315"><a href="#cb38-315" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Number of UMIs per bin"</span>) <span class="sc">+</span></span>
+<span id="cb38-316"><a href="#cb38-316" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'PostQC UMIs/Bin'</span>) <span class="sc">+</span></span>
+<span id="cb38-317"><a href="#cb38-317" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb38-318"><a href="#cb38-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-319"><a href="#cb38-319" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot nGene</span></span>
+<span id="cb38-320"><a href="#cb38-320" aria-hidden="true" tabindex="-1"></a>dist_features_after <span class="ot">&lt;-</span> object_filt_meta <span class="sc">%&gt;%</span></span>
+<span id="cb38-321"><a href="#cb38-321" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>nFeature_Spatial<span class="fl">.016</span>um)) <span class="sc">+</span></span>
+<span id="cb38-322"><a href="#cb38-322" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb38-323"><a href="#cb38-323" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb38-324"><a href="#cb38-324" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb38-325"><a href="#cb38-325" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Cell density"</span>) <span class="sc">+</span></span>
+<span id="cb38-326"><a href="#cb38-326" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Number of genes per bin"</span>) <span class="sc">+</span></span>
+<span id="cb38-327"><a href="#cb38-327" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">'PostQC Genes/Bin'</span>) <span class="sc">+</span></span>
+<span id="cb38-328"><a href="#cb38-328" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>))</span>
+<span id="cb38-329"><a href="#cb38-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-330"><a href="#cb38-330" aria-hidden="true" tabindex="-1"></a><span class="co"># Combine plots side-by-side</span></span>
+<span id="cb38-331"><a href="#cb38-331" aria-hidden="true" tabindex="-1"></a>dists_after <span class="ot">&lt;-</span> dist_counts_after <span class="sc">|</span> dist_features_after</span>
+<span id="cb38-332"><a href="#cb38-332" aria-hidden="true" tabindex="-1"></a>dists_after</span>
+<span id="cb38-333"><a href="#cb38-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-334"><a href="#cb38-334" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-335"><a href="#cb38-335" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-336"><a href="#cb38-336" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualizing Counts Data</span></span>
-<span id="cb38-337"><a href="#cb38-337" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-338"><a href="#cb38-338" aria-hidden="true" tabindex="-1"></a>We can visualize the number of UMIs and gene counts per bin, both as a distribution and layered on top of the tissue image. Let's start with a violin plot to look at the distribution of UMI counts and gene counts. The input is our post-filtered dataset.</span>
+<span id="cb38-335"><a href="#cb38-335" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-336"><a href="#cb38-336" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/postQC_UMI_genes_plot.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-337"><a href="#cb38-337" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
+<span id="cb38-338"><a href="#cb38-338" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-339"><a href="#cb38-339" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-342"><a href="#cb38-342" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-343"><a href="#cb38-343" aria-hidden="true" tabindex="-1"></a><span class="co"># Violin plot of UMI counts</span></span>
-<span id="cb38-344"><a href="#cb38-344" aria-hidden="true" tabindex="-1"></a>vln_counts_after <span class="ot">&lt;-</span> <span class="fu">VlnPlot</span>(object_filt, </span>
-<span id="cb38-345"><a href="#cb38-345" aria-hidden="true" tabindex="-1"></a>                            <span class="at">features =</span> <span class="st">"nCount_Spatial.016um"</span>, </span>
-<span id="cb38-346"><a href="#cb38-346" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pt.size =</span> <span class="dv">0</span>, </span>
-<span id="cb38-347"><a href="#cb38-347" aria-hidden="true" tabindex="-1"></a>                            <span class="at">group.by =</span> <span class="st">'orig.ident'</span>) <span class="sc">+</span> </span>
-<span id="cb38-348"><a href="#cb38-348" aria-hidden="true" tabindex="-1"></a>  <span class="fu">NoLegend</span>() <span class="sc">+</span> <span class="fu">scale_y_log10</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'nUMI'</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">''</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">15000</span>))</span>
-<span id="cb38-349"><a href="#cb38-349" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-350"><a href="#cb38-350" aria-hidden="true" tabindex="-1"></a><span class="co"># Violin plot of gene counts</span></span>
-<span id="cb38-351"><a href="#cb38-351" aria-hidden="true" tabindex="-1"></a>vln_features_after <span class="ot">&lt;-</span> <span class="fu">VlnPlot</span>(object_filt, </span>
-<span id="cb38-352"><a href="#cb38-352" aria-hidden="true" tabindex="-1"></a>                            <span class="at">features =</span> <span class="st">"nFeature_Spatial.016um"</span>, </span>
-<span id="cb38-353"><a href="#cb38-353" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pt.size =</span> <span class="dv">0</span>, </span>
-<span id="cb38-354"><a href="#cb38-354" aria-hidden="true" tabindex="-1"></a>                            <span class="at">group.by =</span> <span class="st">'orig.ident'</span>) <span class="sc">+</span> </span>
-<span id="cb38-355"><a href="#cb38-355" aria-hidden="true" tabindex="-1"></a>  <span class="fu">NoLegend</span>() <span class="sc">+</span> <span class="fu">scale_y_log10</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'nGene'</span>) <span class="sc">+</span>  <span class="fu">xlab</span>(<span class="st">''</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">15000</span>))</span>
-<span id="cb38-356"><a href="#cb38-356" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-357"><a href="#cb38-357" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-358"><a href="#cb38-358" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot both side by side</span></span>
-<span id="cb38-359"><a href="#cb38-359" aria-hidden="true" tabindex="-1"></a>vln_counts_after <span class="sc">|</span> vln_features_after</span>
-<span id="cb38-360"><a href="#cb38-360" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-340"><a href="#cb38-340" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualizing Counts Data</span></span>
+<span id="cb38-341"><a href="#cb38-341" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-342"><a href="#cb38-342" aria-hidden="true" tabindex="-1"></a>We can visualize the number of UMIs and gene counts per bin, both as a distribution and layered on top of the tissue image. Let's start with a violin plot to look at the distribution of UMI counts and gene counts. The input is our post-filtered dataset.</span>
+<span id="cb38-343"><a href="#cb38-343" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-346"><a href="#cb38-346" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-347"><a href="#cb38-347" aria-hidden="true" tabindex="-1"></a><span class="co"># Violin plot of UMI counts</span></span>
+<span id="cb38-348"><a href="#cb38-348" aria-hidden="true" tabindex="-1"></a>vln_counts_after <span class="ot">&lt;-</span> <span class="fu">VlnPlot</span>(object_filt, </span>
+<span id="cb38-349"><a href="#cb38-349" aria-hidden="true" tabindex="-1"></a>                            <span class="at">features =</span> <span class="st">"nCount_Spatial.016um"</span>, </span>
+<span id="cb38-350"><a href="#cb38-350" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pt.size =</span> <span class="dv">0</span>, </span>
+<span id="cb38-351"><a href="#cb38-351" aria-hidden="true" tabindex="-1"></a>                            <span class="at">group.by =</span> <span class="st">'orig.ident'</span>) <span class="sc">+</span> </span>
+<span id="cb38-352"><a href="#cb38-352" aria-hidden="true" tabindex="-1"></a>  <span class="fu">NoLegend</span>() <span class="sc">+</span> <span class="fu">scale_y_log10</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'nUMI'</span>) <span class="sc">+</span> <span class="fu">xlab</span>(<span class="st">''</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">15000</span>))</span>
+<span id="cb38-353"><a href="#cb38-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-354"><a href="#cb38-354" aria-hidden="true" tabindex="-1"></a><span class="co"># Violin plot of gene counts</span></span>
+<span id="cb38-355"><a href="#cb38-355" aria-hidden="true" tabindex="-1"></a>vln_features_after <span class="ot">&lt;-</span> <span class="fu">VlnPlot</span>(object_filt, </span>
+<span id="cb38-356"><a href="#cb38-356" aria-hidden="true" tabindex="-1"></a>                            <span class="at">features =</span> <span class="st">"nFeature_Spatial.016um"</span>, </span>
+<span id="cb38-357"><a href="#cb38-357" aria-hidden="true" tabindex="-1"></a>                            <span class="at">pt.size =</span> <span class="dv">0</span>, </span>
+<span id="cb38-358"><a href="#cb38-358" aria-hidden="true" tabindex="-1"></a>                            <span class="at">group.by =</span> <span class="st">'orig.ident'</span>) <span class="sc">+</span> </span>
+<span id="cb38-359"><a href="#cb38-359" aria-hidden="true" tabindex="-1"></a>  <span class="fu">NoLegend</span>() <span class="sc">+</span> <span class="fu">scale_y_log10</span>() <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">'nGene'</span>) <span class="sc">+</span>  <span class="fu">xlab</span>(<span class="st">''</span>) <span class="sc">+</span> <span class="fu">ylim</span>(<span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">15000</span>))</span>
+<span id="cb38-360"><a href="#cb38-360" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-361"><a href="#cb38-361" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-362"><a href="#cb38-362" aria-hidden="true" tabindex="-1"></a>We see that both distributions have a similar peak but the nUMI distribution has a much longer tail. This is expected, because while the small physical size of the bins means that most genes will be detected only once or twice, a minority of bins under very transcriptionally active cells may exhibit multiple transcripts of the same gene. </span>
-<span id="cb38-363"><a href="#cb38-363" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-364"><a href="#cb38-364" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-365"><a href="#cb38-365" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/violin_plot_UMI_genes.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
-<span id="cb38-366"><a href="#cb38-366" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
+<span id="cb38-362"><a href="#cb38-362" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot both side by side</span></span>
+<span id="cb38-363"><a href="#cb38-363" aria-hidden="true" tabindex="-1"></a>vln_counts_after <span class="sc">|</span> vln_features_after</span>
+<span id="cb38-364"><a href="#cb38-364" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-365"><a href="#cb38-365" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-366"><a href="#cb38-366" aria-hidden="true" tabindex="-1"></a>We see that both distributions have a similar peak but the nUMI distribution has a much longer tail. This is expected, because while the small physical size of the bins means that most genes will be detected only once or twice, a minority of bins under very transcriptionally active cells may exhibit multiple transcripts of the same gene. </span>
 <span id="cb38-367"><a href="#cb38-367" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-368"><a href="#cb38-368" aria-hidden="true" tabindex="-1"></a>Next, we can look at the same metrics and the distribution on the actual image itself. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.</span>
-<span id="cb38-369"><a href="#cb38-369" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-372"><a href="#cb38-372" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-373"><a href="#cb38-373" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing UMI count across the image</span></span>
-<span id="cb38-374"><a href="#cb38-374" aria-hidden="true" tabindex="-1"></a>image_counts <span class="ot">&lt;-</span> <span class="fu">SpatialFeaturePlot</span>(object_filt, </span>
-<span id="cb38-375"><a href="#cb38-375" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">feature =</span> <span class="st">'nCount_Spatial.016um'</span>, </span>
-<span id="cb38-376"><a href="#cb38-376" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">pt.size.factor =</span> <span class="dv">8</span>)</span>
-<span id="cb38-377"><a href="#cb38-377" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-378"><a href="#cb38-378" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing gene count across the image</span></span>
-<span id="cb38-379"><a href="#cb38-379" aria-hidden="true" tabindex="-1"></a>image_features <span class="ot">&lt;-</span> <span class="fu">SpatialFeaturePlot</span>(object_filt, </span>
-<span id="cb38-380"><a href="#cb38-380" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">features =</span> <span class="st">"nFeature_Spatial.016um"</span>, </span>
-<span id="cb38-381"><a href="#cb38-381" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">pt.size.factor =</span> <span class="dv">8</span>) </span>
-<span id="cb38-382"><a href="#cb38-382" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-383"><a href="#cb38-383" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the two side-by-side</span></span>
-<span id="cb38-384"><a href="#cb38-384" aria-hidden="true" tabindex="-1"></a>image_counts <span class="sc">|</span> image_features</span>
-<span id="cb38-385"><a href="#cb38-385" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-368"><a href="#cb38-368" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-369"><a href="#cb38-369" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/violin_plot_UMI_genes.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-370"><a href="#cb38-370" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
+<span id="cb38-371"><a href="#cb38-371" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-372"><a href="#cb38-372" aria-hidden="true" tabindex="-1"></a>Next, we can look at the same metrics and the distribution on the actual image itself. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.</span>
+<span id="cb38-373"><a href="#cb38-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-376"><a href="#cb38-376" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-377"><a href="#cb38-377" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing UMI count across the image</span></span>
+<span id="cb38-378"><a href="#cb38-378" aria-hidden="true" tabindex="-1"></a>image_counts <span class="ot">&lt;-</span> <span class="fu">SpatialFeaturePlot</span>(object_filt, </span>
+<span id="cb38-379"><a href="#cb38-379" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">feature =</span> <span class="st">'nCount_Spatial.016um'</span>, </span>
+<span id="cb38-380"><a href="#cb38-380" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">pt.size.factor =</span> <span class="dv">8</span>)</span>
+<span id="cb38-381"><a href="#cb38-381" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-382"><a href="#cb38-382" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualizing gene count across the image</span></span>
+<span id="cb38-383"><a href="#cb38-383" aria-hidden="true" tabindex="-1"></a>image_features <span class="ot">&lt;-</span> <span class="fu">SpatialFeaturePlot</span>(object_filt, </span>
+<span id="cb38-384"><a href="#cb38-384" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">features =</span> <span class="st">"nFeature_Spatial.016um"</span>, </span>
+<span id="cb38-385"><a href="#cb38-385" aria-hidden="true" tabindex="-1"></a>                                     <span class="at">pt.size.factor =</span> <span class="dv">8</span>) </span>
 <span id="cb38-386"><a href="#cb38-386" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-387"><a href="#cb38-387" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-388"><a href="#cb38-388" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_plot_UMI_genes.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"900"</span><span class="dt">&gt;</span></span>
-<span id="cb38-389"><a href="#cb38-389" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
+<span id="cb38-387"><a href="#cb38-387" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the two side-by-side</span></span>
+<span id="cb38-388"><a href="#cb38-388" aria-hidden="true" tabindex="-1"></a>image_counts <span class="sc">|</span> image_features</span>
+<span id="cb38-389"><a href="#cb38-389" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-390"><a href="#cb38-390" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-391"><a href="#cb38-391" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-392"><a href="#cb38-392" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-393"><a href="#cb38-393" aria-hidden="true" tabindex="-1"></a><span class="fu">## Normalize Data</span></span>
+<span id="cb38-391"><a href="#cb38-391" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-392"><a href="#cb38-392" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_plot_UMI_genes.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"900"</span><span class="dt">&gt;</span></span>
+<span id="cb38-393"><a href="#cb38-393" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
 <span id="cb38-394"><a href="#cb38-394" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-395"><a href="#cb38-395" aria-hidden="true" tabindex="-1"></a>Normalization is important in order to make expression counts comparable across genes and/or samples. We note that the best normalization methods for spatial data are still being developed and evaluated. In particular, <span class="co">[</span><span class="ot">Bhuva et. al</span><span class="co">](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7)</span> tested a variety of normalization techniques and found that normalizing by the number of transcripts detected per bin negatively affects spatial domain identification because total detections per bin can represent real biology. We are cognizant of this, but as discussed earlier, it can be challenging to determine whether a bin has few detections because of a technical artifact or biological signal. In the absence of normalization, this lack of signal will strongly affect clustering regardless of whether it is technical or biological. For this reason, we apply a standard log-transformed library size normalization to our data. </span>
+<span id="cb38-395"><a href="#cb38-395" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-396"><a href="#cb38-396" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-399"><a href="#cb38-399" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-400"><a href="#cb38-400" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">NormalizeData</span>(object_filt, <span class="at">assay =</span> <span class="st">'Spatial.016um'</span>)</span>
-<span id="cb38-401"><a href="#cb38-401" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-402"><a href="#cb38-402" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-403"><a href="#cb38-403" aria-hidden="true" tabindex="-1"></a>After normalization, we can call our Seurat object with:</span>
-<span id="cb38-404"><a href="#cb38-404" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-407"><a href="#cb38-407" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-408"><a href="#cb38-408" aria-hidden="true" tabindex="-1"></a>object_filt</span>
-<span id="cb38-409"><a href="#cb38-409" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-410"><a href="#cb38-410" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-411"><a href="#cb38-411" aria-hidden="true" tabindex="-1"></a>And we can see that there is now a new "data" layer in the Seurat object. </span>
-<span id="cb38-412"><a href="#cb38-412" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-413"><a href="#cb38-413" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-414"><a href="#cb38-414" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_with_normalized_data_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-415"><a href="#cb38-415" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-397"><a href="#cb38-397" aria-hidden="true" tabindex="-1"></a><span class="fu">## Normalize Data</span></span>
+<span id="cb38-398"><a href="#cb38-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-399"><a href="#cb38-399" aria-hidden="true" tabindex="-1"></a>Normalization is important in order to make expression counts comparable across genes and/or samples. We note that the best normalization methods for spatial data are still being developed and evaluated. In particular, <span class="co">[</span><span class="ot">Bhuva et. al</span><span class="co">](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7)</span> tested a variety of normalization techniques and found that normalizing by the number of transcripts detected per bin negatively affects spatial domain identification because total detections per bin can represent real biology. We are cognizant of this, but as discussed earlier, it can be challenging to determine whether a bin has few detections because of a technical artifact or biological signal. In the absence of normalization, this lack of signal will strongly affect clustering regardless of whether it is technical or biological. For this reason, we apply a standard log-transformed library size normalization to our data. </span>
+<span id="cb38-400"><a href="#cb38-400" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-403"><a href="#cb38-403" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-404"><a href="#cb38-404" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">NormalizeData</span>(object_filt, <span class="at">assay =</span> <span class="st">'Spatial.016um'</span>)</span>
+<span id="cb38-405"><a href="#cb38-405" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-406"><a href="#cb38-406" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-407"><a href="#cb38-407" aria-hidden="true" tabindex="-1"></a>After normalization, we can call our Seurat object with:</span>
+<span id="cb38-408"><a href="#cb38-408" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-411"><a href="#cb38-411" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-412"><a href="#cb38-412" aria-hidden="true" tabindex="-1"></a>object_filt</span>
+<span id="cb38-413"><a href="#cb38-413" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-414"><a href="#cb38-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-415"><a href="#cb38-415" aria-hidden="true" tabindex="-1"></a>And we can see that there is now a new "data" layer in the Seurat object. </span>
 <span id="cb38-416"><a href="#cb38-416" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-417"><a href="#cb38-417" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-418"><a href="#cb38-418" aria-hidden="true" tabindex="-1"></a><span class="fu">## Unsupervised Clustering</span></span>
-<span id="cb38-419"><a href="#cb38-419" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-420"><a href="#cb38-420" aria-hidden="true" tabindex="-1"></a>The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow because it exhibits improved performance for large datasets, especially for identifying rare and spatially-restricted groups. Sketch-based analyses aim to "subsample" large datasets in a way that preserves rare populations. </span>
+<span id="cb38-417"><a href="#cb38-417" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-418"><a href="#cb38-418" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_with_normalized_data_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-419"><a href="#cb38-419" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-420"><a href="#cb38-420" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-421"><a href="#cb38-421" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-422"><a href="#cb38-422" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-423"><a href="#cb38-423" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Standard_clustering.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"800"</span><span class="dt">&gt;</span></span>
-<span id="cb38-424"><a href="#cb38-424" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-422"><a href="#cb38-422" aria-hidden="true" tabindex="-1"></a><span class="fu">## Unsupervised Clustering</span></span>
+<span id="cb38-423"><a href="#cb38-423" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-424"><a href="#cb38-424" aria-hidden="true" tabindex="-1"></a>The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow because it exhibits improved performance for large datasets, especially for identifying rare and spatially-restricted groups. Sketch-based analyses aim to "subsample" large datasets in a way that preserves rare populations. </span>
 <span id="cb38-425"><a href="#cb38-425" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-426"><a href="#cb38-426" aria-hidden="true" tabindex="-1"></a>We will start by defining a set of highly variable genes. _Note that this is being done on all bins in our object._ Using this list of genes will help us to quantify the variability and similarity between bins. </span>
-<span id="cb38-427"><a href="#cb38-427" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-430"><a href="#cb38-430" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-431"><a href="#cb38-431" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(object_filt)</span>
-<span id="cb38-432"><a href="#cb38-432" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-433"><a href="#cb38-433" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-434"><a href="#cb38-434" aria-hidden="true" tabindex="-1"></a>We can examine our Seurat object and see that ```FindVariableFeatures()``` has added 2,000 variable features.</span>
-<span id="cb38-435"><a href="#cb38-435" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-438"><a href="#cb38-438" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-439"><a href="#cb38-439" aria-hidden="true" tabindex="-1"></a>object_filt</span>
-<span id="cb38-440"><a href="#cb38-440" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-441"><a href="#cb38-441" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-442"><a href="#cb38-442" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-443"><a href="#cb38-443" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_variable_features_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-444"><a href="#cb38-444" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-426"><a href="#cb38-426" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-427"><a href="#cb38-427" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Standard_clustering.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"800"</span><span class="dt">&gt;</span></span>
+<span id="cb38-428"><a href="#cb38-428" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-429"><a href="#cb38-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-430"><a href="#cb38-430" aria-hidden="true" tabindex="-1"></a>We will start by defining a set of highly variable genes. _Note that this is being done on all bins in our object._ Using this list of genes will help us to quantify the variability and similarity between bins. </span>
+<span id="cb38-431"><a href="#cb38-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-434"><a href="#cb38-434" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-435"><a href="#cb38-435" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(object_filt)</span>
+<span id="cb38-436"><a href="#cb38-436" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-437"><a href="#cb38-437" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-438"><a href="#cb38-438" aria-hidden="true" tabindex="-1"></a>We can examine our Seurat object and see that ```FindVariableFeatures()``` has added 2,000 variable features.</span>
+<span id="cb38-439"><a href="#cb38-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-442"><a href="#cb38-442" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-443"><a href="#cb38-443" aria-hidden="true" tabindex="-1"></a>object_filt</span>
+<span id="cb38-444"><a href="#cb38-444" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-445"><a href="#cb38-445" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-446"><a href="#cb38-446" aria-hidden="true" tabindex="-1"></a>Next, we select 10,000 cells and create a new sub-sampled "sketch" assay using the <span class="in">`SketchData()`</span> function. The function takes a normalized single-cell dataset containing a set of variable features and returns a Seurat object with a new assay (sketch), consisting of 10,000 bins selected based off a "leverage score" for each bin. The leverage score reflects the magnitude of its contribution to the gene-covariance matrix, and its importance to the overall dataset, with rare populations earning a higher leverage score. This means that our 10,000 cells selected for the sketch will oversample rare populations, retaining the biological complexity of the sample, while drastically compressing the dataset.</span>
-<span id="cb38-447"><a href="#cb38-447" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-450"><a href="#cb38-450" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-451"><a href="#cb38-451" aria-hidden="true" tabindex="-1"></a><span class="co"># we select 10,000 cells and create a new 'sketch' assay</span></span>
-<span id="cb38-452"><a href="#cb38-452" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">SketchData</span>(</span>
-<span id="cb38-453"><a href="#cb38-453" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> object_filt,</span>
-<span id="cb38-454"><a href="#cb38-454" aria-hidden="true" tabindex="-1"></a>  <span class="at">assay =</span> <span class="st">'Spatial.016um'</span>,</span>
-<span id="cb38-455"><a href="#cb38-455" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncells =</span> <span class="dv">10000</span>,</span>
-<span id="cb38-456"><a href="#cb38-456" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"LeverageScore"</span>,</span>
-<span id="cb38-457"><a href="#cb38-457" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span></span>
-<span id="cb38-458"><a href="#cb38-458" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-459"><a href="#cb38-459" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-460"><a href="#cb38-460" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-461"><a href="#cb38-461" aria-hidden="true" tabindex="-1"></a>Now that we have the sketched data, we can call the Seurat object:</span>
-<span id="cb38-462"><a href="#cb38-462" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-465"><a href="#cb38-465" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-466"><a href="#cb38-466" aria-hidden="true" tabindex="-1"></a>object_filt</span>
-<span id="cb38-467"><a href="#cb38-467" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-468"><a href="#cb38-468" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-469"><a href="#cb38-469" aria-hidden="true" tabindex="-1"></a>We will see that there are four major changes that have taken place:</span>
-<span id="cb38-470"><a href="#cb38-470" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-471"><a href="#cb38-471" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The number of features in the second line has double, because we have added a new assay</span>
-<span id="cb38-472"><a href="#cb38-472" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Accordingly, the number of assays has increased from one to two</span>
-<span id="cb38-473"><a href="#cb38-473" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The active assay has change from <span class="in">`Spatial.016um`</span> to <span class="in">`sketch`</span></span>
-<span id="cb38-474"><a href="#cb38-474" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>There is a new line listing additional assays that exist in the Seurat object</span>
-<span id="cb38-475"><a href="#cb38-475" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-476"><a href="#cb38-476" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-477"><a href="#cb38-477" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_sketch_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-478"><a href="#cb38-478" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-446"><a href="#cb38-446" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-447"><a href="#cb38-447" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_variable_features_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-448"><a href="#cb38-448" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-449"><a href="#cb38-449" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-450"><a href="#cb38-450" aria-hidden="true" tabindex="-1"></a>Next, we select 10,000 cells and create a new sub-sampled "sketch" assay using the <span class="in">`SketchData()`</span> function. The function takes a normalized single-cell dataset containing a set of variable features and returns a Seurat object with a new assay (sketch), consisting of 10,000 bins selected based off a "leverage score" for each bin. The leverage score reflects the magnitude of its contribution to the gene-covariance matrix, and its importance to the overall dataset, with rare populations earning a higher leverage score. This means that our 10,000 cells selected for the sketch will oversample rare populations, retaining the biological complexity of the sample, while drastically compressing the dataset.</span>
+<span id="cb38-451"><a href="#cb38-451" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-454"><a href="#cb38-454" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-455"><a href="#cb38-455" aria-hidden="true" tabindex="-1"></a><span class="co"># we select 10,000 cells and create a new 'sketch' assay</span></span>
+<span id="cb38-456"><a href="#cb38-456" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">SketchData</span>(</span>
+<span id="cb38-457"><a href="#cb38-457" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> object_filt,</span>
+<span id="cb38-458"><a href="#cb38-458" aria-hidden="true" tabindex="-1"></a>  <span class="at">assay =</span> <span class="st">'Spatial.016um'</span>,</span>
+<span id="cb38-459"><a href="#cb38-459" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncells =</span> <span class="dv">10000</span>,</span>
+<span id="cb38-460"><a href="#cb38-460" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"LeverageScore"</span>,</span>
+<span id="cb38-461"><a href="#cb38-461" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span></span>
+<span id="cb38-462"><a href="#cb38-462" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-463"><a href="#cb38-463" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-464"><a href="#cb38-464" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-465"><a href="#cb38-465" aria-hidden="true" tabindex="-1"></a>Now that we have the sketched data, we can call the Seurat object:</span>
+<span id="cb38-466"><a href="#cb38-466" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-469"><a href="#cb38-469" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-470"><a href="#cb38-470" aria-hidden="true" tabindex="-1"></a>object_filt</span>
+<span id="cb38-471"><a href="#cb38-471" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-472"><a href="#cb38-472" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-473"><a href="#cb38-473" aria-hidden="true" tabindex="-1"></a>We will see that there are four major changes that have taken place:</span>
+<span id="cb38-474"><a href="#cb38-474" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-475"><a href="#cb38-475" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The number of features in the second line has double, because we have added a new assay</span>
+<span id="cb38-476"><a href="#cb38-476" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>Accordingly, the number of assays has increased from one to two</span>
+<span id="cb38-477"><a href="#cb38-477" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>The active assay has change from <span class="in">`Spatial.016um`</span> to <span class="in">`sketch`</span></span>
+<span id="cb38-478"><a href="#cb38-478" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span>There is a new line listing additional assays that exist in the Seurat object</span>
 <span id="cb38-479"><a href="#cb38-479" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-480"><a href="#cb38-480" aria-hidden="true" tabindex="-1"></a>We can also see that the leverage score has been added as a column to the metadata of our object.</span>
-<span id="cb38-481"><a href="#cb38-481" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-484"><a href="#cb38-484" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-485"><a href="#cb38-485" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(object_filt<span class="sc">@</span>meta.data)</span>
-<span id="cb38-486"><a href="#cb38-486" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-487"><a href="#cb38-487" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-488"><a href="#cb38-488" aria-hidden="true" tabindex="-1"></a>Should return:</span>
-<span id="cb38-489"><a href="#cb38-489" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-490"><a href="#cb38-490" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-491"><a href="#cb38-491" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/seurat_object_metadata_leverage.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-492"><a href="#cb38-492" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-480"><a href="#cb38-480" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-481"><a href="#cb38-481" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_sketch_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-482"><a href="#cb38-482" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-483"><a href="#cb38-483" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-484"><a href="#cb38-484" aria-hidden="true" tabindex="-1"></a>We can also see that the leverage score has been added as a column to the metadata of our object.</span>
+<span id="cb38-485"><a href="#cb38-485" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-488"><a href="#cb38-488" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-489"><a href="#cb38-489" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(object_filt<span class="sc">@</span>meta.data)</span>
+<span id="cb38-490"><a href="#cb38-490" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-491"><a href="#cb38-491" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-492"><a href="#cb38-492" aria-hidden="true" tabindex="-1"></a>Should return:</span>
 <span id="cb38-493"><a href="#cb38-493" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-494"><a href="#cb38-494" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-495"><a href="#cb38-495" aria-hidden="true" tabindex="-1"></a>Next, we will peform a standard clustering workflow on our sketch of 10,000 cells:</span>
-<span id="cb38-496"><a href="#cb38-496" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-497"><a href="#cb38-497" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`FindVariableFeatures`</span>: As before, this generates a list of highly variable genes, which may be slighly different for the sketched dataset than for the full dataset</span>
-<span id="cb38-498"><a href="#cb38-498" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`ScaleData`</span>: Highly variable genes will be confounded with the most highly expressed genes, so we need to adjust for this</span>
-<span id="cb38-499"><a href="#cb38-499" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`RunPCA`</span>: Perform a principal component analysis using our scaled data and variable genes. This will emphasize variation in gene expression as well as similarity across bins</span>
-<span id="cb38-500"><a href="#cb38-500" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`FindNeighbors`</span>: Determine the Euclidean distance between bins in PCA space</span>
-<span id="cb38-501"><a href="#cb38-501" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`FindClusters`</span>: Iteratively group bins together based on neighborhood distances. Higher resolution will yield more groups. </span>
-<span id="cb38-502"><a href="#cb38-502" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-503"><a href="#cb38-503" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-506"><a href="#cb38-506" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-507"><a href="#cb38-507" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(object_filt)</span>
-<span id="cb38-508"><a href="#cb38-508" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">ScaleData</span>(object_filt)</span>
-<span id="cb38-509"><a href="#cb38-509" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(object_filt, <span class="at">assay =</span> <span class="st">"sketch"</span>, </span>
-<span id="cb38-510"><a href="#cb38-510" aria-hidden="true" tabindex="-1"></a>                      <span class="at">reduction.name =</span> <span class="st">"pca.sketch"</span>)</span>
-<span id="cb38-511"><a href="#cb38-511" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(object_filt, <span class="at">assay =</span> <span class="st">"sketch"</span>, </span>
-<span id="cb38-512"><a href="#cb38-512" aria-hidden="true" tabindex="-1"></a>                             <span class="at">reduction =</span> <span class="st">"pca.sketch"</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>)</span>
-<span id="cb38-513"><a href="#cb38-513" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindClusters</span>(object_filt, </span>
-<span id="cb38-514"><a href="#cb38-514" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cluster.name =</span> <span class="st">"seurat_cluster.sketched"</span>, </span>
-<span id="cb38-515"><a href="#cb38-515" aria-hidden="true" tabindex="-1"></a>                            <span class="at">resolution =</span> .<span class="dv">65</span>)</span>
-<span id="cb38-516"><a href="#cb38-516" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-517"><a href="#cb38-517" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-518"><a href="#cb38-518" aria-hidden="true" tabindex="-1"></a>Finally, let's create a UMAP using the principal components as input. UMAP is a method that aims to place cells with similar local neighborhoods in high-dimensional space together in low-dimensional space, which is useful for visualizing our newly calculated clusters. We observe good separation between groups annotated as separate clusters, which is sign that our clustering indeed represents various cell types. </span>
-<span id="cb38-519"><a href="#cb38-519" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-522"><a href="#cb38-522" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-523"><a href="#cb38-523" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunUMAP</span>(object_filt, <span class="at">reduction =</span> <span class="st">"pca.sketch"</span>, </span>
-<span id="cb38-524"><a href="#cb38-524" aria-hidden="true" tabindex="-1"></a>                       <span class="at">reduction.name =</span> <span class="st">"umap.sketch"</span>, <span class="at">return.model =</span> T, </span>
-<span id="cb38-525"><a href="#cb38-525" aria-hidden="true" tabindex="-1"></a>                       <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>)</span>
-<span id="cb38-526"><a href="#cb38-526" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-527"><a href="#cb38-527" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot UMAP</span></span>
-<span id="cb38-528"><a href="#cb38-528" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(object_filt, <span class="at">reduction =</span> <span class="st">"umap.sketch"</span>, <span class="at">label =</span> T, </span>
-<span id="cb38-529"><a href="#cb38-529" aria-hidden="true" tabindex="-1"></a>        <span class="at">cols =</span> <span class="st">'polychrome'</span>) <span class="sc">+</span> </span>
-<span id="cb38-530"><a href="#cb38-530" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Sketched clustering"</span>) <span class="sc">+</span> </span>
-<span id="cb38-531"><a href="#cb38-531" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb38-532"><a href="#cb38-532" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-533"><a href="#cb38-533" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-534"><a href="#cb38-534" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-535"><a href="#cb38-535" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/umap_sketch_assay.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
-<span id="cb38-536"><a href="#cb38-536" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
+<span id="cb38-494"><a href="#cb38-494" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-495"><a href="#cb38-495" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/seurat_object_metadata_leverage.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-496"><a href="#cb38-496" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-497"><a href="#cb38-497" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-498"><a href="#cb38-498" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-499"><a href="#cb38-499" aria-hidden="true" tabindex="-1"></a>Next, we will peform a standard clustering workflow on our sketch of 10,000 cells:</span>
+<span id="cb38-500"><a href="#cb38-500" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-501"><a href="#cb38-501" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`FindVariableFeatures`</span>: As before, this generates a list of highly variable genes, which may be slighly different for the sketched dataset than for the full dataset</span>
+<span id="cb38-502"><a href="#cb38-502" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`ScaleData`</span>: Highly variable genes will be confounded with the most highly expressed genes, so we need to adjust for this</span>
+<span id="cb38-503"><a href="#cb38-503" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`RunPCA`</span>: Perform a principal component analysis using our scaled data and variable genes. This will emphasize variation in gene expression as well as similarity across bins</span>
+<span id="cb38-504"><a href="#cb38-504" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`FindNeighbors`</span>: Determine the Euclidean distance between bins in PCA space</span>
+<span id="cb38-505"><a href="#cb38-505" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`FindClusters`</span>: Iteratively group bins together based on neighborhood distances. Higher resolution will yield more groups. </span>
+<span id="cb38-506"><a href="#cb38-506" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-507"><a href="#cb38-507" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-510"><a href="#cb38-510" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-511"><a href="#cb38-511" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(object_filt)</span>
+<span id="cb38-512"><a href="#cb38-512" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">ScaleData</span>(object_filt)</span>
+<span id="cb38-513"><a href="#cb38-513" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(object_filt, <span class="at">assay =</span> <span class="st">"sketch"</span>, </span>
+<span id="cb38-514"><a href="#cb38-514" aria-hidden="true" tabindex="-1"></a>                      <span class="at">reduction.name =</span> <span class="st">"pca.sketch"</span>)</span>
+<span id="cb38-515"><a href="#cb38-515" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(object_filt, <span class="at">assay =</span> <span class="st">"sketch"</span>, </span>
+<span id="cb38-516"><a href="#cb38-516" aria-hidden="true" tabindex="-1"></a>                             <span class="at">reduction =</span> <span class="st">"pca.sketch"</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>)</span>
+<span id="cb38-517"><a href="#cb38-517" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindClusters</span>(object_filt, </span>
+<span id="cb38-518"><a href="#cb38-518" aria-hidden="true" tabindex="-1"></a>                            <span class="at">cluster.name =</span> <span class="st">"seurat_cluster.sketched"</span>, </span>
+<span id="cb38-519"><a href="#cb38-519" aria-hidden="true" tabindex="-1"></a>                            <span class="at">resolution =</span> .<span class="dv">65</span>)</span>
+<span id="cb38-520"><a href="#cb38-520" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-521"><a href="#cb38-521" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-522"><a href="#cb38-522" aria-hidden="true" tabindex="-1"></a>Finally, let's create a UMAP using the principal components as input. UMAP is a method that aims to place cells with similar local neighborhoods in high-dimensional space together in low-dimensional space, which is useful for visualizing our newly calculated clusters. We observe good separation between groups annotated as separate clusters, which is sign that our clustering indeed represents various cell types. </span>
+<span id="cb38-523"><a href="#cb38-523" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-526"><a href="#cb38-526" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-527"><a href="#cb38-527" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunUMAP</span>(object_filt, <span class="at">reduction =</span> <span class="st">"pca.sketch"</span>, </span>
+<span id="cb38-528"><a href="#cb38-528" aria-hidden="true" tabindex="-1"></a>                       <span class="at">reduction.name =</span> <span class="st">"umap.sketch"</span>, <span class="at">return.model =</span> T, </span>
+<span id="cb38-529"><a href="#cb38-529" aria-hidden="true" tabindex="-1"></a>                       <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>)</span>
+<span id="cb38-530"><a href="#cb38-530" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-531"><a href="#cb38-531" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot UMAP</span></span>
+<span id="cb38-532"><a href="#cb38-532" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(object_filt, <span class="at">reduction =</span> <span class="st">"umap.sketch"</span>, <span class="at">label =</span> T, </span>
+<span id="cb38-533"><a href="#cb38-533" aria-hidden="true" tabindex="-1"></a>        <span class="at">cols =</span> <span class="st">'polychrome'</span>) <span class="sc">+</span> </span>
+<span id="cb38-534"><a href="#cb38-534" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Sketched clustering"</span>) <span class="sc">+</span> </span>
+<span id="cb38-535"><a href="#cb38-535" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb38-536"><a href="#cb38-536" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-537"><a href="#cb38-537" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-538"><a href="#cb38-538" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-539"><a href="#cb38-539" aria-hidden="true" tabindex="-1"></a>We can also examine our object after these manipulations and note the addition of the scale.data layer as well as the sketch PCA and UMAP dimensional reductions. </span>
-<span id="cb38-540"><a href="#cb38-540" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-543"><a href="#cb38-543" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-544"><a href="#cb38-544" aria-hidden="true" tabindex="-1"></a>object_filt</span>
-<span id="cb38-545"><a href="#cb38-545" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-546"><a href="#cb38-546" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-547"><a href="#cb38-547" aria-hidden="true" tabindex="-1"></a>Should return:</span>
-<span id="cb38-548"><a href="#cb38-548" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-549"><a href="#cb38-549" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-550"><a href="#cb38-550" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_scale_data_PCA_UMAP_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-551"><a href="#cb38-551" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-538"><a href="#cb38-538" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-539"><a href="#cb38-539" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/umap_sketch_assay.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-540"><a href="#cb38-540" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span> </span>
+<span id="cb38-541"><a href="#cb38-541" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-542"><a href="#cb38-542" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-543"><a href="#cb38-543" aria-hidden="true" tabindex="-1"></a>We can also examine our object after these manipulations and note the addition of the scale.data layer as well as the sketch PCA and UMAP dimensional reductions. </span>
+<span id="cb38-544"><a href="#cb38-544" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-547"><a href="#cb38-547" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-548"><a href="#cb38-548" aria-hidden="true" tabindex="-1"></a>object_filt</span>
+<span id="cb38-549"><a href="#cb38-549" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-550"><a href="#cb38-550" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-551"><a href="#cb38-551" aria-hidden="true" tabindex="-1"></a>Should return:</span>
 <span id="cb38-552"><a href="#cb38-552" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-553"><a href="#cb38-553" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-554"><a href="#cb38-554" aria-hidden="true" tabindex="-1"></a><span class="fu">## Project cluster labels back to the full dataset</span></span>
-<span id="cb38-555"><a href="#cb38-555" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-556"><a href="#cb38-556" aria-hidden="true" tabindex="-1"></a>Now that we have our clusters and dimensional reductions from our sketched dataset, we need to extend these to the full dataset.  The <span class="in">`ProjectData`</span> function projects all the bins in the dataset (the <span class="in">`Spatial.016um`</span> assay) onto the <span class="in">`sketch`</span> assay. </span>
+<span id="cb38-553"><a href="#cb38-553" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-554"><a href="#cb38-554" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_scale_data_PCA_UMAP_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-555"><a href="#cb38-555" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-556"><a href="#cb38-556" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-557"><a href="#cb38-557" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-560"><a href="#cb38-560" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-561"><a href="#cb38-561" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">ProjectData</span>(</span>
-<span id="cb38-562"><a href="#cb38-562" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> object_filt,</span>
-<span id="cb38-563"><a href="#cb38-563" aria-hidden="true" tabindex="-1"></a>  <span class="at">assay =</span> <span class="st">"Spatial.016um"</span>,</span>
-<span id="cb38-564"><a href="#cb38-564" aria-hidden="true" tabindex="-1"></a>  <span class="at">full.reduction =</span> <span class="st">"full.pca.sketch"</span>,</span>
-<span id="cb38-565"><a href="#cb38-565" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span>,</span>
-<span id="cb38-566"><a href="#cb38-566" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.reduction =</span> <span class="st">"pca.sketch"</span>,</span>
-<span id="cb38-567"><a href="#cb38-567" aria-hidden="true" tabindex="-1"></a>  <span class="at">umap.model =</span> <span class="st">"umap.sketch"</span>,</span>
-<span id="cb38-568"><a href="#cb38-568" aria-hidden="true" tabindex="-1"></a>  <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>,</span>
-<span id="cb38-569"><a href="#cb38-569" aria-hidden="true" tabindex="-1"></a>  <span class="at">refdata =</span> <span class="fu">list</span>(<span class="at">seurat_cluster.projected =</span> <span class="st">"seurat_cluster.sketched"</span>)</span>
-<span id="cb38-570"><a href="#cb38-570" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-571"><a href="#cb38-571" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-572"><a href="#cb38-572" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-573"><a href="#cb38-573" aria-hidden="true" tabindex="-1"></a>Using the sketch PCA and UMAP, the <span class="in">`ProjectData`</span> function returns a Seurat object that includes:</span>
-<span id="cb38-574"><a href="#cb38-574" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Dimensional reduction (PCA)** - The <span class="in">`full.pca.sketch`</span> dimensional reduction extends the PCA reduction on the sketched cells to all bins in the dataset</span>
-<span id="cb38-575"><a href="#cb38-575" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Dimensional reduction (UMAP)** - The <span class="in">`full.umap.sketch`</span> dimensional reduction extends the UMAP reduction on the sketched cells to all bins in the dataset</span>
-<span id="cb38-576"><a href="#cb38-576" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Cluster labels** - The <span class="in">`seurat_cluster.projected`</span> column in the object metadata now labels all cells in the dataset with one of the cluster labels derived from the sketched cells</span>
-<span id="cb38-577"><a href="#cb38-577" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-578"><a href="#cb38-578" aria-hidden="true" tabindex="-1"></a>We can now see the additional full-dataset reductions in the object.</span>
-<span id="cb38-579"><a href="#cb38-579" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-582"><a href="#cb38-582" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-583"><a href="#cb38-583" aria-hidden="true" tabindex="-1"></a>object_filt</span>
-<span id="cb38-584"><a href="#cb38-584" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-585"><a href="#cb38-585" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-586"><a href="#cb38-586" aria-hidden="true" tabindex="-1"></a>Should return:</span>
-<span id="cb38-587"><a href="#cb38-587" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-588"><a href="#cb38-588" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-589"><a href="#cb38-589" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_projected_data_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-590"><a href="#cb38-590" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-558"><a href="#cb38-558" aria-hidden="true" tabindex="-1"></a><span class="fu">## Project cluster labels back to the full dataset</span></span>
+<span id="cb38-559"><a href="#cb38-559" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-560"><a href="#cb38-560" aria-hidden="true" tabindex="-1"></a>Now that we have our clusters and dimensional reductions from our sketched dataset, we need to extend these to the full dataset.  The <span class="in">`ProjectData`</span> function projects all the bins in the dataset (the <span class="in">`Spatial.016um`</span> assay) onto the <span class="in">`sketch`</span> assay. </span>
+<span id="cb38-561"><a href="#cb38-561" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-564"><a href="#cb38-564" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-565"><a href="#cb38-565" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">ProjectData</span>(</span>
+<span id="cb38-566"><a href="#cb38-566" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> object_filt,</span>
+<span id="cb38-567"><a href="#cb38-567" aria-hidden="true" tabindex="-1"></a>  <span class="at">assay =</span> <span class="st">"Spatial.016um"</span>,</span>
+<span id="cb38-568"><a href="#cb38-568" aria-hidden="true" tabindex="-1"></a>  <span class="at">full.reduction =</span> <span class="st">"full.pca.sketch"</span>,</span>
+<span id="cb38-569"><a href="#cb38-569" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span>,</span>
+<span id="cb38-570"><a href="#cb38-570" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.reduction =</span> <span class="st">"pca.sketch"</span>,</span>
+<span id="cb38-571"><a href="#cb38-571" aria-hidden="true" tabindex="-1"></a>  <span class="at">umap.model =</span> <span class="st">"umap.sketch"</span>,</span>
+<span id="cb38-572"><a href="#cb38-572" aria-hidden="true" tabindex="-1"></a>  <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>,</span>
+<span id="cb38-573"><a href="#cb38-573" aria-hidden="true" tabindex="-1"></a>  <span class="at">refdata =</span> <span class="fu">list</span>(<span class="at">seurat_cluster.projected =</span> <span class="st">"seurat_cluster.sketched"</span>)</span>
+<span id="cb38-574"><a href="#cb38-574" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-575"><a href="#cb38-575" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-576"><a href="#cb38-576" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-577"><a href="#cb38-577" aria-hidden="true" tabindex="-1"></a>Using the sketch PCA and UMAP, the <span class="in">`ProjectData`</span> function returns a Seurat object that includes:</span>
+<span id="cb38-578"><a href="#cb38-578" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Dimensional reduction (PCA)** - The <span class="in">`full.pca.sketch`</span> dimensional reduction extends the PCA reduction on the sketched cells to all bins in the dataset</span>
+<span id="cb38-579"><a href="#cb38-579" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Dimensional reduction (UMAP)** - The <span class="in">`full.umap.sketch`</span> dimensional reduction extends the UMAP reduction on the sketched cells to all bins in the dataset</span>
+<span id="cb38-580"><a href="#cb38-580" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span>**Cluster labels** - The <span class="in">`seurat_cluster.projected`</span> column in the object metadata now labels all cells in the dataset with one of the cluster labels derived from the sketched cells</span>
+<span id="cb38-581"><a href="#cb38-581" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-582"><a href="#cb38-582" aria-hidden="true" tabindex="-1"></a>We can now see the additional full-dataset reductions in the object.</span>
+<span id="cb38-583"><a href="#cb38-583" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-586"><a href="#cb38-586" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-587"><a href="#cb38-587" aria-hidden="true" tabindex="-1"></a>object_filt</span>
+<span id="cb38-588"><a href="#cb38-588" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-589"><a href="#cb38-589" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-590"><a href="#cb38-590" aria-hidden="true" tabindex="-1"></a>Should return:</span>
 <span id="cb38-591"><a href="#cb38-591" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-592"><a href="#cb38-592" aria-hidden="true" tabindex="-1"></a>Note that a score for the projection of each bin will be saved as a column in the metadata. Actually opening up the metadata again gives the opportunity to look at the <span class="in">`seurat_cluster.sketched`</span> column and see many NA values, because it was only calculated for 10,000 bins. The <span class="in">`seurat_cluster.projected`</span> shows values for every bin.</span>
-<span id="cb38-593"><a href="#cb38-593" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-596"><a href="#cb38-596" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-597"><a href="#cb38-597" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(object_filt<span class="sc">@</span>meta.data)</span>
-<span id="cb38-598"><a href="#cb38-598" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-599"><a href="#cb38-599" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-600"><a href="#cb38-600" aria-hidden="true" tabindex="-1"></a>Should return:</span>
-<span id="cb38-601"><a href="#cb38-601" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-602"><a href="#cb38-602" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-603"><a href="#cb38-603" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/seurat_object_metadata_projected.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-604"><a href="#cb38-604" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-592"><a href="#cb38-592" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-593"><a href="#cb38-593" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_projected_data_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-594"><a href="#cb38-594" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-595"><a href="#cb38-595" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-596"><a href="#cb38-596" aria-hidden="true" tabindex="-1"></a>Note that a score for the projection of each bin will be saved as a column in the metadata. Actually opening up the metadata again gives the opportunity to look at the <span class="in">`seurat_cluster.sketched`</span> column and see many NA values, because it was only calculated for 10,000 bins. The <span class="in">`seurat_cluster.projected`</span> shows values for every bin.</span>
+<span id="cb38-597"><a href="#cb38-597" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-600"><a href="#cb38-600" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-601"><a href="#cb38-601" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(object_filt<span class="sc">@</span>meta.data)</span>
+<span id="cb38-602"><a href="#cb38-602" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-603"><a href="#cb38-603" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-604"><a href="#cb38-604" aria-hidden="true" tabindex="-1"></a>Should return:</span>
 <span id="cb38-605"><a href="#cb38-605" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-606"><a href="#cb38-606" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualizing the projected clusters on UMAP</span></span>
-<span id="cb38-607"><a href="#cb38-607" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-608"><a href="#cb38-608" aria-hidden="true" tabindex="-1"></a>We can now visualize our clusters from the projected assignments. The UMAP plot now contains more points, which is expected because we are now visualizing the full dataset rather than our 10,000 bin sketch. Nonetheless, we can see that the full dataset is still well-representated by the projected dimensional reduction and clustering. </span>
+<span id="cb38-606"><a href="#cb38-606" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-607"><a href="#cb38-607" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/seurat_object_metadata_projected.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-608"><a href="#cb38-608" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
 <span id="cb38-609"><a href="#cb38-609" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-612"><a href="#cb38-612" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-613"><a href="#cb38-613" aria-hidden="true" tabindex="-1"></a><span class="co"># switch to full dataset assay</span></span>
-<span id="cb38-614"><a href="#cb38-614" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(object_filt) <span class="ot">&lt;-</span> <span class="st">"Spatial.016um"</span></span>
-<span id="cb38-615"><a href="#cb38-615" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-616"><a href="#cb38-616" aria-hidden="true" tabindex="-1"></a><span class="co"># Change the idents to the projected cluster assignments</span></span>
-<span id="cb38-617"><a href="#cb38-617" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(object_filt) <span class="ot">&lt;-</span> <span class="st">"seurat_cluster.projected"</span></span>
-<span id="cb38-618"><a href="#cb38-618" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-619"><a href="#cb38-619" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the UMAP</span></span>
-<span id="cb38-620"><a href="#cb38-620" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(object_filt, <span class="at">reduction =</span> <span class="st">"full.umap.sketch"</span>, <span class="at">label =</span> T, <span class="at">raster =</span> F, </span>
-<span id="cb38-621"><a href="#cb38-621" aria-hidden="true" tabindex="-1"></a>              <span class="at">cols =</span> <span class="st">'polychrome'</span>) <span class="sc">+</span></span>
-<span id="cb38-622"><a href="#cb38-622" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Projected clustering"</span>) <span class="sc">+</span> </span>
-<span id="cb38-623"><a href="#cb38-623" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
-<span id="cb38-624"><a href="#cb38-624" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-625"><a href="#cb38-625" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-626"><a href="#cb38-626" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-627"><a href="#cb38-627" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/umap_projected_assay.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
-<span id="cb38-628"><a href="#cb38-628" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-610"><a href="#cb38-610" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualizing the projected clusters on UMAP</span></span>
+<span id="cb38-611"><a href="#cb38-611" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-612"><a href="#cb38-612" aria-hidden="true" tabindex="-1"></a>We can now visualize our clusters from the projected assignments. The UMAP plot now contains more points, which is expected because we are now visualizing the full dataset rather than our 10,000 bin sketch. Nonetheless, we can see that the full dataset is still well-representated by the projected dimensional reduction and clustering. </span>
+<span id="cb38-613"><a href="#cb38-613" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-616"><a href="#cb38-616" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-617"><a href="#cb38-617" aria-hidden="true" tabindex="-1"></a><span class="co"># switch to full dataset assay</span></span>
+<span id="cb38-618"><a href="#cb38-618" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(object_filt) <span class="ot">&lt;-</span> <span class="st">"Spatial.016um"</span></span>
+<span id="cb38-619"><a href="#cb38-619" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-620"><a href="#cb38-620" aria-hidden="true" tabindex="-1"></a><span class="co"># Change the idents to the projected cluster assignments</span></span>
+<span id="cb38-621"><a href="#cb38-621" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(object_filt) <span class="ot">&lt;-</span> <span class="st">"seurat_cluster.projected"</span></span>
+<span id="cb38-622"><a href="#cb38-622" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-623"><a href="#cb38-623" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the UMAP</span></span>
+<span id="cb38-624"><a href="#cb38-624" aria-hidden="true" tabindex="-1"></a><span class="fu">DimPlot</span>(object_filt, <span class="at">reduction =</span> <span class="st">"full.umap.sketch"</span>, <span class="at">label =</span> T, <span class="at">raster =</span> F, </span>
+<span id="cb38-625"><a href="#cb38-625" aria-hidden="true" tabindex="-1"></a>              <span class="at">cols =</span> <span class="st">'polychrome'</span>) <span class="sc">+</span></span>
+<span id="cb38-626"><a href="#cb38-626" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">"Projected clustering"</span>) <span class="sc">+</span> </span>
+<span id="cb38-627"><a href="#cb38-627" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span>
+<span id="cb38-628"><a href="#cb38-628" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-629"><a href="#cb38-629" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-630"><a href="#cb38-630" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualizing projected clusters on the image</span></span>
-<span id="cb38-631"><a href="#cb38-631" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-632"><a href="#cb38-632" aria-hidden="true" tabindex="-1"></a>In order to see the clusters superimposed on our image we can use the <span class="in">`SpatialDimPlot()`</span> function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically rather than lexicographically in the figure.</span>
+<span id="cb38-630"><a href="#cb38-630" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-631"><a href="#cb38-631" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/umap_projected_assay.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-632"><a href="#cb38-632" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
 <span id="cb38-633"><a href="#cb38-633" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-636"><a href="#cb38-636" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-637"><a href="#cb38-637" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange so clusters get listed in numerical order</span></span>
-<span id="cb38-638"><a href="#cb38-638" aria-hidden="true" tabindex="-1"></a>object_filt<span class="sc">$</span>seurat_cluster.projected <span class="ot">&lt;-</span> object_filt<span class="sc">$</span>seurat_cluster.projected <span class="sc">%&gt;%</span> </span>
-<span id="cb38-639"><a href="#cb38-639" aria-hidden="true" tabindex="-1"></a>  as.numeric <span class="sc">%&gt;%</span> <span class="fu">as.factor</span>()</span>
-<span id="cb38-640"><a href="#cb38-640" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-641"><a href="#cb38-641" aria-hidden="true" tabindex="-1"></a><span class="co"># Set color palette</span></span>
-<span id="cb38-642"><a href="#cb38-642" aria-hidden="true" tabindex="-1"></a>color_pal <span class="ot">&lt;-</span> Seurat<span class="sc">::</span><span class="fu">DiscretePalette</span>(<span class="at">n =</span> <span class="fu">length</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected)),</span>
-<span id="cb38-643"><a href="#cb38-643" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">palette =</span> <span class="st">"polychrome"</span>)</span>
-<span id="cb38-644"><a href="#cb38-644" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(color_pal) <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected))</span>
-<span id="cb38-645"><a href="#cb38-645" aria-hidden="true" tabindex="-1"></a>image_seurat_clusters <span class="ot">&lt;-</span> <span class="fu">SpatialDimPlot</span>(object_filt, </span>
-<span id="cb38-646"><a href="#cb38-646" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">group.by =</span> <span class="st">'seurat_cluster.projected'</span>, </span>
-<span id="cb38-647"><a href="#cb38-647" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">pt.size.factor =</span> <span class="dv">8</span>, <span class="at">cols =</span> color_pal) <span class="sc">+</span></span>
-<span id="cb38-648"><a href="#cb38-648" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill=</span><span class="fu">guide_legend</span>(<span class="at">ncol=</span><span class="dv">2</span>))</span>
-<span id="cb38-649"><a href="#cb38-649" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-650"><a href="#cb38-650" aria-hidden="true" tabindex="-1"></a>image_seurat_clusters</span>
-<span id="cb38-651"><a href="#cb38-651" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-652"><a href="#cb38-652" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-653"><a href="#cb38-653" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-654"><a href="#cb38-654" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_plot_projected_clust.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
-<span id="cb38-655"><a href="#cb38-655" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-634"><a href="#cb38-634" aria-hidden="true" tabindex="-1"></a><span class="fu">### Visualizing projected clusters on the image</span></span>
+<span id="cb38-635"><a href="#cb38-635" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-636"><a href="#cb38-636" aria-hidden="true" tabindex="-1"></a>In order to see the clusters superimposed on our image we can use the <span class="in">`SpatialDimPlot()`</span> function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically rather than lexicographically in the figure.</span>
+<span id="cb38-637"><a href="#cb38-637" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-640"><a href="#cb38-640" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-641"><a href="#cb38-641" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange so clusters get listed in numerical order</span></span>
+<span id="cb38-642"><a href="#cb38-642" aria-hidden="true" tabindex="-1"></a>object_filt<span class="sc">$</span>seurat_cluster.projected <span class="ot">&lt;-</span> object_filt<span class="sc">$</span>seurat_cluster.projected <span class="sc">%&gt;%</span> </span>
+<span id="cb38-643"><a href="#cb38-643" aria-hidden="true" tabindex="-1"></a>  as.numeric <span class="sc">%&gt;%</span> <span class="fu">as.factor</span>()</span>
+<span id="cb38-644"><a href="#cb38-644" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-645"><a href="#cb38-645" aria-hidden="true" tabindex="-1"></a><span class="co"># Set color palette</span></span>
+<span id="cb38-646"><a href="#cb38-646" aria-hidden="true" tabindex="-1"></a>color_pal <span class="ot">&lt;-</span> Seurat<span class="sc">::</span><span class="fu">DiscretePalette</span>(<span class="at">n =</span> <span class="fu">length</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected)),</span>
+<span id="cb38-647"><a href="#cb38-647" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">palette =</span> <span class="st">"polychrome"</span>)</span>
+<span id="cb38-648"><a href="#cb38-648" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(color_pal) <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected))</span>
+<span id="cb38-649"><a href="#cb38-649" aria-hidden="true" tabindex="-1"></a>image_seurat_clusters <span class="ot">&lt;-</span> <span class="fu">SpatialDimPlot</span>(object_filt, </span>
+<span id="cb38-650"><a href="#cb38-650" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">group.by =</span> <span class="st">'seurat_cluster.projected'</span>, </span>
+<span id="cb38-651"><a href="#cb38-651" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">pt.size.factor =</span> <span class="dv">8</span>, <span class="at">cols =</span> color_pal) <span class="sc">+</span></span>
+<span id="cb38-652"><a href="#cb38-652" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">fill=</span><span class="fu">guide_legend</span>(<span class="at">ncol=</span><span class="dv">2</span>))</span>
+<span id="cb38-653"><a href="#cb38-653" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-654"><a href="#cb38-654" aria-hidden="true" tabindex="-1"></a>image_seurat_clusters</span>
+<span id="cb38-655"><a href="#cb38-655" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-656"><a href="#cb38-656" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-657"><a href="#cb38-657" aria-hidden="true" tabindex="-1"></a><span class="fu">## Spatially-informed Clustering</span></span>
-<span id="cb38-658"><a href="#cb38-658" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-659"><a href="#cb38-659" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">BANKSY</span><span class="co">](https://www.nature.com/articles/s41588-024-01664-3)</span> is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual bin’s expression pattern but also the mean and the gradient of gene expression levels in a bin’s broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.</span>
+<span id="cb38-657"><a href="#cb38-657" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-658"><a href="#cb38-658" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_plot_projected_clust.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-659"><a href="#cb38-659" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
 <span id="cb38-660"><a href="#cb38-660" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-661"><a href="#cb38-661" aria-hidden="true" tabindex="-1"></a>We use the <span class="in">`RunBanksy`</span> function to create a new "BANKSY" assay based on a default of the 4,000 most highly variable features, which can be used for dimensionality reduction and clustering. Two parameters of importance are:</span>
-<span id="cb38-662"><a href="#cb38-662" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`k_geom`</span> - Number of bins to consider for the local neighborhood. Larger values will yield larger domains.</span>
-<span id="cb38-663"><a href="#cb38-663" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`lambda`</span> - Influence of the neighborhood. Larger values yield more spatially coherent domains. The authors recommend using 0.8 to identify broader spatial domains. </span>
+<span id="cb38-661"><a href="#cb38-661" aria-hidden="true" tabindex="-1"></a><span class="fu">## Spatially-informed Clustering</span></span>
+<span id="cb38-662"><a href="#cb38-662" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-663"><a href="#cb38-663" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">BANKSY</span><span class="co">](https://www.nature.com/articles/s41588-024-01664-3)</span> is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual bin’s expression pattern but also the mean and the gradient of gene expression levels in a bin’s broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.</span>
 <span id="cb38-664"><a href="#cb38-664" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-667"><a href="#cb38-667" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-668"><a href="#cb38-668" aria-hidden="true" tabindex="-1"></a><span class="co"># Run Banksy</span></span>
-<span id="cb38-669"><a href="#cb38-669" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunBanksy</span>(object_filt, <span class="at">lambda =</span> <span class="fl">0.8</span>, <span class="at">verbose =</span> T,</span>
-<span id="cb38-670"><a href="#cb38-670" aria-hidden="true" tabindex="-1"></a>                         <span class="at">assay =</span> <span class="st">'Spatial.016um'</span>, <span class="at">slot =</span> <span class="st">'data'</span>, <span class="at">k_geom =</span> <span class="dv">50</span>)</span>
-<span id="cb38-671"><a href="#cb38-671" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-672"><a href="#cb38-672" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-673"><a href="#cb38-673" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-674"><a href="#cb38-674" aria-hidden="true" tabindex="-1"></a>We can see the new BANKSY assay in our object by calling:</span>
+<span id="cb38-665"><a href="#cb38-665" aria-hidden="true" tabindex="-1"></a>We use the <span class="in">`RunBanksy`</span> function to create a new "BANKSY" assay based on a default of the 4,000 most highly variable features, which can be used for dimensionality reduction and clustering. Two parameters of importance are:</span>
+<span id="cb38-666"><a href="#cb38-666" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`k_geom`</span> - Number of bins to consider for the local neighborhood. Larger values will yield larger domains.</span>
+<span id="cb38-667"><a href="#cb38-667" aria-hidden="true" tabindex="-1"></a><span class="ss">* </span><span class="in">`lambda`</span> - Influence of the neighborhood. Larger values yield more spatially coherent domains. The authors recommend using 0.8 to identify broader spatial domains. </span>
+<span id="cb38-668"><a href="#cb38-668" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-671"><a href="#cb38-671" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-672"><a href="#cb38-672" aria-hidden="true" tabindex="-1"></a><span class="co"># Run Banksy</span></span>
+<span id="cb38-673"><a href="#cb38-673" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunBanksy</span>(object_filt, <span class="at">lambda =</span> <span class="fl">0.8</span>, <span class="at">verbose =</span> T,</span>
+<span id="cb38-674"><a href="#cb38-674" aria-hidden="true" tabindex="-1"></a>                         <span class="at">assay =</span> <span class="st">'Spatial.016um'</span>, <span class="at">slot =</span> <span class="st">'data'</span>, <span class="at">k_geom =</span> <span class="dv">50</span>)</span>
 <span id="cb38-675"><a href="#cb38-675" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-678"><a href="#cb38-678" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-679"><a href="#cb38-679" aria-hidden="true" tabindex="-1"></a>object_filt</span>
-<span id="cb38-680"><a href="#cb38-680" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-681"><a href="#cb38-681" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-682"><a href="#cb38-682" aria-hidden="true" tabindex="-1"></a>Which should return:</span>
-<span id="cb38-683"><a href="#cb38-683" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-684"><a href="#cb38-684" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-685"><a href="#cb38-685" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_BANKSY_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
-<span id="cb38-686"><a href="#cb38-686" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-676"><a href="#cb38-676" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-677"><a href="#cb38-677" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-678"><a href="#cb38-678" aria-hidden="true" tabindex="-1"></a>We can see the new BANKSY assay in our object by calling:</span>
+<span id="cb38-679"><a href="#cb38-679" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-682"><a href="#cb38-682" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-683"><a href="#cb38-683" aria-hidden="true" tabindex="-1"></a>object_filt</span>
+<span id="cb38-684"><a href="#cb38-684" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-685"><a href="#cb38-685" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-686"><a href="#cb38-686" aria-hidden="true" tabindex="-1"></a>Which should return:</span>
 <span id="cb38-687"><a href="#cb38-687" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-688"><a href="#cb38-688" aria-hidden="true" tabindex="-1"></a>We perform a simplified clustering workflow on the BANKSY assay.</span>
-<span id="cb38-689"><a href="#cb38-689" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-692"><a href="#cb38-692" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-693"><a href="#cb38-693" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(object_filt, <span class="at">assay =</span> <span class="st">"BANKSY"</span>, </span>
-<span id="cb38-694"><a href="#cb38-694" aria-hidden="true" tabindex="-1"></a>                      <span class="at">reduction.name =</span> <span class="st">"pca.banksy"</span>, </span>
-<span id="cb38-695"><a href="#cb38-695" aria-hidden="true" tabindex="-1"></a>                      <span class="at">features =</span> <span class="fu">rownames</span>(object_filt), <span class="at">npcs =</span> <span class="dv">30</span>)</span>
-<span id="cb38-696"><a href="#cb38-696" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(object_filt, <span class="at">reduction =</span> <span class="st">"pca.banksy"</span>, </span>
-<span id="cb38-697"><a href="#cb38-697" aria-hidden="true" tabindex="-1"></a>                             <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>)</span>
-<span id="cb38-698"><a href="#cb38-698" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindClusters</span>(object_filt, <span class="at">cluster.name =</span> <span class="st">"banksy_cluster"</span>,</span>
-<span id="cb38-699"><a href="#cb38-699" aria-hidden="true" tabindex="-1"></a>                            <span class="at">resolution =</span> <span class="fl">0.5</span>)</span>
-<span id="cb38-700"><a href="#cb38-700" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-701"><a href="#cb38-701" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-702"><a href="#cb38-702" aria-hidden="true" tabindex="-1"></a>Let's visualize the BANKSY clusters alongside the Seurat clusters for a side-by-side comparison:</span>
-<span id="cb38-703"><a href="#cb38-703" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-706"><a href="#cb38-706" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-707"><a href="#cb38-707" aria-hidden="true" tabindex="-1"></a>color_pal <span class="ot">&lt;-</span> Seurat<span class="sc">::</span><span class="fu">DiscretePalette</span>(<span class="at">n =</span> <span class="fu">length</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>banksy_cluster)),</span>
-<span id="cb38-708"><a href="#cb38-708" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">palette =</span> <span class="st">"polychrome"</span>)</span>
-<span id="cb38-709"><a href="#cb38-709" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(color_pal) <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>banksy_cluster))</span>
-<span id="cb38-710"><a href="#cb38-710" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-711"><a href="#cb38-711" aria-hidden="true" tabindex="-1"></a>image_banksy_clusters <span class="ot">&lt;-</span> <span class="fu">SpatialDimPlot</span>(object_filt, <span class="at">group.by =</span> <span class="st">"banksy_cluster"</span>,</span>
-<span id="cb38-712"><a href="#cb38-712" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">pt.size.factor =</span> <span class="dv">7</span>, <span class="at">cols =</span> color_pal)</span>
-<span id="cb38-713"><a href="#cb38-713" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-714"><a href="#cb38-714" aria-hidden="true" tabindex="-1"></a>image_seurat_clusters <span class="sc">|</span> image_banksy_clusters</span>
-<span id="cb38-715"><a href="#cb38-715" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-716"><a href="#cb38-716" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-688"><a href="#cb38-688" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-689"><a href="#cb38-689" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Seurat_object_BANKSY_labelled.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"700"</span><span class="dt">&gt;</span></span>
+<span id="cb38-690"><a href="#cb38-690" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-691"><a href="#cb38-691" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-692"><a href="#cb38-692" aria-hidden="true" tabindex="-1"></a>We perform a simplified clustering workflow on the BANKSY assay.</span>
+<span id="cb38-693"><a href="#cb38-693" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-696"><a href="#cb38-696" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-697"><a href="#cb38-697" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(object_filt, <span class="at">assay =</span> <span class="st">"BANKSY"</span>, </span>
+<span id="cb38-698"><a href="#cb38-698" aria-hidden="true" tabindex="-1"></a>                      <span class="at">reduction.name =</span> <span class="st">"pca.banksy"</span>, </span>
+<span id="cb38-699"><a href="#cb38-699" aria-hidden="true" tabindex="-1"></a>                      <span class="at">features =</span> <span class="fu">rownames</span>(object_filt), <span class="at">npcs =</span> <span class="dv">30</span>)</span>
+<span id="cb38-700"><a href="#cb38-700" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(object_filt, <span class="at">reduction =</span> <span class="st">"pca.banksy"</span>, </span>
+<span id="cb38-701"><a href="#cb38-701" aria-hidden="true" tabindex="-1"></a>                             <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">30</span>)</span>
+<span id="cb38-702"><a href="#cb38-702" aria-hidden="true" tabindex="-1"></a>object_filt <span class="ot">&lt;-</span> <span class="fu">FindClusters</span>(object_filt, <span class="at">cluster.name =</span> <span class="st">"banksy_cluster"</span>,</span>
+<span id="cb38-703"><a href="#cb38-703" aria-hidden="true" tabindex="-1"></a>                            <span class="at">resolution =</span> <span class="fl">0.5</span>)</span>
+<span id="cb38-704"><a href="#cb38-704" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-705"><a href="#cb38-705" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-706"><a href="#cb38-706" aria-hidden="true" tabindex="-1"></a>Let's visualize the BANKSY clusters alongside the Seurat clusters for a side-by-side comparison:</span>
+<span id="cb38-707"><a href="#cb38-707" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-710"><a href="#cb38-710" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-711"><a href="#cb38-711" aria-hidden="true" tabindex="-1"></a>color_pal <span class="ot">&lt;-</span> Seurat<span class="sc">::</span><span class="fu">DiscretePalette</span>(<span class="at">n =</span> <span class="fu">length</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>banksy_cluster)),</span>
+<span id="cb38-712"><a href="#cb38-712" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">palette =</span> <span class="st">"polychrome"</span>)</span>
+<span id="cb38-713"><a href="#cb38-713" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(color_pal) <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>banksy_cluster))</span>
+<span id="cb38-714"><a href="#cb38-714" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-715"><a href="#cb38-715" aria-hidden="true" tabindex="-1"></a>image_banksy_clusters <span class="ot">&lt;-</span> <span class="fu">SpatialDimPlot</span>(object_filt, <span class="at">group.by =</span> <span class="st">"banksy_cluster"</span>,</span>
+<span id="cb38-716"><a href="#cb38-716" aria-hidden="true" tabindex="-1"></a>                                        <span class="at">pt.size.factor =</span> <span class="dv">7</span>, <span class="at">cols =</span> color_pal)</span>
 <span id="cb38-717"><a href="#cb38-717" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-718"><a href="#cb38-718" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-719"><a href="#cb38-719" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/banksy_clustering.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"900"</span><span class="dt">&gt;</span></span>
-<span id="cb38-720"><a href="#cb38-720" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-718"><a href="#cb38-718" aria-hidden="true" tabindex="-1"></a>image_seurat_clusters <span class="sc">|</span> image_banksy_clusters</span>
+<span id="cb38-719"><a href="#cb38-719" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-720"><a href="#cb38-720" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-721"><a href="#cb38-721" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-722"><a href="#cb38-722" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-723"><a href="#cb38-723" aria-hidden="true" tabindex="-1"></a>We can see that, as expected, the BANKSY clusters are more spatially-restricted, or more compact, than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label. </span>
-<span id="cb38-724"><a href="#cb38-724" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-725"><a href="#cb38-725" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=true}</span>
-<span id="cb38-726"><a href="#cb38-726" aria-hidden="true" tabindex="-1"></a><span class="fu"># Click here to see BANKSY using a lambda value of 0.2</span></span>
-<span id="cb38-727"><a href="#cb38-727" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-728"><a href="#cb38-728" aria-hidden="true" tabindex="-1"></a>If we had run BANKSY with <span class="in">`lambda = 0.2`</span>, as recommended for cell type clustering instead of <span class="in">`lambda = 0.8`</span> for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words less compact and more distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using <span class="in">`lamba=0.2`</span> in BANKSY rather than <span class="in">`lamba=0.8`</span>.</span>
-<span id="cb38-729"><a href="#cb38-729" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-730"><a href="#cb38-730" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-731"><a href="#cb38-731" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/banksy_clustering_lambda_0.2.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"450"</span><span class="dt">&gt;</span></span>
-<span id="cb38-732"><a href="#cb38-732" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-722"><a href="#cb38-722" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-723"><a href="#cb38-723" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/banksy_clustering.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"900"</span><span class="dt">&gt;</span></span>
+<span id="cb38-724"><a href="#cb38-724" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-725"><a href="#cb38-725" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-726"><a href="#cb38-726" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-727"><a href="#cb38-727" aria-hidden="true" tabindex="-1"></a>We can see that, as expected, the BANKSY clusters are more spatially-restricted, or more compact, than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label. </span>
+<span id="cb38-728"><a href="#cb38-728" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-729"><a href="#cb38-729" aria-hidden="true" tabindex="-1"></a>::: {.callout-note collapse=true}</span>
+<span id="cb38-730"><a href="#cb38-730" aria-hidden="true" tabindex="-1"></a><span class="fu"># Click here to see BANKSY using a lambda value of 0.2</span></span>
+<span id="cb38-731"><a href="#cb38-731" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-732"><a href="#cb38-732" aria-hidden="true" tabindex="-1"></a>If we had run BANKSY with <span class="in">`lambda = 0.2`</span>, as recommended for cell type clustering instead of <span class="in">`lambda = 0.8`</span> for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words less compact and more distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using <span class="in">`lamba=0.2`</span> in BANKSY rather than <span class="in">`lamba=0.8`</span>.</span>
 <span id="cb38-733"><a href="#cb38-733" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-734"><a href="#cb38-734" aria-hidden="true" tabindex="-1"></a>:::</span>
-<span id="cb38-735"><a href="#cb38-735" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-736"><a href="#cb38-736" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cell Type Annotation</span></span>
+<span id="cb38-734"><a href="#cb38-734" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-735"><a href="#cb38-735" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/banksy_clustering_lambda_0.2.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"450"</span><span class="dt">&gt;</span></span>
+<span id="cb38-736"><a href="#cb38-736" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
 <span id="cb38-737"><a href="#cb38-737" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-738"><a href="#cb38-738" aria-hidden="true" tabindex="-1"></a>Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. </span>
+<span id="cb38-738"><a href="#cb38-738" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb38-739"><a href="#cb38-739" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-740"><a href="#cb38-740" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-741"><a href="#cb38-741" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Cell_type_annotations.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"800"</span><span class="dt">&gt;</span></span>
-<span id="cb38-742"><a href="#cb38-742" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-740"><a href="#cb38-740" aria-hidden="true" tabindex="-1"></a><span class="fu">## Cell Type Annotation</span></span>
+<span id="cb38-741"><a href="#cb38-741" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-742"><a href="#cb38-742" aria-hidden="true" tabindex="-1"></a>Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain. </span>
 <span id="cb38-743"><a href="#cb38-743" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-744"><a href="#cb38-744" aria-hidden="true" tabindex="-1"></a>We first subset our Seurat object to this region of interest. There are multiple ways of subsetting a Seurat object to a region of interest, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we will subset the object to only include cells that are assigned these cluster numbers. </span>
-<span id="cb38-745"><a href="#cb38-745" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-748"><a href="#cb38-748" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-749"><a href="#cb38-749" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">subset</span>(object_filt, seurat_cluster.projected <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">19</span>, <span class="dv">7</span>, <span class="dv">2</span>, <span class="dv">4</span>))</span>
-<span id="cb38-750"><a href="#cb38-750" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-751"><a href="#cb38-751" aria-hidden="true" tabindex="-1"></a>color_pal <span class="ot">&lt;-</span> Seurat<span class="sc">::</span><span class="fu">DiscretePalette</span>(<span class="at">n =</span> <span class="fu">length</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected)),</span>
-<span id="cb38-752"><a href="#cb38-752" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">palette =</span> <span class="st">"polychrome"</span>)</span>
-<span id="cb38-753"><a href="#cb38-753" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(color_pal) <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected))</span>
-<span id="cb38-754"><a href="#cb38-754" aria-hidden="true" tabindex="-1"></a><span class="fu">SpatialDimPlot</span>(cortex, <span class="at">group.by =</span> <span class="st">'seurat_cluster.projected'</span>, </span>
-<span id="cb38-755"><a href="#cb38-755" aria-hidden="true" tabindex="-1"></a>               <span class="at">pt.size.factor =</span> <span class="dv">8</span>, <span class="at">cols =</span> color_pal)</span>
-<span id="cb38-756"><a href="#cb38-756" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-757"><a href="#cb38-757" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-758"><a href="#cb38-758" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-759"><a href="#cb38-759" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_plot_cortex.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
-<span id="cb38-760"><a href="#cb38-760" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-744"><a href="#cb38-744" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-745"><a href="#cb38-745" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/Cell_type_annotations.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"800"</span><span class="dt">&gt;</span></span>
+<span id="cb38-746"><a href="#cb38-746" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-747"><a href="#cb38-747" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-748"><a href="#cb38-748" aria-hidden="true" tabindex="-1"></a>We first subset our Seurat object to this region of interest. There are multiple ways of subsetting a Seurat object to a region of interest, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we will subset the object to only include cells that are assigned these cluster numbers. </span>
+<span id="cb38-749"><a href="#cb38-749" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-752"><a href="#cb38-752" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-753"><a href="#cb38-753" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">subset</span>(object_filt, seurat_cluster.projected <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">18</span>, <span class="dv">19</span>, <span class="dv">7</span>, <span class="dv">2</span>, <span class="dv">4</span>))</span>
+<span id="cb38-754"><a href="#cb38-754" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-755"><a href="#cb38-755" aria-hidden="true" tabindex="-1"></a>color_pal <span class="ot">&lt;-</span> Seurat<span class="sc">::</span><span class="fu">DiscretePalette</span>(<span class="at">n =</span> <span class="fu">length</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected)),</span>
+<span id="cb38-756"><a href="#cb38-756" aria-hidden="true" tabindex="-1"></a>                                    <span class="at">palette =</span> <span class="st">"polychrome"</span>)</span>
+<span id="cb38-757"><a href="#cb38-757" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(color_pal) <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">unique</span>(object_filt<span class="sc">$</span>seurat_cluster.projected))</span>
+<span id="cb38-758"><a href="#cb38-758" aria-hidden="true" tabindex="-1"></a><span class="fu">SpatialDimPlot</span>(cortex, <span class="at">group.by =</span> <span class="st">'seurat_cluster.projected'</span>, </span>
+<span id="cb38-759"><a href="#cb38-759" aria-hidden="true" tabindex="-1"></a>               <span class="at">pt.size.factor =</span> <span class="dv">8</span>, <span class="at">cols =</span> color_pal)</span>
+<span id="cb38-760"><a href="#cb38-760" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-761"><a href="#cb38-761" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-762"><a href="#cb38-762" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
-<span id="cb38-763"><a href="#cb38-763" aria-hidden="true" tabindex="-1"></a>Note: Your colors may be different than the ones in the above figure.</span>
-<span id="cb38-764"><a href="#cb38-764" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb38-762"><a href="#cb38-762" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-763"><a href="#cb38-763" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_plot_cortex.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-764"><a href="#cb38-764" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
 <span id="cb38-765"><a href="#cb38-765" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-766"><a href="#cb38-766" aria-hidden="true" tabindex="-1"></a>To perform accurate annotation of cell types, we must also take into consideration that our 16µm x 16µm bins may contain one or more cells each. The method <span class="co">[</span><span class="ot">Robust Cell Type Deconvolution</span><span class="co">](https://www.nature.com/articles/s41587-021-00830-w)</span> (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single bin may exhibit multiple cell type profiles.</span>
-<span id="cb38-767"><a href="#cb38-767" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-768"><a href="#cb38-768" aria-hidden="true" tabindex="-1"></a>RCTD takes a cell-type-annotated scRNA-seq dataset as a reference and a spatial dataset as a query. For our reference, we will use a subsampled version of the mouse scRNA-seq dataset from the Allen Brain Atlas. We will use our cortex Seurat object as the spatial query. As an overview, the process is as follows:</span>
+<span id="cb38-766"><a href="#cb38-766" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb38-767"><a href="#cb38-767" aria-hidden="true" tabindex="-1"></a>Note: Your colors may be different than the ones in the above figure.</span>
+<span id="cb38-768"><a href="#cb38-768" aria-hidden="true" tabindex="-1"></a>:::</span>
 <span id="cb38-769"><a href="#cb38-769" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-770"><a href="#cb38-770" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Sketch and process the spatial query dataset</span>
-<span id="cb38-771"><a href="#cb38-771" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Load and format the scRNA-seq reference dataset</span>
-<span id="cb38-772"><a href="#cb38-772" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Apply RCTD to deconvolute the "sketched" cortical cells and annotate them</span>
-<span id="cb38-773"><a href="#cb38-773" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Project these annotations onto the full cortical dataset.</span>
-<span id="cb38-774"><a href="#cb38-774" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-775"><a href="#cb38-775" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1) Sketch and process the spatial query dataset</span></span>
-<span id="cb38-776"><a href="#cb38-776" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-779"><a href="#cb38-779" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-780"><a href="#cb38-780" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(cortex) <span class="ot">&lt;-</span> <span class="st">'Spatial.016um'</span></span>
-<span id="cb38-781"><a href="#cb38-781" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(cortex)</span>
-<span id="cb38-782"><a href="#cb38-782" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">SketchData</span>(</span>
-<span id="cb38-783"><a href="#cb38-783" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> cortex,</span>
-<span id="cb38-784"><a href="#cb38-784" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncells =</span> <span class="dv">3000</span>,</span>
-<span id="cb38-785"><a href="#cb38-785" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"LeverageScore"</span>,</span>
-<span id="cb38-786"><a href="#cb38-786" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span></span>
-<span id="cb38-787"><a href="#cb38-787" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-788"><a href="#cb38-788" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-789"><a href="#cb38-789" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(cortex) <span class="ot">&lt;-</span> <span class="st">"sketch"</span></span>
-<span id="cb38-790"><a href="#cb38-790" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">ScaleData</span>(cortex)</span>
-<span id="cb38-791"><a href="#cb38-791" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(cortex, <span class="at">assay =</span> <span class="st">"sketch"</span>, </span>
-<span id="cb38-792"><a href="#cb38-792" aria-hidden="true" tabindex="-1"></a>                 <span class="at">reduction.name =</span> <span class="st">"pca.cortex.sketch"</span>, <span class="at">verbose =</span> T)</span>
-<span id="cb38-793"><a href="#cb38-793" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(cortex, <span class="at">reduction =</span> <span class="st">"pca.cortex.sketch"</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>)</span>
-<span id="cb38-794"><a href="#cb38-794" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">RunUMAP</span>(cortex, <span class="at">reduction =</span> <span class="st">"pca.cortex.sketch"</span>, </span>
-<span id="cb38-795"><a href="#cb38-795" aria-hidden="true" tabindex="-1"></a>                  <span class="at">reduction.name =</span> <span class="st">"umap.cortex.sketch"</span>, <span class="at">return.model =</span> T, </span>
-<span id="cb38-796"><a href="#cb38-796" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="at">verbose =</span> T)</span>
-<span id="cb38-797"><a href="#cb38-797" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-798"><a href="#cb38-798" aria-hidden="true" tabindex="-1"></a><span class="co"># create the RCTD query object</span></span>
-<span id="cb38-799"><a href="#cb38-799" aria-hidden="true" tabindex="-1"></a>counts_hd <span class="ot">&lt;-</span> cortex[[<span class="st">"sketch"</span>]]<span class="sc">$</span>counts</span>
-<span id="cb38-800"><a href="#cb38-800" aria-hidden="true" tabindex="-1"></a>cortex_cells_hd <span class="ot">&lt;-</span> <span class="fu">colnames</span>(cortex[[<span class="st">"sketch"</span>]])</span>
-<span id="cb38-801"><a href="#cb38-801" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">GetTissueCoordinates</span>(cortex)[cortex_cells_hd, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
-<span id="cb38-802"><a href="#cb38-802" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> <span class="fu">SpatialRNA</span>(coords, counts_hd, <span class="fu">colSums</span>(counts_hd))</span>
-<span id="cb38-803"><a href="#cb38-803" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-804"><a href="#cb38-804" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-805"><a href="#cb38-805" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2) Load and format the reference dataset</span></span>
-<span id="cb38-806"><a href="#cb38-806" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-809"><a href="#cb38-809" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-810"><a href="#cb38-810" aria-hidden="true" tabindex="-1"></a><span class="fu">mem.maxVSize</span>(<span class="dv">15000</span>)</span>
-<span id="cb38-811"><a href="#cb38-811" aria-hidden="true" tabindex="-1"></a>ref_subset <span class="ot">&lt;-</span> <span class="fu">qread</span>(<span class="st">"data_processed/allen_scRNAseq_ref_subset.qs"</span>)</span>
-<span id="cb38-812"><a href="#cb38-812" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-813"><a href="#cb38-813" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(ref_subset) <span class="ot">&lt;-</span> <span class="st">"subclass_label"</span></span>
-<span id="cb38-814"><a href="#cb38-814" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> ref_subset[[<span class="st">"RNA"</span>]]<span class="sc">$</span>counts</span>
-<span id="cb38-815"><a href="#cb38-815" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ref_subset<span class="sc">$</span>subclass_label)</span>
-<span id="cb38-816"><a href="#cb38-816" aria-hidden="true" tabindex="-1"></a>nUMI <span class="ot">&lt;-</span> ref_subset<span class="sc">$</span>nCount_RNA</span>
-<span id="cb38-817"><a href="#cb38-817" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(cluster) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"/"</span>, <span class="st">"-"</span>, <span class="fu">levels</span>(cluster))</span>
-<span id="cb38-818"><a href="#cb38-818" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(cluster)</span>
-<span id="cb38-819"><a href="#cb38-819" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-820"><a href="#cb38-820" aria-hidden="true" tabindex="-1"></a><span class="co"># create the RCTD reference object</span></span>
-<span id="cb38-821"><a href="#cb38-821" aria-hidden="true" tabindex="-1"></a>reference <span class="ot">&lt;-</span> <span class="fu">Reference</span>(counts, cluster, nUMI)</span>
-<span id="cb38-822"><a href="#cb38-822" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-770"><a href="#cb38-770" aria-hidden="true" tabindex="-1"></a>To perform accurate annotation of cell types, we must also take into consideration that our 16µm x 16µm bins may contain one or more cells each. The method <span class="co">[</span><span class="ot">Robust Cell Type Deconvolution</span><span class="co">](https://www.nature.com/articles/s41587-021-00830-w)</span> (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single bin may exhibit multiple cell type profiles.</span>
+<span id="cb38-771"><a href="#cb38-771" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-772"><a href="#cb38-772" aria-hidden="true" tabindex="-1"></a>RCTD takes a cell-type-annotated scRNA-seq dataset as a reference and a spatial dataset as a query. For our reference, we will use a subsampled version of the mouse scRNA-seq dataset from the Allen Brain Atlas. We will use our cortex Seurat object as the spatial query. As an overview, the process is as follows:</span>
+<span id="cb38-773"><a href="#cb38-773" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-774"><a href="#cb38-774" aria-hidden="true" tabindex="-1"></a><span class="ss">1. </span>Sketch and process the spatial query dataset</span>
+<span id="cb38-775"><a href="#cb38-775" aria-hidden="true" tabindex="-1"></a><span class="ss">2. </span>Load and format the scRNA-seq reference dataset</span>
+<span id="cb38-776"><a href="#cb38-776" aria-hidden="true" tabindex="-1"></a><span class="ss">3. </span>Apply RCTD to deconvolute the "sketched" cortical cells and annotate them</span>
+<span id="cb38-777"><a href="#cb38-777" aria-hidden="true" tabindex="-1"></a><span class="ss">4. </span>Project these annotations onto the full cortical dataset.</span>
+<span id="cb38-778"><a href="#cb38-778" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-779"><a href="#cb38-779" aria-hidden="true" tabindex="-1"></a><span class="fu">### 1) Sketch and process the spatial query dataset</span></span>
+<span id="cb38-780"><a href="#cb38-780" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-783"><a href="#cb38-783" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-784"><a href="#cb38-784" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(cortex) <span class="ot">&lt;-</span> <span class="st">'Spatial.016um'</span></span>
+<span id="cb38-785"><a href="#cb38-785" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">FindVariableFeatures</span>(cortex)</span>
+<span id="cb38-786"><a href="#cb38-786" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">SketchData</span>(</span>
+<span id="cb38-787"><a href="#cb38-787" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> cortex,</span>
+<span id="cb38-788"><a href="#cb38-788" aria-hidden="true" tabindex="-1"></a>  <span class="at">ncells =</span> <span class="dv">3000</span>,</span>
+<span id="cb38-789"><a href="#cb38-789" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"LeverageScore"</span>,</span>
+<span id="cb38-790"><a href="#cb38-790" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span></span>
+<span id="cb38-791"><a href="#cb38-791" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-792"><a href="#cb38-792" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-793"><a href="#cb38-793" aria-hidden="true" tabindex="-1"></a><span class="fu">DefaultAssay</span>(cortex) <span class="ot">&lt;-</span> <span class="st">"sketch"</span></span>
+<span id="cb38-794"><a href="#cb38-794" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">ScaleData</span>(cortex)</span>
+<span id="cb38-795"><a href="#cb38-795" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">RunPCA</span>(cortex, <span class="at">assay =</span> <span class="st">"sketch"</span>, </span>
+<span id="cb38-796"><a href="#cb38-796" aria-hidden="true" tabindex="-1"></a>                 <span class="at">reduction.name =</span> <span class="st">"pca.cortex.sketch"</span>, <span class="at">verbose =</span> T)</span>
+<span id="cb38-797"><a href="#cb38-797" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">FindNeighbors</span>(cortex, <span class="at">reduction =</span> <span class="st">"pca.cortex.sketch"</span>, <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>)</span>
+<span id="cb38-798"><a href="#cb38-798" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">RunUMAP</span>(cortex, <span class="at">reduction =</span> <span class="st">"pca.cortex.sketch"</span>, </span>
+<span id="cb38-799"><a href="#cb38-799" aria-hidden="true" tabindex="-1"></a>                  <span class="at">reduction.name =</span> <span class="st">"umap.cortex.sketch"</span>, <span class="at">return.model =</span> T, </span>
+<span id="cb38-800"><a href="#cb38-800" aria-hidden="true" tabindex="-1"></a>                  <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>, <span class="at">verbose =</span> T)</span>
+<span id="cb38-801"><a href="#cb38-801" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-802"><a href="#cb38-802" aria-hidden="true" tabindex="-1"></a><span class="co"># create the RCTD query object</span></span>
+<span id="cb38-803"><a href="#cb38-803" aria-hidden="true" tabindex="-1"></a>counts_hd <span class="ot">&lt;-</span> cortex[[<span class="st">"sketch"</span>]]<span class="sc">$</span>counts</span>
+<span id="cb38-804"><a href="#cb38-804" aria-hidden="true" tabindex="-1"></a>cortex_cells_hd <span class="ot">&lt;-</span> <span class="fu">colnames</span>(cortex[[<span class="st">"sketch"</span>]])</span>
+<span id="cb38-805"><a href="#cb38-805" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">GetTissueCoordinates</span>(cortex)[cortex_cells_hd, <span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>]</span>
+<span id="cb38-806"><a href="#cb38-806" aria-hidden="true" tabindex="-1"></a>query <span class="ot">&lt;-</span> <span class="fu">SpatialRNA</span>(coords, counts_hd, <span class="fu">colSums</span>(counts_hd))</span>
+<span id="cb38-807"><a href="#cb38-807" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-808"><a href="#cb38-808" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-809"><a href="#cb38-809" aria-hidden="true" tabindex="-1"></a><span class="fu">### 2) Load and format the reference dataset</span></span>
+<span id="cb38-810"><a href="#cb38-810" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-813"><a href="#cb38-813" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-814"><a href="#cb38-814" aria-hidden="true" tabindex="-1"></a><span class="fu">mem.maxVSize</span>(<span class="dv">15000</span>)</span>
+<span id="cb38-815"><a href="#cb38-815" aria-hidden="true" tabindex="-1"></a>ref_subset <span class="ot">&lt;-</span> <span class="fu">qread</span>(<span class="st">"data_processed/allen_scRNAseq_ref_subset.qs"</span>)</span>
+<span id="cb38-816"><a href="#cb38-816" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-817"><a href="#cb38-817" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(ref_subset) <span class="ot">&lt;-</span> <span class="st">"subclass_label"</span></span>
+<span id="cb38-818"><a href="#cb38-818" aria-hidden="true" tabindex="-1"></a>counts <span class="ot">&lt;-</span> ref_subset[[<span class="st">"RNA"</span>]]<span class="sc">$</span>counts</span>
+<span id="cb38-819"><a href="#cb38-819" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(ref_subset<span class="sc">$</span>subclass_label)</span>
+<span id="cb38-820"><a href="#cb38-820" aria-hidden="true" tabindex="-1"></a>nUMI <span class="ot">&lt;-</span> ref_subset<span class="sc">$</span>nCount_RNA</span>
+<span id="cb38-821"><a href="#cb38-821" aria-hidden="true" tabindex="-1"></a><span class="fu">levels</span>(cluster) <span class="ot">&lt;-</span> <span class="fu">gsub</span>(<span class="st">"/"</span>, <span class="st">"-"</span>, <span class="fu">levels</span>(cluster))</span>
+<span id="cb38-822"><a href="#cb38-822" aria-hidden="true" tabindex="-1"></a>cluster <span class="ot">&lt;-</span> <span class="fu">droplevels</span>(cluster)</span>
 <span id="cb38-823"><a href="#cb38-823" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-824"><a href="#cb38-824" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3) Apply RCTD to deconvolute the "sketched" cortical cells and annotate them</span></span>
-<span id="cb38-825"><a href="#cb38-825" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-826"><a href="#cb38-826" aria-hidden="true" tabindex="-1"></a>Note that ```run.RCTD``` takes 10-15 minutes to complete on a laptop using 6 cores</span>
+<span id="cb38-824"><a href="#cb38-824" aria-hidden="true" tabindex="-1"></a><span class="co"># create the RCTD reference object</span></span>
+<span id="cb38-825"><a href="#cb38-825" aria-hidden="true" tabindex="-1"></a>reference <span class="ot">&lt;-</span> <span class="fu">Reference</span>(counts, cluster, nUMI)</span>
+<span id="cb38-826"><a href="#cb38-826" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb38-827"><a href="#cb38-827" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-830"><a href="#cb38-830" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-831"><a href="#cb38-831" aria-hidden="true" tabindex="-1"></a><span class="co"># run RCTD</span></span>
-<span id="cb38-832"><a href="#cb38-832" aria-hidden="true" tabindex="-1"></a>RCTD <span class="ot">&lt;-</span> <span class="fu">create.RCTD</span>(query, reference, <span class="at">max_cores =</span> <span class="dv">6</span>)</span>
-<span id="cb38-833"><a href="#cb38-833" aria-hidden="true" tabindex="-1"></a>RCTD <span class="ot">&lt;-</span> <span class="fu">run.RCTD</span>(RCTD, <span class="at">doublet_mode =</span> <span class="st">"doublet"</span>) <span class="co"># this command takes ~15 mins to run</span></span>
-<span id="cb38-834"><a href="#cb38-834" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-835"><a href="#cb38-835" aria-hidden="true" tabindex="-1"></a><span class="co"># add results back to Seurat object</span></span>
-<span id="cb38-836"><a href="#cb38-836" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">AddMetaData</span>(cortex, <span class="at">metadata =</span> RCTD<span class="sc">@</span>results<span class="sc">$</span>results_df)</span>
-<span id="cb38-837"><a href="#cb38-837" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-828"><a href="#cb38-828" aria-hidden="true" tabindex="-1"></a><span class="fu">### 3) Apply RCTD to deconvolute the "sketched" cortical cells and annotate them</span></span>
+<span id="cb38-829"><a href="#cb38-829" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-830"><a href="#cb38-830" aria-hidden="true" tabindex="-1"></a>Note that ```run.RCTD``` takes 10-15 minutes to complete on a laptop using 6 cores</span>
+<span id="cb38-831"><a href="#cb38-831" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-834"><a href="#cb38-834" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-835"><a href="#cb38-835" aria-hidden="true" tabindex="-1"></a><span class="co"># run RCTD</span></span>
+<span id="cb38-836"><a href="#cb38-836" aria-hidden="true" tabindex="-1"></a>RCTD <span class="ot">&lt;-</span> <span class="fu">create.RCTD</span>(query, reference, <span class="at">max_cores =</span> <span class="dv">6</span>)</span>
+<span id="cb38-837"><a href="#cb38-837" aria-hidden="true" tabindex="-1"></a>RCTD <span class="ot">&lt;-</span> <span class="fu">run.RCTD</span>(RCTD, <span class="at">doublet_mode =</span> <span class="st">"doublet"</span>) <span class="co"># this command takes ~15 mins to run</span></span>
 <span id="cb38-838"><a href="#cb38-838" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-839"><a href="#cb38-839" aria-hidden="true" tabindex="-1"></a><span class="fu">### 4) Project RCTD labels onto all cortical cells</span></span>
-<span id="cb38-840"><a href="#cb38-840" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-843"><a href="#cb38-843" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-844"><a href="#cb38-844" aria-hidden="true" tabindex="-1"></a>cortex<span class="sc">$</span>first_type <span class="ot">&lt;-</span> <span class="fu">as.character</span>(cortex<span class="sc">$</span>first_type)</span>
-<span id="cb38-845"><a href="#cb38-845" aria-hidden="true" tabindex="-1"></a>cortex<span class="sc">$</span>first_type[<span class="fu">is.na</span>(cortex<span class="sc">$</span>first_type)] <span class="ot">&lt;-</span> <span class="st">"Unknown"</span></span>
-<span id="cb38-846"><a href="#cb38-846" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">ProjectData</span>(</span>
-<span id="cb38-847"><a href="#cb38-847" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> cortex,</span>
-<span id="cb38-848"><a href="#cb38-848" aria-hidden="true" tabindex="-1"></a>  <span class="at">assay =</span> <span class="st">"Spatial.016um"</span>,</span>
-<span id="cb38-849"><a href="#cb38-849" aria-hidden="true" tabindex="-1"></a>  <span class="at">full.reduction =</span> <span class="st">"pca.cortex"</span>,</span>
-<span id="cb38-850"><a href="#cb38-850" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span>,</span>
-<span id="cb38-851"><a href="#cb38-851" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.reduction =</span> <span class="st">"pca.cortex.sketch"</span>,</span>
-<span id="cb38-852"><a href="#cb38-852" aria-hidden="true" tabindex="-1"></a>  <span class="at">umap.model =</span> <span class="st">"umap.cortex.sketch"</span>,</span>
-<span id="cb38-853"><a href="#cb38-853" aria-hidden="true" tabindex="-1"></a>  <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>,</span>
-<span id="cb38-854"><a href="#cb38-854" aria-hidden="true" tabindex="-1"></a>  <span class="at">refdata =</span> <span class="fu">list</span>(<span class="at">full_first_type =</span> <span class="st">"first_type"</span>)</span>
-<span id="cb38-855"><a href="#cb38-855" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb38-856"><a href="#cb38-856" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-857"><a href="#cb38-857" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-858"><a href="#cb38-858" aria-hidden="true" tabindex="-1"></a>We can see that the excitatory neurons are located in layers at varying cortical depths, as expected.</span>
-<span id="cb38-859"><a href="#cb38-859" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-862"><a href="#cb38-862" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-863"><a href="#cb38-863" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(cortex) <span class="ot">&lt;-</span> <span class="st">"full_first_type"</span></span>
-<span id="cb38-864"><a href="#cb38-864" aria-hidden="true" tabindex="-1"></a>cells <span class="ot">&lt;-</span> <span class="fu">CellsByIdentities</span>(cortex)</span>
-<span id="cb38-865"><a href="#cb38-865" aria-hidden="true" tabindex="-1"></a><span class="co"># Layered (starts with L), excitatory neurons in the cortex</span></span>
-<span id="cb38-866"><a href="#cb38-866" aria-hidden="true" tabindex="-1"></a>excitatory_names <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">grep</span>(<span class="st">"^L.* CTX"</span>, <span class="fu">names</span>(cells), <span class="at">value =</span> <span class="cn">TRUE</span>))</span>
-<span id="cb38-867"><a href="#cb38-867" aria-hidden="true" tabindex="-1"></a><span class="fu">SpatialDimPlot</span>(cortex, <span class="at">cells.highlight =</span> cells[excitatory_names], </span>
-<span id="cb38-868"><a href="#cb38-868" aria-hidden="true" tabindex="-1"></a>               <span class="at">cols.highlight =</span> <span class="fu">c</span>(<span class="st">"#FFFF00"</span>, <span class="st">"grey50"</span>), <span class="at">facet.highlight =</span> T, </span>
-<span id="cb38-869"><a href="#cb38-869" aria-hidden="true" tabindex="-1"></a>               <span class="at">combine =</span> T, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">pt.size.factor =</span> <span class="dv">8</span>)</span>
-<span id="cb38-870"><a href="#cb38-870" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb38-871"><a href="#cb38-871" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-872"><a href="#cb38-872" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
-<span id="cb38-873"><a href="#cb38-873" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_cortex_labels.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
-<span id="cb38-874"><a href="#cb38-874" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
+<span id="cb38-839"><a href="#cb38-839" aria-hidden="true" tabindex="-1"></a><span class="co"># add results back to Seurat object</span></span>
+<span id="cb38-840"><a href="#cb38-840" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">AddMetaData</span>(cortex, <span class="at">metadata =</span> RCTD<span class="sc">@</span>results<span class="sc">$</span>results_df)</span>
+<span id="cb38-841"><a href="#cb38-841" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-842"><a href="#cb38-842" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-843"><a href="#cb38-843" aria-hidden="true" tabindex="-1"></a><span class="fu">### 4) Project RCTD labels onto all cortical cells</span></span>
+<span id="cb38-844"><a href="#cb38-844" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-847"><a href="#cb38-847" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-848"><a href="#cb38-848" aria-hidden="true" tabindex="-1"></a>cortex<span class="sc">$</span>first_type <span class="ot">&lt;-</span> <span class="fu">as.character</span>(cortex<span class="sc">$</span>first_type)</span>
+<span id="cb38-849"><a href="#cb38-849" aria-hidden="true" tabindex="-1"></a>cortex<span class="sc">$</span>first_type[<span class="fu">is.na</span>(cortex<span class="sc">$</span>first_type)] <span class="ot">&lt;-</span> <span class="st">"Unknown"</span></span>
+<span id="cb38-850"><a href="#cb38-850" aria-hidden="true" tabindex="-1"></a>cortex <span class="ot">&lt;-</span> <span class="fu">ProjectData</span>(</span>
+<span id="cb38-851"><a href="#cb38-851" aria-hidden="true" tabindex="-1"></a>  <span class="at">object =</span> cortex,</span>
+<span id="cb38-852"><a href="#cb38-852" aria-hidden="true" tabindex="-1"></a>  <span class="at">assay =</span> <span class="st">"Spatial.016um"</span>,</span>
+<span id="cb38-853"><a href="#cb38-853" aria-hidden="true" tabindex="-1"></a>  <span class="at">full.reduction =</span> <span class="st">"pca.cortex"</span>,</span>
+<span id="cb38-854"><a href="#cb38-854" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.assay =</span> <span class="st">"sketch"</span>,</span>
+<span id="cb38-855"><a href="#cb38-855" aria-hidden="true" tabindex="-1"></a>  <span class="at">sketched.reduction =</span> <span class="st">"pca.cortex.sketch"</span>,</span>
+<span id="cb38-856"><a href="#cb38-856" aria-hidden="true" tabindex="-1"></a>  <span class="at">umap.model =</span> <span class="st">"umap.cortex.sketch"</span>,</span>
+<span id="cb38-857"><a href="#cb38-857" aria-hidden="true" tabindex="-1"></a>  <span class="at">dims =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">50</span>,</span>
+<span id="cb38-858"><a href="#cb38-858" aria-hidden="true" tabindex="-1"></a>  <span class="at">refdata =</span> <span class="fu">list</span>(<span class="at">full_first_type =</span> <span class="st">"first_type"</span>)</span>
+<span id="cb38-859"><a href="#cb38-859" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-860"><a href="#cb38-860" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-861"><a href="#cb38-861" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-862"><a href="#cb38-862" aria-hidden="true" tabindex="-1"></a>We can see that the excitatory neurons are located in layers at varying cortical depths, as expected.</span>
+<span id="cb38-863"><a href="#cb38-863" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-866"><a href="#cb38-866" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-867"><a href="#cb38-867" aria-hidden="true" tabindex="-1"></a><span class="fu">Idents</span>(cortex) <span class="ot">&lt;-</span> <span class="st">"full_first_type"</span></span>
+<span id="cb38-868"><a href="#cb38-868" aria-hidden="true" tabindex="-1"></a>cells <span class="ot">&lt;-</span> <span class="fu">CellsByIdentities</span>(cortex)</span>
+<span id="cb38-869"><a href="#cb38-869" aria-hidden="true" tabindex="-1"></a><span class="co"># Layered (starts with L), excitatory neurons in the cortex</span></span>
+<span id="cb38-870"><a href="#cb38-870" aria-hidden="true" tabindex="-1"></a>excitatory_names <span class="ot">&lt;-</span> <span class="fu">sort</span>(<span class="fu">grep</span>(<span class="st">"^L.* CTX"</span>, <span class="fu">names</span>(cells), <span class="at">value =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb38-871"><a href="#cb38-871" aria-hidden="true" tabindex="-1"></a><span class="fu">SpatialDimPlot</span>(cortex, <span class="at">cells.highlight =</span> cells[excitatory_names], </span>
+<span id="cb38-872"><a href="#cb38-872" aria-hidden="true" tabindex="-1"></a>               <span class="at">cols.highlight =</span> <span class="fu">c</span>(<span class="st">"#FFFF00"</span>, <span class="st">"grey50"</span>), <span class="at">facet.highlight =</span> T, </span>
+<span id="cb38-873"><a href="#cb38-873" aria-hidden="true" tabindex="-1"></a>               <span class="at">combine =</span> T, <span class="at">ncol =</span> <span class="dv">4</span>, <span class="at">pt.size.factor =</span> <span class="dv">8</span>)</span>
+<span id="cb38-874"><a href="#cb38-874" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb38-875"><a href="#cb38-875" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-876"><a href="#cb38-876" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">p</span><span class="ot"> align</span><span class="op">=</span><span class="st">"center"</span><span class="dt">&gt;</span></span>
+<span id="cb38-877"><a href="#cb38-877" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;</span><span class="kw">img</span><span class="ot"> src</span><span class="op">=</span><span class="st">"../img/spatial_cortex_labels.png"</span><span class="ot"> width</span><span class="op">=</span><span class="st">"600"</span><span class="dt">&gt;</span></span>
+<span id="cb38-878"><a href="#cb38-878" aria-hidden="true" tabindex="-1"></a><span class="dt">&lt;/</span><span class="kw">p</span><span class="dt">&gt;</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
