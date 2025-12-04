@@ -3,8 +3,8 @@ title: "Visium HD Analysis"
 authors: "Alex Bartlett, Meeta Mistry, and Will Gammerdinger"
 date: "February 26th, 2025"
 
-execute: 
-  eval: false
+execute:
+  warning: false
 ---
 
 Contributors: Alex Bartlett, Meeta Mistry and Will Gammerdinger
@@ -158,7 +158,7 @@ Let's read in the Seurat object and talk about some very basic slots that we wil
 
 ```{r}
 # Load in Seurat object
-object <- qread('data_processed/MsBrain_FF-A1_subset.qs')
+object <- qread('data_processed/MsBrain_FF-A1_subset_misc.qs')
 ```
 
 We can print the Seurat object by using:
@@ -253,10 +253,6 @@ dists_before <- dist_counts_before | dist_features_before
 dists_before
 ```
 
-<p align="center">
-<img src="../img/preQC_UMI_genes_plot.png" width="600">
-</p>
-
 :::{.callout-tip}
 # Exercise
 
@@ -272,7 +268,6 @@ We will apply very minimal filtering here, with nUMI > 100 and nGene > 100. It h
 
 
 ```{r}
-#| eval: false
 # Create a filtered object
 object_filt <- subset(object, 
                       subset = (nCount_Spatial.016um > 100) & 
@@ -312,11 +307,6 @@ dists_after <- dist_counts_after | dist_features_after
 dists_after
 ```
 
-<p align="center">
-<img src="../img/postQC_UMI_genes_plot.png" width="600">
-</p> 
-
-
 ### Visualizing Counts Data
 
 We can visualize the number of UMIs and gene counts per bin, both as a distribution and layered on top of the tissue image. Let's start with a violin plot to look at the distribution of UMI counts and gene counts. The input is our post-filtered dataset.
@@ -343,10 +333,6 @@ vln_counts_after | vln_features_after
 
 We see that both distributions have a similar peak but the nUMI distribution has a much longer tail. This is expected, because while the small physical size of the bins means that most genes will be detected only once or twice, a minority of bins under very transcriptionally active cells may exhibit multiple transcripts of the same gene. 
 
-<p align="center">
-<img src="../img/violin_plot_UMI_genes.png" width="600">
-</p> 
-
 Next, we can look at the same metrics and the distribution on the actual image itself. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
 
 ```{r}
@@ -363,12 +349,6 @@ image_features <- SpatialFeaturePlot(object_filt,
 # Plot the two side-by-side
 image_counts | image_features
 ```
-
-<p align="center">
-<img src="../img/spatial_plot_UMI_genes.png" width="900">
-</p> 
-
-
 
 ## Normalize Data
 
@@ -448,14 +428,15 @@ We will see that there are four major changes that have taken place:
 We can also see that the leverage score has been added as a column to the metadata of our object.
 
 ```{r}
-head(object_filt@meta.data)
+#| eval: false
+View(object_filt@meta.data)
 ```
 
-Should return:
-
-<p align="center">
-<img src="../img/seurat_object_metadata_leverage.png" width="700">
-</p>
+```{r}
+#| echo: false
+library(DT)
+datatable(object_filt@meta.data %>% head(30))
+```
 
 
 Next, we will peform a standard clustering workflow on our sketch of 10,000 cells:
@@ -492,11 +473,6 @@ DimPlot(object_filt, reduction = "umap.sketch", label = T,
   ggtitle("Sketched clustering") + 
   theme(legend.position = "none")
 ```
-
-<p align="center">
-<img src="../img/umap_sketch_assay.png" width="600">
-</p> 
-
 
 We can also examine our object after these manipulations and note the addition of the scale.data layer as well as the sketch PCA and UMAP dimensional reductions. 
 
@@ -548,14 +524,15 @@ Should return:
 Note that a score for the projection of each bin will be saved as a column in the metadata. Actually opening up the metadata again gives the opportunity to look at the `seurat_cluster.sketched` column and see many NA values, because it was only calculated for 10,000 bins. The `seurat_cluster.projected` shows values for every bin.
 
 ```{r}
-head(object_filt@meta.data)
+#| eval: false
+View(object_filt@meta.data)
 ```
 
-Should return:
-
-<p align="center">
-<img src="../img/seurat_object_metadata_projected.png" width="700">
-</p>
+```{r}
+#| echo: false
+library(DT)
+datatable(object_filt@meta.data %>% head(30))
+```
 
 ### Visualizing the projected clusters on UMAP
 
@@ -574,10 +551,6 @@ DimPlot(object_filt, reduction = "full.umap.sketch", label = T, raster = F,
   ggtitle("Projected clustering") + 
   theme(legend.position = "none")
 ```
-
-<p align="center">
-<img src="../img/umap_projected_assay.png" width="600">
-</p>
 
 ### Visualizing projected clusters on the image
 
@@ -600,10 +573,6 @@ image_seurat_clusters <- SpatialDimPlot(object_filt,
 image_seurat_clusters
 ```
 
-<p align="center">
-<img src="../img/spatial_plot_projected_clust.png" width="600">
-</p>
-
 ## Spatially-informed Clustering
 
 [BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual bin’s expression pattern but also the mean and the gradient of gene expression levels in a bin’s broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.
@@ -616,7 +585,6 @@ We use the `RunBanksy` function to create a new "BANKSY" assay based on a defaul
 # Run Banksy
 object_filt <- RunBanksy(object_filt, lambda = 0.8, verbose = T,
                          assay = 'Spatial.016um', slot = 'data', k_geom = 50)
-
 ```
 
 We can see the new BANKSY assay in our object by calling:
@@ -654,13 +622,7 @@ image_banksy_clusters <- SpatialDimPlot(object_filt, group.by = "banksy_cluster"
                                         pt.size.factor = 7, cols = color_pal)
 
 image_seurat_clusters | image_banksy_clusters
-
 ```
-
-<p align="center">
-<img src="../img/banksy_clustering.png" width="900">
-</p>
-
 
 We can see that, as expected, the BANKSY clusters are more spatially-restricted, or more compact, than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label. 
 
@@ -694,10 +656,6 @@ names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
 SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected', 
                pt.size.factor = 8, cols = color_pal)
 ```
-
-<p align="center">
-<img src="../img/spatial_plot_cortex.png" width="600">
-</p>
 
 ::: callout-note
 Note: Your colors may be different than the ones in the above figure.
@@ -799,6 +757,13 @@ SpatialDimPlot(cortex, cells.highlight = cells[excitatory_names],
                combine = T, ncol = 4, pt.size.factor = 8)
 ```
 
-<p align="center">
-<img src="../img/spatial_cortex_labels.png" width="600">
-</p>
+# Save R Session
+
+At the end of any analysis, it is important to save your session information! This will let future users know which versions of packages are necessary in order to reproduce the same results.
+
+::: {.callout-note collapse=true}
+# sessionInfo
+```{r}
+sessionInfo()
+```
+:::
