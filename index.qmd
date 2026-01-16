@@ -28,7 +28,7 @@ The dataset which is used in the pre-reading activities can be found at the link
 
 ### Lessons
 
-- [Loupe Browser Demonstration](lessons/loupe_demo.qmd)
+<!-- - [Loupe Browser Demonstration](lessons/loupe_demo.qmd) -->
 - [Visium HD Analysis with Seurat](lessons/visium_hd.qmd)
 
 ### Installation Requirements
