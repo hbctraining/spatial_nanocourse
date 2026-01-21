@@ -14,7 +14,7 @@ execute:
 
 
 ### Description
-This repository contains materials for a module which is part of a Nanocourse organized by the [Single Cell Core at HMS](https://singlecellcore.hms.harvard.edu/). The nanocourse titled "Spatial Transcriptomics: Key Technologies, Experimental Considerations, and Data Analysis" introduces the fundamentals of data analysis for spatial transcriptomics, including common techniques and tools. **In this module we walk through the analysis workflow for Visium HD data analysis.**
+This repository contains materials for a module which is part of a Nanocourse organized by the [Single Cell Core at HMS](https://singlecellcore.hms.harvard.edu/). The nanocourse titled "Spatial Transcriptomics: Key Technologies, Experimental Considerations, and Data Analysis" introduces the fundamentals of data analysis for spatial transcriptomics, including common techniques and tools. **In this module we walk through the analysis workflow for a Visium HD experiment.**
 
 ### Learning Objectives
 
@@ -29,7 +29,7 @@ The dataset which is used in the pre-reading activities can be found at the link
 ### Lessons
 
 <!-- - [Loupe Browser Demonstration](lessons/loupe_demo.qmd) -->
-- [Visium HD Analysis with Seurat](lessons/visium_hd.qmd)
+[Visium HD Analysis with Seurat](lessons/visium_hd.qmd)
 
 ### Installation Requirements
 

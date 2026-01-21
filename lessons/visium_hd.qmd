@@ -26,7 +26,7 @@ Approximate time: 2 hours and 45 minutes
 
 The Visium HD platform is compatible with human and mouse fresh frozen, fixed frozen, and formalin-fixed paraffin-embedded (FFPE) tissue sections. For this lesson, we will be working with data from a **fresh frozen coronal section of a mouse brain** sample.
 
-Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium products but is covered with about 11 million tiles. These 2µm x 2µm squares are arrayed in a continuous lawn across the entire capture area. The squares are each uniquely barcoded with an oligonucleotide and contain probes allowing for the detection of the full coding transcriptome. As such, Visium HD is categorized as a **sequencing-based technology**.
+Visium HD matches the 6.5 × 6.5 mm imaging area of the earlier Visium platform but now achieves higher resolution by dividing that area into 11 million tiles. These 2µm x 2µm squares are arrayed in a continuous lawn across the entire capture area. The squares are each uniquely barcoded with an oligonucleotide and contain probes allowing for the detection of the full coding transcriptome. As such, Visium HD is categorized as a **sequencing-based technology**.
 
 <p align="center">
 
@@ -34,16 +34,16 @@ Each Visium HD slide has the same 6.5 x 6.5mm capture area as previous Visium pr
 
 </p>
 
-The single-digit micron resolution is a big technological improvement over original Visium's original ∼55μm spots. Due to the size of the bin, multiple cells would exist in each spot. As a result, this dataset can be challenging to annotate, where many methods would attempt to quantify the "proportion" of a spot is assigned to various celltypes.
+The single-digit micron resolution is a big technological improvement over original Visium's original ∼55μm spots. Because a single spot can include several cell types, the dataset is not straightforward to annotate. As a result, many methods model each spot as a mixture, assigning proportion values for each cell type within that spot. Each spot is represented as a piechart showing proportions of the cell type composition.
 
 ![[Ma, Y., et al. Nat Biotechnol (2022)](https://www.nature.com/articles/s41587-022-01273-7), Figure 1](../img/card_deconvolution.png){width="50%"}
 
-While Visium HD has reduced the size of bins to achieve near single-cell level, it is important to bear in mind that these sequencing-based technologies can capture more than one cell in a spot. This information is important to bear in mind in downstream steps, such as differential gene expression.
+While Visium HD has reduced the size of bins to achieve near single-cell level, it is important to bear in mind that these sequencing-based technologies can capture more than one cell in a spot. This information is important for downstream steps, such as differential gene expression, as now there are multiplets to contend with.
 
 ::: {.callout-note collapse="true"}
 # Imaging-based technologies
 
-These methods utilize floresence to quantify gene expression on a tissue slide. Specifically utilizing fluoresence in situ hybridization (FISH) to measure expression of a select panel of genes (selected by the researcher) using **probes**. Therefore we are able to evaluate the expression for each individual cell after segmentation.
+These methods utilize fluoresence to quantify gene expression on a tissue slide. Specifically utilizing fluoresence in situ hybridization (FISH) to measure expression of a select panel of genes (selected by the researcher) using **probes**. Therefore we are able to evaluate the expression for each individual cell after segmentation.
 
 Some popular imaging-based technologies include:
 
@@ -54,7 +54,7 @@ Some popular imaging-based technologies include:
 
 ## Preprocessing Data with SpaceRanger
 
-Sequencing facilities often output scRNA-seq data, including spatial scRNA-seq data, in FASTQ format. Because this is Visium HD data from 10X Genomics, we used their proprietary pre-processing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. Specifically, the `spaceranger count` command aligns the reads in the FASTQ files against a transcriptomic reference and provides their spatial location using the oligonucleotide barcode.
+Sequencing facilities often output scRNA-seq data, including spatial scRNA-seq data, in FASTQ format. Because this is Visium HD data from 10X Genomics, we used their proprietary pre-processing software [Space Ranger](https://www.10xgenomics.com/support/software/space-ranger/latest) to process the FASTQ files into a count matrix and other images. The `spaceranger count` command aligns the reads in the FASTQ files against a reference genome and provides their spatial location using the oligonucleotide barcode.
 
 Note that Space Ranger requires a Linux system with at least 32 cores, 64GB of RAM, and 1TB of disk space.
 
@@ -92,7 +92,7 @@ In the Visium HD assay, Space Ranger also bins the data in square of various siz
 -   8µm x 8µm bins
 -   16µm x 16µm bins
 
-Having access to 2μm bins along with matching morphology information provides a great opportunity for reconstructing single cells from the data. However, because the 2µm x 2µm squares (and even the 8µm x 8µm bins) are so small, there is a potential for very **little biological signal to be captured per bin**. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources.
+Having access to 2μm bins along with its matching morphology information provides a great opportunity to reconstruct single cells from the data. However, because the 2µm x 2µm squares (and even the 8µm x 8µm bins) are so small, there is a potential for very **little biological signal to be captured per bin**. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources.
 
 For this lesson, we will use the **16µm x 16µm bins of the cropped Visium HD slide** to run locally on laptops.
 
@@ -178,9 +178,9 @@ options(future.globals.maxSize= 2000000000)
 
 The Seurat object is a custom list-like object that has well-defined spaces to store specific information/data for single-cell experiments, including spatial experiments and Visium HD.
 
-The Seurat package provides a function `Load10X_Spatial()` to easily create a Seurat object from the output of Space Ranger. The `Load10X_Spatial` function takes as input the feature matrix and the low-resolution tissue image from the output of Space Ranger and generates a Seurat object containing both gene-level counts and spatial information.
+The Seurat package provides a function `Load10X_Spatial()` to easily create a Seurat object from the output of Space Ranger. The `Load10X_Spatial` function takes the feature matrix and low-resolution tissue image from the Space Ranger output and generates a Seurat object containing both gene-level counts and spatial information.
 
-**We will not have you run this code**, as this can take some time and the SpaceRanger output files are quite large to share. Instead, you will load the pre-made Seurat object.
+**We will not have you run this code**, as this can take some time and the SpaceRanger output files are too large to share. Instead, you will load the pre-made Seurat object.
 
 ::: {.callout-note collapse="true"}
 # R code used to create the Seurat object
@@ -240,7 +240,7 @@ There are 3 things about our Seurat object printout that would be different if w
 
 # Quality Control
 
-The main objective of quality control is to only keep data from bins that are high-quality. This makes it so that when we cluster our bins, it is easier to identify distinct cell type populations.
+The goal of quality control is to retain only high-quality bins. Once we clean the data, it becomes easier to identify distinct celltype populations when we cluster the bins.
 
 <p align="center">
 
@@ -248,29 +248,29 @@ The main objective of quality control is to only keep data from bins that are hi
 
 </p>
 
-In Visium HD data, the main challenge is in **delineating bins that are poor quality from bins containing reads from less complex cells**. If you expect a particular cell type in your dataset to be less transcriptionally active as compared other cell types in your dataset, the bins underneath this cell type will naturally have fewer detected genes and transcripts. However, having fewer detected genes and transcripts can also be a technical artifact and not a result of biological signal.
+With Visium HD data, the main challenge is **delineating bins that are poor quality from bins containing reads from less complex cells**. If you expect a particular cell type in your dataset to be less transcriptionally active as compared other cell types in your dataset, the bins underneath this cell type will naturally have fewer detected genes and transcripts. However, having fewer detected genes and transcripts can also be a technical artifact and not a result of biological signal.
 
 Various metrics can be used to filter low-quality bins from high-quality ones, including:
 
-| Metric                     | Description                                                                                                                                                                                                                                                                                                                                                                                                          |
-|-------------------|-----------------------------------------------------|
-| UMI counts per bin         | Number of unique transcripts (UMIs) detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                           |
-| Genes detected per bin     | Number of unique genes detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                                        |
-| Complexity (novelty score) | A measure of how diverse the captured transcripts are within a bin. If there are many captured transcripts (high nUMI) but a low number of genes, this suggests repeatedly sequencing a small set of genes (low complexity). Good-quality bins generally have a complexity score above 0.80. The complexity score is computed as: $\text{Complexity Score} = \dfrac{\text{Number of Genes}}{\text{Number of UMIs}}$. |
-| Mitochondrial counts ratio | Identifies bins with potential mitochondrial contamination from dead or dying cells. Poor-quality bins are typically defined as those with a mitochondrial ratio above 0.2, unless high mitochondrial content is expected for the sample. This ratio is computed as: $\text{Mitochondrial Ratio} = \dfrac{\text{Number of reads aligning to mitochondrial genes}}{\text{Total reads}}$.                              |
+| Metric                     | Description                                                                                                                                                                                                                                                                                                                                                                                                               |
+|--------------------|----------------------------------------------------|
+| UMI counts per bin (nCounts)         | Number of unique transcripts (UMIs) detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                                |
+| Genes detected per bin (nGenes)    | Number of unique genes detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                                             |
+| Complexity (novelty score) | A measure of how diverse the captured transcripts are within a bin. If there are many captured transcripts (high nUMI) but a low number of genes, this suggests repeatedly sequencing a small set of genes (low complexity). Good-quality bins generally have a complexity score above 0.80. The complexity score is computed as: <br> $\text{Complexity Score} = \dfrac{\text{Number of Genes}}{\text{Number of UMIs}}$. |
+| Mitochondrial counts ratio | Identifies bins with potential mitochondrial contamination from dead or dying cells. Poor-quality bins are typically defined as those with a mitochondrial ratio above 0.2, unless high mitochondrial content is expected for the sample. This ratio is computed as: <br> $\text{Mitochondrial Ratio} = \dfrac{\text{Number of reads aligning to mitochondrial genes}}{\text{Total reads}}$.                              |
 
 Let's take a quick look at the data and make a decision on whether we need to apply any filtering. We will examine the distributions of UMI counts per bin and genes detected per bin to determine reasonable thresholds for those metrics to implement during QC filtering.
 
 ## Pre-filtering
 
-To create some plots first, we will need to create a metadata object using this command:
+In order to create some plots, we will firt need to create a metadata dataframe using this command:
 
 ```{r}
 #| label: object_meta
 object_meta <- object@meta.data
 ```
 
-Now we can plot the number of UMIs (nCount) and the number of genes (nFeature) side-by-side. For both of the plots, we expect to see a bimodal distribution, with one peak representing bins containing lower-quality cells with fewer genes and UMIs and another peak representing bins containing healthy cells with more genes and UMIs. Ideally, the peak representing lower-quality and dying cells is small and the peak representing healthy cells is large.
+Now we can plot the number of UMIs (nCount) and the number of genes (nFeature) side-by-side. We expect to see a bimodal distribution for both of the plots, with one peak representing bins of lower-quality cells with fewer genes/UMIs and another peak representing bins that contain healthy cells with more genes and UMIs. Ideally, the peak representing lower-quality and dying cells is small and the peak representing healthy cells is large.
 
 ```{r}
 #| label: pre_qc_density
@@ -316,7 +316,7 @@ Using the distribution plots in the app below, what do you think would be good m
 
 ## Post-Filtering
 
-We will apply very minimal filtering here, with nUMI \> 100 and nGene \> 100. It has been shown that low expression can be biologically meaningful for spatial context so we won't be as stringent as we normally are with scRNA-seq.
+We will apply very minimal filtering here, with nUMI \> 100 and nGene \> 100. It has been shown that low expression can be biologically meaningful in a spatial context so we won't be as stringent as we normally are with a scRNA-seq analysis.
 
 ```{r}
 #| label: subset_object
@@ -326,7 +326,7 @@ object_filt <- subset(object,
                                (nFeature_Spatial.016um > 100))
 ```
 
-Now, we can create similar plots with filtered data. As expected, we see that the small left peak in the distribution has vanished, leaving the higher quality bins, which are the majority of the data.
+Now, we can create similar plots with filtered data. As expected, we see that the small left peak in the distribution has vanished, which leaves the higher quality bins that are the majority of the data.
 
 ```{r}
 #| label: post_filt_qc_density
@@ -393,7 +393,7 @@ vln_counts_after | vln_features_after
 
 We see that both distributions have a similar peak but the nUMI distribution has a much longer tail. This is expected, because while the small physical size of the bins means that most genes will be detected only once or twice, a minority of bins under very transcriptionally active cells may exhibit multiple transcripts of the same gene.
 
-Next, we can look at the same metrics and the distribution on the actual image itself. Note that many spots have very few counts, in part due to low cellular density or cell types with low complexity in certain tissue regions.
+Next, we can look at the same metrics and the distribution on the actual image itself. Note that there are many spots with few counts, in part due to low cellular density or cell types with low complexity within certain tissue regions.
 
 ```{r}
 #| label: SpatialFeaturePlot_qc
@@ -413,7 +413,7 @@ image_counts | image_features
 
 # Normalize Data
 
-Normalization is important in order to make expression counts comparable across genes and/or samples. We note that the best normalization methods for spatial data are still being developed and evaluated. In particular, [Bhuva et. al](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7) tested a variety of normalization techniques and found that normalizing by the number of transcripts detected per bin negatively affects spatial domain identification because total detection per bin can represent real biology. We are cognizant of this, but as discussed earlier, it can be challenging to determine whether a bin has few detections because of a technical artifact or biological signal. In the absence of normalization, this lack of signal will strongly affect clustering regardless of whether it is technical or biological. For this reason, we apply a **standard log-transformed library size normalization** to our data.
+Normalization is important in order to make expression counts comparable across genes and/or samples. We note that the best normalization methods for spatial data are still being developed and evaluated. In particular, [Bhuva et. al](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7) tested a variety of normalization techniques and found that normalizing by the number of transcripts detected per bin can negatively affects spatial domain identification because total detection per bin can represent real biology. We are cognizant of this, but as discussed earlier, it can be challenging to determine whether a bin has few detections because of technical artifacts or biological signal. In the absence of normalization, this lack of signal will strongly affect clustering regardless of whether it is technical or biological. For this reason, we apply a **standard log-transformed library size normalization** to our data.
 
 ```{r}
 #| label: NormalizeData
@@ -421,7 +421,7 @@ object_filt <- NormalizeData(object_filt, assay = 'Spatial.016um')
 object_filt
 ```
 
-And we can see that there is now a new `data` layer in the Seurat object.
+And we can now see there is a new `data` layer in the Seurat object.
 
 <p align="center">
 
@@ -431,7 +431,7 @@ And we can see that there is now a new `data` layer in the Seurat object.
 
 # Unsupervised Clustering
 
-The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow because it exhibits improved performance for large datasets, especially for identifying rare and spatially-restricted groups. Sketch-based analyses aim to "subsample" large datasets in a way that preserves rare populations.
+The authors of the Seurat package recommend the Seurat v5 sketch clustering workflow because it exhibits improved performance for large datasets, particularly for identifying rare and spatially-restricted groups. Sketch-based analyses aim to "subsample" large datasets in a way that preserves rare populations.
 
 <p align="center">
 
@@ -441,7 +441,7 @@ The authors of the Seurat package recommend the Seurat v5 sketch clustering work
 
 ## Highly Variable Genes (HVGs)
 
-We will start by defining a set of highly variable genes. *Note that this is being done on all bins in our object.* Using this list of genes will help us to quantify the variability and similarity between bins. Essentially, we are looking at genes with high levels of variance while also accounting for the average expression. In doing so, we get a list of genes ranked by how much they change across different cell populations.
+We will start by defining a set of highly variable genes. *Note that this is being done on all bins within our Seurat object.* Using this list of genes will help us to quantify the variability and similarity between bins. Essentially, we are looking at genes with high levels of variance while also accounting for the average expression. In doing so, we get a list of genes ranked by how much they change across different cell populations.
 
 ```{r}
 #| label: filt_FindVariableFeatures
@@ -457,13 +457,13 @@ When we examine our Seurat object, we can see that `FindVariableFeatures()` has 
 
 </p>
 
-And we can even take a look at what the top 15 most variables features are for the entire dataset. We would anticipate that these genes correspond to the celltypes in our dataset.
+And we can see what the top variables features are for the entire dataset. We would anticipate that these genes correspond to the celltypes in our dataset.
 
 ```{r}
 VariableFeatures(object_filt)[1:15]
 ```
 
-If we read more about the gene [Ttr](https://www.genecards.org/cgi-bin/carddisp.pl?gene=TTR), we can learn that it is "highly expressed in choroid plexus epithelial cells". If we were to continue looking at the top variable genes, we would hope to see more genes with experimental or celltype specific relevance.
+If we look into the gene [Ttr](https://www.genecards.org/cgi-bin/carddisp.pl?gene=TTR), we can learn that it is "highly expressed in choroid plexus epithelial cells". If continue looking at the top variable genes, we would hope to see more genes with experimental or celltype specific relevance.
 
 ## Sketch Downsampling
 
@@ -517,7 +517,7 @@ datatable(object_filt@meta.data %>% head(5))
 Next, we will perform a standard clustering workflow on our sketch of 10,000 cells:
 
 | Function                 | Description                                                                                                                                                          |
-|--------------------|----------------------------------------------------|
+|---------------------|---------------------------------------------------|
 | `FindVariableFeatures()` | As before, this generates a list of highly variable genes.                                                                                                           |
 | `ScaleData()`            | Highly variable genes will be confounded with the most highly expressed genes, so we need to adjust for this.                                                        |
 | `RunPCA()`               | Perform a principal component analysis using our scaled data and variable genes. This will emphasize variation in gene expression as well as similarity across bins. |
