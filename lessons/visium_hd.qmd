@@ -656,7 +656,7 @@ Should return:
 
 ## Project Clusters Back to Entire Dataset
 
-Now that we have our clusters and dimensional reductions from our sketched dataset, we need to extend these to the full dataset. The `ProjectData` function projects all the bins in the dataset (the `Spatial.016um` assay) onto the `sketch` assay.
+Now that we have our clusters and dimensional reductions from our sketched dataset, we need to extend these to the full dataset. The `ProjectData` function projects all the bins in the dataset (the `Spatial.016um` assay) into the low dimensional space learned from the `sketch` assay.
 
 ```{r}
 #| label: ProjectData
@@ -687,7 +687,7 @@ We can now see the additional full-dataset reductions in the object.
 
 </p>
 
-Note that a score for the projection of each bin will be saved as a column in the metadata. Actually opening up the metadata again gives the opportunity to look at the `seurat_cluster.sketched` column and see many NA values, because it was only calculated for 10,000 bins. The `seurat_cluster.projected` shows values for every bin.
+Note that a score for the projection of each bin will be saved as a column in the metadata. If we view the metadata again, we'll see that the `seurat_cluster.sketched` column contains many NA values (because it was only calculated for 10,000 bins), whereas the `seurat_cluster.projected` column has a value for every bin.
 
 ```{r}
 #| eval: false
@@ -702,7 +702,7 @@ datatable(object_filt@meta.data %>% head(5))
 
 ### Visualizing the Projected Clusters on UMAP
 
-We can now visualize our clusters from the projected assignments. The UMAP plot now contains more points, which is expected because we are now visualizing the full dataset rather than our 10,000 bin sketch. Nonetheless, we can see that the full dataset is still well-represented by the projected dimensional reduction and clustering.
+We can now visualize our clusters from the projected assignments. The UMAP plot contains more points, which is expected because we are now visualizing the full dataset rather than our 10,000 bin sketch. Nonetheless, we can see that the full dataset is still well-represented by the projected dimensional reduction and clustering.
 
 ```{r}
 # switch to full dataset assay
@@ -719,7 +719,7 @@ DimPlot(object_filt, reduction = "full.umap.sketch", label = T,
 
 ### Visualizing Projected Clusters on the Image
 
-In order to see the clusters superimposed on our image we can use the `SpatialDimPlot()` function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically rather than lexicographically in the figure.
+To visualize the clusters superimposed on our image, we can use the `SpatialDimPlot()` function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically rather than lexicographically in the figure.
 
 ```{r}
 # Sort clusters so they get listed in numerical order
@@ -746,7 +746,7 @@ image_seurat_clusters
 
 # Spatially-informed Clustering
 
-[BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual bin's expression pattern but also the mean and the gradient of gene expression levels in a bin's broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.
+[BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual bin's expression profile but also the mean and the gradient of gene expression levels in a bin's broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.
 
 We use the `RunBanksy` function to create a new "BANKSY" assay based on a default of the 4,000 most highly variable features, which can be used for dimensionality reduction and clustering. Two parameters of importance are:
 
