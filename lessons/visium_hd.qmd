@@ -591,9 +591,9 @@ DimHeatmap(object_filt,
 
 ### Neighborhoods and Clusters
 
-To group our bins together, the first step is to construct a K-nearest neighbor (KNN) graph based on the PCA space. Where edges are drawn between bins with similar features expression patterns. Then, edge weights are refined between any two bins based on shared overlap in their local neighborhoods.
+To group bins into clusters, the first step is to construct a K-nearest neighbor (KNN) graph based on the PCA space, where edges are drawn between bins with similar gene expression profiles. Then, edge weights are refined between any two bins based on shared overlap in their local neighborhoods.
 
-From these neighborhoods, the `FindClusters()` function will iteratively group bins together using the Louvain algorithm. The size of clusters is determined by the `resolution` parameter. Larger resolution values lead to a more clusters, which is often required for big datasets. Typically you would test a variety of different cluster resolutions to see which best represents the different cell states in your dataset.
+From these neighborhoods, the `FindClusters()` function will iteratively group bins together using the Louvain algorithm. The size of the clusters is determined by the `resolution` parameter. Higher resolution values produce a larger number of smaller clusters, which is often necessary for big or complex datasets. Typically, you would test multiple different cluster resolutions to see which best represents the different cell states in your dataset.
 
 Here we are going to use `resolution = 0.65`.
 
@@ -626,7 +626,7 @@ Why are there so many `NA` values in our results?
 
 ### UMAP
 
-Finally, let's create a UMAP using the principal components as input. UMAP is a method that aims to place cells with similar local neighborhoods in high-dimensional space together in low-dimensional space, which is useful for visualizing our newly calculated clusters. We observe good separation between groups annotated as separate clusters, which is sign that our clustering indeed represents various cell types.
+Finally, let's construct a UMAP embedding using the principal components as input. UMAP is a nonlinear dimensionality reduction method that preserves local neighbourhood structure, placing bins that are similar in high-dimensional expression space together in a low-dimensional representation. This is useful for visualizing our newly calculated clusters. We observe clear separation between bins assigned to different clusters, which is sign that our clustering captures biologically distinct cell types or states.
 
 ```{r}
 #| label: filt_sketch_umap
