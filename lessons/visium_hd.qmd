@@ -263,7 +263,7 @@ Let's take a quick look at the data and make a decision on whether we need to ap
 
 ## Pre-filtering
 
-In order to create some plots, we will firt need to create a metadata dataframe using this command:
+In order to create some plots, we will first need to create a metadata dataframe using this command:
 
 ```{r}
 #| label: object_meta
@@ -413,7 +413,9 @@ image_counts | image_features
 
 # Normalize Data
 
-Normalization is important in order to make expression counts comparable across genes and/or samples. We note that the best normalization methods for spatial data are still being developed and evaluated. In particular, [Bhuva et. al](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7) tested a variety of normalization techniques and found that normalizing by the number of transcripts detected per bin can negatively affects spatial domain identification because total detection per bin can represent real biology. We are cognizant of this, but as discussed earlier, it can be challenging to determine whether a bin has few detections because of technical artifacts or biological signal. In the absence of normalization, this lack of signal will strongly affect clustering regardless of whether it is technical or biological. For this reason, we apply a **standard log-transformed library size normalization** to our data.
+Normalization is an important step for making expression counts comparable across genes and/or samples. We note that optimal normalization stategies for spatial transcriptomics data are still being developed and evaluated. In particular, [Bhuva et. al](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7) tested a number of normalization techniques and found that normalizing by the total number of transcripts detected per bin can negatively impact spatial domain identification, as variation in total detection can represent geniune biological structure rather than technical noise. 
+
+We are cognizant of this, but as discussed earlier, it can be challenging to determine whether low transcript counts in a given bin arise from biological differences or from technical factors such as capture efficiency. In the absence of normalization, bins with low overall signal can strongly influence clustering, regardless of whether the cause is technical or biological. For this reason, we apply a **standard log-transformed library size normalization** to our data to mitigate extreme differences in total counts and stabilize the data for downstream analysis.
 
 ```{r}
 #| label: NormalizeData
@@ -575,7 +577,7 @@ object_filt <- RunPCA(object_filt, assay = "sketch",
                       reduction.name = "pca.sketch")
 ```
 
-One way of exploring the PCs is using a heatmap to visualize the most variant genes for select PCs with the genes and bins ordered by PC scores. The idea here is to look at the PCs and determine whether the genes driving them make sense for differentiating the different cell types. Where we would expect to see a large differences in the genes that have positive versus negative scores.
+One way to explore the PCs is to use heatmaps to visualize the most variant genes for select PCs. For each PC, genes with the strongest positive or negative loadings are shown, while spatial bins are ordered by their PC scores. The idea here is to look at the PCs and assess whether the genes driving each PC meaningfully distinguish different cell types, as reflected by differences between bins with positive versus negative PC scores.
 
 ```{r}
 # TODO: is this a helpful visualization??
