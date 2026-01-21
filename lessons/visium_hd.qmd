@@ -34,16 +34,16 @@ Visium HD matches the 6.5 × 6.5 mm imaging area of the earlier Visium platform 
 
 </p>
 
-The single-digit micron resolution is a big technological improvement over original Visium's original ∼55μm spots. Because a single spot can include several cell types, the dataset is not straightforward to annotate. As a result, many methods model each spot as a mixture, assigning proportion values for each cell type within that spot. Each spot is represented as a piechart showing proportions of the cell type composition.
+The single-digit micron resolution is a big technological improvement over Visium's original ∼55μm spots. Because a single spot can include several cell types, the dataset is not straightforward to annotate. As a result, many methods model each spot as a mixture, assigning proportion values for each cell type within that spot. Each spot is represented as a piechart showing proportions of the cell type composition.
 
 ![[Ma, Y., et al. Nat Biotechnol (2022)](https://www.nature.com/articles/s41587-022-01273-7), Figure 1](../img/card_deconvolution.png){width="50%"}
 
-While Visium HD has reduced the size of bins to achieve near single-cell level, it is important to bear in mind that these sequencing-based technologies can capture more than one cell in a spot. This information is important for downstream steps, such as differential gene expression, as now there are multiplets to contend with.
+While Visium HD reduces bin size to approach single-cell resolution, it is important to note that sequencing-based spatial transcriptomics captures RNA from a defined spatial area rather than from isolated cells. As a result, transcripts from multiple cells overlapping a bin can be pooled and sequenced together. This means that even small bins may contain mixed cellular signals, which has important implications for downstream analyses such as differential gene expression.
 
 ::: {.callout-note collapse="true"}
 # Imaging-based technologies
 
-These methods utilize fluoresence to quantify gene expression on a tissue slide. Specifically utilizing fluoresence in situ hybridization (FISH) to measure expression of a select panel of genes (selected by the researcher) using **probes**. Therefore we are able to evaluate the expression for each individual cell after segmentation.
+These methods use fluoresence to quantify gene expression directly on a tissue section. They rely on fluoresence _in situ_ hybridization (FISH) to measure the expression of a select panel of genes (chosen by the researcher) using **probes**. Since transcripts are detected within intact cells, expression values can be assigned to individual cells following cell segmentation.
 
 Some popular imaging-based technologies include:
 
@@ -86,13 +86,13 @@ When `spaceranger count` completes successfully, it will generate a variety of o
 
 </p>
 
-In the Visium HD assay, Space Ranger also bins the data in square of various sizes, including:
+In the Visium HD assay, Space Ranger aggregates transcript counts into square spatial bins of different sizes, typically:
 
--   2µm x 2µm bins
--   8µm x 8µm bins
--   16µm x 16µm bins
+-   2µm x 2µm 
+-   8µm x 8µm
+-   16µm x 16µm
 
-Having access to 2μm bins along with its matching morphology information provides a great opportunity to reconstruct single cells from the data. However, because the 2µm x 2µm squares (and even the 8µm x 8µm bins) are so small, there is a potential for very **little biological signal to be captured per bin**. Additionally, the sheer number of bins at these higher resolutions can present challenges in terms of computational time and resources.
+Having access to 2μm bins, along with matched high-resolution tissue morphology, provides a great opportunity to reconstruct single cells from the data. However, because the 2µm x 2µm bins (and even the 8µm x 8µm bins) are very small, there is a potential for very **little biological signal to be captured per bin**. Additionally, the sheer number of bins at these higher resolutions can substantially increase computational demands in terms of memory usage and processing time.
 
 For this lesson, we will use the **16µm x 16µm bins of the cropped Visium HD slide** to run locally on laptops.
 
