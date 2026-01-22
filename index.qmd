@@ -88,7 +88,7 @@ BiocManager::install("bluster")
 BiocManager::install("BiocParallel")
 BiocManager::install("Voyager")
 BiocManager::install("glmGamPoi")
-BiocManager::install("pachterlab/SpatialFeatureExperiment", ref = "devel")
+BiocManager::install("SpatialFeatureExperiment")
 BiocManager::install("scattermore")
 BiocManager::install("sfarrow")
 ```
