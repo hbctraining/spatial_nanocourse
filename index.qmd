@@ -60,9 +60,7 @@ If you see this, **type "a" at the prompt and hit Enter** to update any old pack
 **(1)** Install the following packages with **CRAN** using the `install.packages()` function:
 
 ```{r}
-install.packages("fastverse")
 install.packages("ggplot2")
-install.packages("pals")
 install.packages("tidyverse")
 install.packages("Seurat")
 install.packages("patchwork")
@@ -80,12 +78,9 @@ install.packages("BiocManager")
 ```{r}
 library(BiocManager)
 
-BiocManager::install("SFEData")
 BiocManager::install("scuttle")
 BiocManager::install("scater")
-BiocManager::install("scran")
 BiocManager::install("bluster")
-BiocManager::install("BiocParallel")
 BiocManager::install("Voyager")
 BiocManager::install("glmGamPoi")
 BiocManager::install("SpatialFeatureExperiment")
@@ -110,16 +105,11 @@ devtools::install_github("dmcable/spacexr", build_vignettes = FALSE)
 
 ```{r}
 library(SpatialFeatureExperiment)
-library(SFEData)
 library(scuttle)
 library(scater)
-library(scran)
 library(bluster)
-library(BiocParallel)
 library(Voyager)
-library(fastverse)
 library(ggplot2)
-library(pals)
 library(tidyverse)
 library(Seurat)
 library(patchwork)
