@@ -22,9 +22,7 @@ This repository contains materials for a module which is part of a Nanocourse or
 * Use Seurat and associated tools to perform analysis of spatial transcriptomics data, including QC metric evaluation, normalization, clustering, and marker identification
 
 ### Dataset
-The dataset which is used in the pre-reading activities can be found at the link below.
-
-[Visium HD Dataset]()
+The dataset is located in "Dataset for workshop" -\> "Day 1- NGS-based- VisiumHD" in the course DropBox.
 
 ### Lessons
 
