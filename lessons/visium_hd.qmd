@@ -24,13 +24,13 @@ Approximate time: 2 hours and 45 minutes
 
 ## Mouse Brain Visium HD Dataset
 
-The Visium HD platform is compatible with human and mouse fresh frozen, fixed frozen, and formalin-fixed paraffin-embedded (FFPE) tissue sections. For this lesson, we will be working with data from a **fresh frozen coronal section of a mouse brain** sample.
+The Visium HD platform is compatible with human and mouse fresh frozen, fixed frozen, and formalin-fixed paraffin-embedded (FFPE) tissue sections. For this lesson, we will be working with data from a **fresh frozen coronal section of a mouse brain** sample. The end goal of this exercise to annotate the cortical layers.
 
 Visium HD matches the 6.5 × 6.5 mm imaging area of the earlier Visium platform but now achieves higher resolution by dividing that area into 11 million tiles. These 2µm x 2µm squares are arrayed in a continuous lawn across the entire capture area. The squares are each uniquely barcoded with an oligonucleotide and contain probes allowing for the detection of the full coding transcriptome. As such, Visium HD is categorized as a **sequencing-based technology**.
 
 <p align="center">
 
-<img src="../img/visium_hd_slide_graphic.png" width="800"/>
+![[10x Visium HD Spatial Gene Expression Manual](https://cdn.10xgenomics.com/image/upload/v1756507345/support-documents/CG000685_VisiumHD_GeneExpression_UserGuide_RevD.pdf)](../img/visium_hd_slide_graphic.png){width="800"}
 
 </p>
 
@@ -43,7 +43,7 @@ While Visium HD reduces bin size to approach single-cell resolution, it is impor
 ::: {.callout-note collapse="true"}
 # Imaging-based technologies
 
-These methods use fluoresence to quantify gene expression directly on a tissue section. They rely on fluoresence _in situ_ hybridization (FISH) to measure the expression of a select panel of genes (chosen by the researcher) using **probes**. Since transcripts are detected within intact cells, expression values can be assigned to individual cells following cell segmentation.
+These methods use fluoresence to quantify gene expression directly on a tissue section. They rely on fluoresence *in situ* hybridization (FISH) to measure the expression of a select panel of genes (chosen by the researcher) using **probes**. Since transcripts are detected within intact cells, expression values can be assigned to individual cells following cell segmentation.
 
 Some popular imaging-based technologies include:
 
@@ -80,15 +80,11 @@ spaceranger count --id=hd_count \
 
 When `spaceranger count` completes successfully, it will generate a variety of outputs (seen below), which will enable the analyst to perform further analysis in R/Python or using the proprietary Loupe browser from 10X Genomics. A good starting point is to take a look at the QC of the sample in the web summary, which we have provided in `reports/` folder that you downloaded.
 
-<p align="center">
-
-<img src="../img/spaceranger_output.svg" alt="spaceranger output" width="600"/>
-
-</p>
+![[10x Space Ranger Documentation](https://www.10xgenomics.com/support/software/space-ranger/2.1/tutorials/count-cytassist-tma)](../img/spaceranger_output.svg){width="600%"}
 
 In the Visium HD assay, Space Ranger aggregates transcript counts into square spatial bins of different sizes, typically:
 
--   2µm x 2µm 
+-   2µm x 2µm
 -   8µm x 8µm
 -   16µm x 16µm
 
@@ -115,7 +111,7 @@ For this module, we will be working within an RStudio project. In order to follo
 ::: callout-important
 # Where to download the data
 
-If you haven't done this already, the project is located in "Dataset for workshop" -\> "Day 2- NGS-based- VisiumHD" in the course DropBox.
+If you haven't done this already, the project is located in "Dataset for workshop" -\> "Day 1- NGS-based- VisiumHD" in the course DropBox.
 :::
 
 Once downloaded, you should see a file called `visiumHD_nanocourse.zip` on your computer (likely, in your `Downloads` folder).
@@ -201,11 +197,7 @@ Let's read in the Seurat object and talk about some very basic slots that we wil
 
 ```{r}
 #| label: qread_object
-# TODO: was having some issues with the seurat object at the filtration step - very odd behavior
 # Load in Seurat object
-# object <- qread('data_processed/MsBrain_FF-A1_subset.qs')
-# object <- UpdateSeuratObject(object)
-
 object <- readRDS("data_processed/MsBrain_FF-A1_subset_updated.rds")
 ```
 
@@ -252,12 +244,12 @@ With Visium HD data, the main challenge is **delineating bins that are poor qual
 
 Various metrics can be used to filter low-quality bins from high-quality ones, including:
 
-| Metric                     | Description                                                                                                                                                                                                                                                                                                                                                                                                               |
-|--------------------|----------------------------------------------------|
-| UMI counts per bin (nCounts)         | Number of unique transcripts (UMIs) detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                                |
-| Genes detected per bin (nGenes)    | Number of unique genes detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                                             |
-| Complexity (novelty score) | A measure of how diverse the captured transcripts are within a bin. If there are many captured transcripts (high nUMI) but a low number of genes, this suggests repeatedly sequencing a small set of genes (low complexity). Good-quality bins generally have a complexity score above 0.80. The complexity score is computed as: <br> $\text{Complexity Score} = \dfrac{\text{Number of Genes}}{\text{Number of UMIs}}$. |
-| Mitochondrial counts ratio | Identifies bins with potential mitochondrial contamination from dead or dying cells. Poor-quality bins are typically defined as those with a mitochondrial ratio above 0.2, unless high mitochondrial content is expected for the sample. This ratio is computed as: <br> $\text{Mitochondrial Ratio} = \dfrac{\text{Number of reads aligning to mitochondrial genes}}{\text{Total reads}}$.                              |
+| Metric                          | Description                                                                                                                                                                                                                                                                                                                                                                                                               |
+|---------------------|---------------------------------------------------|
+| UMI counts per bin (nCounts)    | Number of unique transcripts (UMIs) detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                                |
+| Genes detected per bin (nGenes) | Number of unique genes detected per bin. Because the bins are very small, this number is lower than what is typically observed in non-spatial scRNA-seq data.                                                                                                                                                                                                                                                             |
+| Complexity (novelty score)      | A measure of how diverse the captured transcripts are within a bin. If there are many captured transcripts (high nUMI) but a low number of genes, this suggests repeatedly sequencing a small set of genes (low complexity). Good-quality bins generally have a complexity score above 0.80. The complexity score is computed as: <br> $\text{Complexity Score} = \dfrac{\log_{10}(\text{Number of Genes})}{\log_{10}(\text{Number of UMIs})}$. |
+| Mitochondrial counts ratio      | Identifies bins with potential mitochondrial contamination from dead or dying cells. Poor-quality bins are typically defined as those with a mitochondrial ratio above 0.2, unless high mitochondrial content is expected for the sample. This ratio is computed as: <br> $\text{Mitochondrial Ratio} = \dfrac{\text{Number of reads aligning to mitochondrial genes}}{\text{Total reads}}$.                              |
 
 Let's take a quick look at the data and make a decision on whether we need to apply any filtering. We will examine the distributions of UMI counts per bin and genes detected per bin to determine reasonable thresholds for those metrics to implement during QC filtering.
 
@@ -413,7 +405,7 @@ image_counts | image_features
 
 # Normalize Data
 
-Normalization is an important step for making expression counts comparable across genes and/or samples. We note that optimal normalization stategies for spatial transcriptomics data are still being developed and evaluated. In particular, [Bhuva et. al](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7) tested a number of normalization techniques and found that normalizing by the total number of transcripts detected per bin can negatively impact spatial domain identification, as variation in total detection can represent geniune biological structure rather than technical noise. 
+Normalization is an important step for making expression counts comparable across genes and/or samples. We note that optimal normalization stategies for spatial transcriptomics data are still being developed and evaluated. In particular, [Bhuva et. al](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-024-03241-7) tested a number of normalization techniques and found that normalizing by the total number of transcripts detected per bin can negatively impact spatial domain identification, as variation in total detection can represent geniune biological structure rather than technical noise.
 
 We are cognizant of this, but as discussed earlier, it can be challenging to determine whether low transcript counts in a given bin arise from biological differences or from technical factors such as capture efficiency. In the absence of normalization, bins with low overall signal can strongly influence clustering, regardless of whether the cause is technical or biological. For this reason, we apply a **standard log-transformed library size normalization** to our data to mitigate extreme differences in total counts and stabilize the data for downstream analysis.
 
@@ -469,9 +461,9 @@ If we look into the gene [Ttr](https://www.genecards.org/cgi-bin/carddisp.pl?gen
 
 ## Sketch Downsampling
 
-Next, we select 10,000 cells and create a new sub-sampled "sketch" assay using the `SketchData()` function. The function takes a normalized single-cell dataset containing a set of variable features and returns a Seurat object with a new assay (sketch), consisting of 10,000 bins selected based off a "leverage score" for each bin.
+Next, we select 10,000 cells and create a new sub-sampled "sketch" assay using the `SketchData()` function. The function takes a normalized single-cell dataset containing a set of variable features and returns a Seurat object with a new assay (sketch), which consists of 10,000 bins selected based on a "leverage score" for each bin.
 
-The leverage score reflects the magnitude of its contribution to the gene-covariance matrix, and its importance to the overall dataset, with rare populations earning a higher leverage score. This means that our 10,000 cells selected for the sketch will oversample rare populations, retaining the biological complexity of the sample, while drastically compressing the dataset.
+The leverage score reflects the magnitude of the bin's contribution to the gene-covariance matrix, and its importance to the overall dataset, with rare populations earning a higher leverage score. As a result, the 10,000 bins we selected for with the sketch oversamples rare populations, retaining the biological complexity of the sample, while drastically compressing the dataset.
 
 ```{r}
 # we select 10,000 cells and create a new 'sketch' assay
@@ -486,11 +478,11 @@ object_filt <- SketchData(
 object_filt
 ```
 
-We see that there are four major changes that have taken place in our Seurat object:
+We can see that there are four major changes that have taken place in our Seurat object:
 
--   The number of features in the second line has double, because we have added a new assay
+-   The number of features in the second line has doubled, because we have added a new assay
 -   Accordingly, the number of assays has increased from one to two
--   The active assay has change from `Spatial.016um` to `sketch`
+-   The active assay has changed from `Spatial.016um` to `sketch`
 -   There is a new line listing additional assays that exist in the Seurat object
 
 <p align="center">
@@ -519,9 +511,9 @@ datatable(object_filt@meta.data %>% head(5))
 Next, we will perform a standard clustering workflow on our sketch of 10,000 cells:
 
 | Function                 | Description                                                                                                                                                          |
-|---------------------|---------------------------------------------------|
+|----------------------|--------------------------------------------------|
 | `FindVariableFeatures()` | As before, this generates a list of highly variable genes.                                                                                                           |
-| `ScaleData()`            | Highly variable genes will be confounded with the most highly expressed genes, so we need to adjust for this.                                                        |
+| `ScaleData()`            | Highly variable genes will be confounded with the most highly expressed genes, so we need to adjust for this by scaling and centering the normalized counts.         |
 | `RunPCA()`               | Perform a principal component analysis using our scaled data and variable genes. This will emphasize variation in gene expression as well as similarity across bins. |
 | `FindNeighbors()`        | Determine the Euclidean distance between bins in PCA space.                                                                                                          |
 | `FindClusters()`         | Iteratively group bins together based on neighborhood distances. Higher resolution will yield more groups.                                                           |
@@ -540,7 +532,7 @@ These steps are all a part the standard single-cell RNA-seq workflow. For more d
 
 ### Variable Features
 
-We calculate the HVGs to use as input for the next step, which is PCA. We can also visualize each gene's average expression across the bins on the x-axis and variance on the y-axis.
+We will calculate the HVGs to use as inputs for Principal Component Analysis (PCA) for the next step. We can also visualize each gene's average expression across the bins on the x-axis and variance on the y-axis.
 
 ```{r}
 #| label: sketch_FindVariableFeatures
@@ -566,9 +558,9 @@ You may notice that the top variable features are slightly different from when w
 
 ### PCA
 
-Principal Component Analysis (PCA) is a technique used to emphasize variation as well as similarity, and to bring out strong patterns in a dataset; it is one of the methods used for *dimensionality reduction*. Ultimately what we have calculated with PCA are values that can represent how similar bins are to one another.
+Principal Component Analysis (PCA) is a technique used to emphasize both variation and similarity to reveal strong patterns within a dataset. It is one of the methods used for *dimensionality reduction*. PCA calculates values that represent how similar bins are to one another.
 
-We would expect that bins with similar gene expression will have similar PC values. For example, we would anticipate that two Fibroblast cells would have comparable gene expression - which would also results in similar scores in principal components. This is why many of the downstream steps in the remainder of this lesson use PCA as the input.
+We would expect that bins with similar gene expression will have similar PC values. For example, we would anticipate that two Fibroblast cells would have comparable gene expression - which would result in similar scores in their principal components. This is why many of the downstream steps in the remainder of this lesson use PCA as the input.
 
 ```{r}
 #| label: sketch_RunPCA
@@ -577,10 +569,9 @@ object_filt <- RunPCA(object_filt, assay = "sketch",
                       reduction.name = "pca.sketch")
 ```
 
-One way to explore the PCs is to use heatmaps to visualize the most variant genes for select PCs. For each PC, genes with the strongest positive or negative loadings are shown, while spatial bins are ordered by their PC scores. The idea here is to look at the PCs and assess whether the genes driving each PC meaningfully distinguish different cell types, as reflected by differences between bins with positive versus negative PC scores.
+We can explore the PCs using heatmaps to explore how each principal component (PC) relates to gene expression. For each PC, we show the genes with the strongest positive and negative loadings (with bins ordered by PC scores). This lets us see whether the genes that drive a given PC separate different cell types, as indicated by contrasting expression patterns between bins with high (positive) and low (negative) PC scores.
 
 ```{r}
-# TODO: is this a helpful visualization??
 # Explore heatmap of PCs 
 DimHeatmap(object_filt, 
            reduction = "pca.sketch",
@@ -591,9 +582,9 @@ DimHeatmap(object_filt,
 
 ### Neighborhoods and Clusters
 
-To group bins into clusters, the first step is to construct a K-nearest neighbor (KNN) graph based on the PCA space, where edges are drawn between bins with similar gene expression profiles. Then, edge weights are refined between any two bins based on shared overlap in their local neighborhoods.
+In order to properly group our bins together, we first construct a K-nearest neighbor (KNN) graph based on the PCA space; where edges are drawn between bins with similar gene expression profiles. Then, we refine edge weights between any two bins based on shared overlap within their local neighborhoods.
 
-From these neighborhoods, the `FindClusters()` function will iteratively group bins together using the Louvain algorithm. The size of the clusters is determined by the `resolution` parameter. Higher resolution values produce a larger number of smaller clusters, which is often necessary for big or complex datasets. Typically, you would test multiple different cluster resolutions to see which best represents the different cell states in your dataset.
+From these neighborhoods, the `FindClusters()` function iteratively groups bins together using the Louvain algorithm. The size of the clusters is determined by the `resolution` parameter. Higher resolution values produce a larger number of smaller clusters, which big datasets often require. Typically, you would test multiple different cluster resolutions to find a resolution that represents the different cell states in the dataset.
 
 Here we are going to use `resolution = 0.65`.
 
@@ -640,13 +631,11 @@ DimPlot(object_filt, reduction = "umap.sketch",
   ggtitle("Sketched clustering") + NoLegend()
 ```
 
-We can also examine our object after these manipulations and note the addition of the scale.data layer as well as the sketch PCA and UMAP dimensional reductions.
+We can also examine our object after these manipulations and note the additions of the `scale.data` layer as well as the sketch PCA and UMAP dimensional reductions.
 
 ```{r}
 object_filt
 ```
-
-Should return:
 
 <p align="center">
 
@@ -656,7 +645,7 @@ Should return:
 
 ## Project Clusters Back to Entire Dataset
 
-Now that we have our clusters and dimensional reductions from our sketched dataset, we need to extend these to the full dataset. The `ProjectData` function projects all the bins in the dataset (the `Spatial.016um` assay) into the low dimensional space learned from the `sketch` assay.
+Now that we have our clusters and dimensional reductions from our sketched dataset, we next need to extend these to the full dataset. The `ProjectData` function projects all the bins in the dataset (the `Spatial.016um` assay) into the low dimensional space learned from the `sketch` assay.
 
 ```{r}
 #| label: ProjectData
@@ -673,7 +662,7 @@ object_filt <- ProjectData(
 object_filt
 ```
 
-Using the sketch PCA and UMAP, the `ProjectData` function returns a Seurat object that includes:
+The `ProjectData` function uses the sketch PCA and UMAP to return a Seurat object that includes:
 
 -   **Dimensional reduction (PCA)** - The `full.pca.sketch` dimensional reduction extends the PCA reduction on the sketched cells to all bins in the dataset
 -   **Dimensional reduction (UMAP)** - The `full.umap.sketch` dimensional reduction extends the UMAP reduction on the sketched cells to all bins in the dataset
@@ -687,7 +676,7 @@ We can now see the additional full-dataset reductions in the object.
 
 </p>
 
-Note that a score for the projection of each bin will be saved as a column in the metadata. If we view the metadata again, we'll see that the `seurat_cluster.sketched` column contains many NA values (because it was only calculated for 10,000 bins), whereas the `seurat_cluster.projected` column has a value for every bin.
+Note that a score for the projection of each bin will be saved as a column in the metadata. If we view the metadata again, we'll see that the `seurat_cluster.sketched` column contains many NA values because the clusters were only calculated for 10,000 bins.
 
 ```{r}
 #| eval: false
@@ -702,7 +691,7 @@ datatable(object_filt@meta.data %>% head(5))
 
 ### Visualizing the Projected Clusters on UMAP
 
-We can now visualize our clusters from the projected assignments. The UMAP plot contains more points, which is expected because we are now visualizing the full dataset rather than our 10,000 bin sketch. Nonetheless, we can see that the full dataset is still well-represented by the projected dimensional reduction and clustering.
+We can now visualize our clusters from the projected assignments. The UMAP plot contains more points, as expected because we are now visualizing the full dataset rather than our 10,000 bin sketch. Nonetheless, we can see that the full dataset is still well-represented by the projected dimensional reduction and clustering.
 
 ```{r}
 # switch to full dataset assay
@@ -719,7 +708,7 @@ DimPlot(object_filt, reduction = "full.umap.sketch", label = T,
 
 ### Visualizing Projected Clusters on the Image
 
-To visualize the clusters superimposed on our image, we can use the `SpatialDimPlot()` function. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically rather than lexicographically in the figure.
+We can use the `SpatialDimPlot()` function to see the clusters superimposed on our spatial slide. We will also set the color palette and convert the cluster assignments to a factor so they are ordered numerically rather than lexicographically in the figure.
 
 ```{r}
 # Sort clusters so they get listed in numerical order
@@ -746,9 +735,11 @@ image_seurat_clusters
 
 # Spatially-informed Clustering
 
-[BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method for performing clustering. Unlike Seurat, BANKSY takes into account not only an individual bin's expression profile but also the mean and the gradient of gene expression levels in a bin's broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.
+Recall that our aim is to **annotate the cortical layers** in our dataset. These layers are well defined by their spatial location so it makes sense to utilize a tool that allows us to pick up signal in spatially restricted regions.
 
-We use the `RunBanksy` function to create a new "BANKSY" assay based on a default of the 4,000 most highly variable features, which can be used for dimensionality reduction and clustering. Two parameters of importance are:
+[BANKSY](https://www.nature.com/articles/s41588-024-01664-3) is another method used to perform clustering. Unlike Louvain and Leiden clustering algorithms (`FindClusters()`), BANKSY takes into account both an individual bin's expression profile as well as the mean and the gradient of gene expression levels in a bin's broader neighborhood. This makes it valuable for identifying and defining spatial regions of interest.
+
+We use the `RunBanksy` function to create a new `BANKSY` assay based on the 4,000 most highly variable features, which can be used for dimensionality reduction and clustering. Two parameters of importance are:
 
 -   `k_geom` - Number of bins to consider for the local neighborhood. Larger values will yield larger domains.
 -   `lambda` - Influence of the neighborhood. Larger values yield more spatially coherent domains. The authors recommend using 0.8 to identify broader spatial domains.
@@ -784,12 +775,14 @@ These new values are then **concatenated to the counts matrix** before running t
 At this point, we have calculated our BANKSY matrix that includes the weighted scores based upon the `lambda` value. We can see this more clearly if we investigate the `Features()` that exist in our BANKSY assay. The first few features are our original counts matrix with genes:
 
 ```{r}
+# First genes in seurat object
 Features(object_filt) %>% head()
 ```
 
 Where we also have "new features" that are our lambda scaled neighborhood weighted values, with an appended `*.m0` to make the distinction clear.
 
 ```{r}
+# Last genes in seurat object
 Features(object_filt) %>% tail()
 ```
 :::
@@ -797,11 +790,14 @@ Features(object_filt) %>% tail()
 And so with our newly calculated BANKSY matrix, we can perform a simplified clustering workflow (PCA, neighbors, clustering):
 
 ```{r}
+# PCA
 object_filt <- RunPCA(object_filt, assay = "BANKSY", 
                       reduction.name = "pca.banksy", 
                       features = rownames(object_filt), npcs = 30)
+# kNN
 object_filt <- FindNeighbors(object_filt, reduction = "pca.banksy", 
                              dims = 1:30)
+# Clustering
 object_filt <- FindClusters(object_filt, cluster.name = "banksy_cluster",
                             resolution = 0.5)
 ```
@@ -825,31 +821,44 @@ image_banksy_clusters <- SpatialDimPlot(object_filt, group.by = "banksy_cluster"
 image_seurat_clusters | image_banksy_clusters
 ```
 
-We can see that, as expected, the BANKSY clusters are more spatially-restricted, or more compact, than the Seurat clusters. We also see that the BANKSY clusters are less noisy than the Seurat clusters, likely because of the smoothing effect of considering a cell's spatial neighborhood when assigning a cluster label.
+We can see that the BANKSY clusters are more spatially-restricted (or compact) than the Seurat Louvain clusters, as expected. Additionally BANKSY clusters are less noisy, likely due to the smoothing effect of using a bin's spatial neighborhood when assigning cluster labels.
 
-::: {.callout-note collapse="true"}
+::: callout-tip
+# Exercise
+
+If we had run BANKSY with `lambda = 0.2`, as recommended for cell type clustering instead of `lambda = 0.8` for spatial domain clustering, what do you think would happen?
+
+::: {.callout-tip collapse="true"}
 # BANKSY using a lambda value of 0.2
 
-If we had run BANKSY with `lambda = 0.2`, as recommended for cell type clustering instead of `lambda = 0.8` for spatial domain clustering, the resultant clusters would be less spatially restricted (in other words less compact and more distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using `lamba = 0.2` in BANKSY rather than `lamba = 0.8`.
+The resultant clusters would be less spatially restricted (in other words less compact and more distributed throughout the image) and more similar to our Seurat clustering. Below is a figure using `lamba = 0.2` in BANKSY rather than `lamba = 0.8`.
 
 <p align="center">
 
 <img src="../img/banksy_clustering_lambda_0.2.png" width="450"/>
 
 </p>
+:::
+:::
 
-**When might it make sense to use a lower lambda value?**
+::: {.callout-note collapse="true"}
+# Cases where BANKSY may not work as well
 
-If your tissue contains a lot of striation, where the cells of a celltype do not form a condensed block on the tissue, setting a lower lambda value may be prudent.
+For example, if we assess this Colorectal Cancer sample from [Oliveira, M., et al. Nat Genetics (2025)](https://www.nature.com/articles/s41588-025-02193-3), we see that there is quite a bit of striation in the bottom left of the slide when we visualize the nUMIs for the dataset.
 
-![[Oliveira, M., et al. Nat Genetics (2025)](https://www.nature.com/articles/s41588-025-02193-3), Figure 3](../img/crc_banksy_example.png)
+<img src="../img/crc_nUMI.png" width="300"/>
 
-Here we can see that the red, intestinal epithelial cells have blue, B cells interspersed throughout the tissue. With too high of a `lambda` value, we could force those celltypes to belong to the same cluster due to their close proximity.
+This would indicate to use that there is a population of a unique celltype (in this case tumor cells) that are interspersed with other celltypes. Essentially, the tumor cells do not form a condensed block on the tissue. When comparing the results from running BANKSY with `resolution = 0.8` this piece of information is lost. Conversely, the results from `FindClusters()` appear to retain the structure of these celltypes.
+
+<img src="../img/crc_banksy_clusters.png" width="800"/>
+
+In cases like this, either setting a more lenient lambda value or foregoing the use of BANKSY would best represent the biological signal. It is important to center your analysis choices based upon the biological question that is being asked.
+
 :::
 
 # Cell Type Annotation
 
-Perhaps we are particularly interested in understanding the organization of cell types in the cortical region of the brain.
+The next step in the workflow is to annotate our dataset. In particular, we are interested in the cortical layers of our dataset.
 
 <p align="center">
 
@@ -857,14 +866,18 @@ Perhaps we are particularly interested in understanding the organization of cell
 
 </p>
 
-We first subset our Seurat object to this region of interest. There are multiple ways of subsetting a Seurat object to a region of interest, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we will subset the object to only include cells that are assigned these cluster numbers.
+We will first subset our Seurat object to the region of interest. There are multiple ways of subsetting a Seurat object, but here we have identified a handful of cluster numbers that appear almost exclusively in the cortical region, and we will subset the object to only include cells that are assigned these cluster numbers.
 
 ```{r}
+# Subset object_filt to bins in cluster 18, 19, 7, 2, 4
 cortex <- subset(object_filt, seurat_cluster.projected %in% c(18, 19, 7, 2, 4))
 
+# Create unique color palette
 color_pal <- Seurat::DiscretePalette(n = length(unique(object_filt$seurat_cluster.projected)),
                                     palette = "polychrome")
 names(color_pal) <- sort(unique(object_filt$seurat_cluster.projected))
+
+# Plot clusters (cortical layers only)
 SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected', 
                pt.size.factor = 8, cols = color_pal)
 ```
@@ -875,7 +888,7 @@ SpatialDimPlot(cortex, group.by = 'seurat_cluster.projected',
 Your colors may be different than the ones in the above figure.
 :::
 
-To perform accurate annotation of cell types, we must also take into consideration that our 16µm x 16µm bins may contain one or more cells each. The method [Robust Cell Type Deconvolution](https://www.nature.com/articles/s41587-021-00830-w) (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single bin may exhibit multiple cell type profiles.
+To perform accurate annotation of cell types, we must also take into consideration that our 16µm x 16µm bins may contain multiple cells. The method [Robust Cell Type Deconvolution](https://www.nature.com/articles/s41587-021-00830-w) (RCTD) has been shown to accurately annotate spatial data from a variety of technologies while taking into consideration that a single bin may exhibit multiple cell type profiles.
 
 RCTD takes a cell-type-annotated scRNA-seq dataset as a reference and a spatial dataset as a query. For our reference, we will use a subsampled version of the mouse scRNA-seq dataset from the [Allen Brain Atlas](https://mouse.brain-map.org/static/atlas). We will use our `cortex` Seurat object as the spatial query. As an overview, the process is as follows:
 
@@ -884,9 +897,9 @@ RCTD takes a cell-type-annotated scRNA-seq dataset as a reference and a spatial 
 3.  Apply RCTD to deconvolute the "sketched" cortical cells and annotate them
 4.  Project these annotations onto the full cortical dataset.
 
-## 1) Sketch and process the spatial query dataset
+## Sketch and process the spatial query dataset
 
-As we have subset the dataset, we need to re-run the typical scRNA workflow. This is due to the fact that we would be able to recognize more subtle shifts in these cortex bins as we do not have the rest of the dataset weights to consider anymore.
+Since we have subset the dataset, we now need to re-run the typical scRNA workflow. Without the rest of the bins, we should be able to recognize more subtle shifts in the cortex bins. Therefore, we need re-calculate the variable genes and following steps to clearly delineate the layers.
 
 ```{r}
 # Create sketch of cortex subset
@@ -910,26 +923,32 @@ cortex <- RunUMAP(cortex, reduction = "pca.cortex.sketch",
                   dims = 1:50, verbose = T)
 ```
 
-RCTD requires a unique data structure (similar to Seurat) as input to run. So we create our query object with `SpatialRNA()` by suppling the spatial coordinates and raw counts for our cells.
+RCTD requires a unique data structure (similar to Seurat) as input to run. So we create our query object with `SpatialRNA()` by suppling the spatial coordinates and raw counts for the bins.
 
 ```{r}
-# Create the RCTD query object
-# Only using sketched cells
+# Grab barcodes for sketched bins
 counts_hd <- cortex[["sketch"]]$counts
 cortex_cells_hd <- colnames(cortex[["sketch"]])
+
+# Spatial coordinates for each bin
 coords <- GetTissueCoordinates(cortex)[cortex_cells_hd, 1:2]
+
+# Create the RCTD query object
 query <- SpatialRNA(coords, counts_hd, colSums(counts_hd))
 ```
 
-## 2) Load and format the reference dataset
+## Load and format the reference dataset
 
-After loading our reference dataset, we can take a quick look at the different celltypes that we are going to try annotating our query object with. These values are stored in the column `subclass_label`.
+After loading our reference dataset, we can take a quick look at the different celltypes that we are going to annotate our query object with. For this reference, these annotation values are stored in the column `subclass_label`. Note that this reference dataset was downsampled for ease of loading onto a laptop.
 
 ```{r}
-# Increase amoutn of memory R can use
+# Increase amount of memory R can use
 mem.maxVSize(15000)
+
+# Load Allen Brain reference
 ref_subset <- qread("data_processed/allen_scRNAseq_ref_subset.qs")
 
+# Plot number of cells per celltype
 ggplot(ref_subset@meta.data) +
   geom_bar(aes(x = subclass_label, 
                fill = subclass_label)) +
@@ -940,28 +959,33 @@ ggplot(ref_subset@meta.data) +
 We are going to make another RCTD object out of the reference dataset. This time we use the `Reference()` function and additionally supply `cluster` (celltype) information to transfer to our query.
 
 ```{r}
-Idents(ref_subset) <- "subclass_label"
+# Raw counts of reference dataset
 counts <- ref_subset[["RNA"]]$counts
+
+# Celltype annotation of reference dataset
+Idents(ref_subset) <- "subclass_label"
 cluster <- as.factor(ref_subset$subclass_label)
-nUMI <- ref_subset$nCount_RNA
 levels(cluster) <- gsub("/", "-", levels(cluster))
 cluster <- droplevels(cluster)
 
-# create the RCTD reference object
+# Raw counts of reference dataset
+nUMI <- ref_subset$nCount_RNA
+
+# Create the RCTD reference object
 reference <- Reference(counts, cluster, nUMI)
 ```
 
-## 3) Apply RCTD to deconvolute the "sketched" cortical cells and annotate them
+## Apply RCTD to deconvolute the "sketched" cortical cells and annotate them
 
-Note that `run.RCTD` takes 10-15 minutes to complete on a laptop using 6 cores
+Note that `run.RCTD` takes 10-15 minutes to complete on a laptop using 6 cores.
 
 ```{r}
 #| eval: false
-# run RCTD
+# Run RCTD
 RCTD <- create.RCTD(query, reference, max_cores = 6)
 RCTD <- run.RCTD(RCTD, doublet_mode = "doublet") # this command takes ~15 mins to run
 
-# add results back to Seurat object
+# Add results back to Seurat object
 cortex <- AddMetaData(cortex, metadata = RCTD@results$results_df)
 ```
 
@@ -975,7 +999,7 @@ cortex <- readRDS("results/cortex_RCTD.rds")
 ::: {.callout-note collapse="true"}
 # RCTD output
 
-The resultant dataframe from RCTD will contain the following columns according to the [documentation](https://rdrr.io/github/dmcable/RCTD/f/vignettes/spatial-transcriptomics.Rmd):
+The resultant dataframe from RCTD will contain the following columns according to the [documentation](https://mirror.accum.se/mirror/bioconductor.org/packages/devel/bioc/vignettes/spacexr/inst/doc/rctd-tutorial.html):
 
 -   `spot_class`, a factor variable representing RCTD's classification in doublet mode:
     -   "singlet" (1 cell type on pixel)
@@ -989,7 +1013,10 @@ Which we can access from our `cortex` object:
 
 ```{r}
 #| eval: false
+# Columns of interest
 cols <- c("spot_class", "first_type", "second_type")
+
+# View columns of interest (ignore NA values)
 cortex@meta.data[cols] %>%
   subset(!is.na(spot_class)) %>%
   View()
@@ -1007,12 +1034,12 @@ datatable(cortex@meta.data[cols] %>%
 ```
 :::
 
-## 4) Project RCTD labels onto all cortical cells
+## Project RCTD labels onto all cortical cells
 
 We once again use the `ProjectData()` function in order to annotate the full dataset, not just the sketch. These values will be stored in a new column named `full_first_type`
 
 ```{r}
-# Set all NA values to "Unkown"
+# Set all NA values to "Unknown"
 cortex$first_type <- as.character(cortex$first_type)
 cortex$first_type[is.na(cortex$first_type)] <- "Unknown"
 
@@ -1029,13 +1056,14 @@ cortex <- ProjectData(
 )
 ```
 
-To visualize the cortical layers, we first identify all the cells that belong to each annotation with `CellsByIdentities()`. Then, we select the layered neurons of interest using regular expressions. This is so that when we visualize these cells later on, we can highlight the cells on the slide in yellow to emphasize where the bins are spatially located.
+To visualize the cortical layers, we first identify all the cells that belong to each annotation with `CellsByIdentities()`. Then, we select the layered neurons of interest using regular expressions. We do this so that when we visualize these cells later one, we can highly the cells of each layer clearly.
 
 ```{r}
+# Identify bins by celltype
 Idents(cortex) <- "full_first_type"
 cells <- CellsByIdentities(cortex)
 
-# Layered (starts with L), excitatory neurons in the cortex
+# Excitatory neurons in the cortex are all labeled with an L* at the start
 excitatory_names <- sort(grep("^L.* CTX", names(cells), value = TRUE))
 excitatory_names
 ```
@@ -1043,6 +1071,7 @@ excitatory_names
 We can see that the excitatory neurons are located in layers at varying cortical depths, as expected.
 
 ```{r}
+# Plot each cortical layer separately
 SpatialDimPlot(cortex, cells.highlight = cells[excitatory_names], 
                cols.highlight = c("#FFFF00", "grey50"), facet.highlight = T, 
                combine = T, ncol = 4, pt.size.factor = 8)
@@ -1050,9 +1079,12 @@ SpatialDimPlot(cortex, cells.highlight = cells[excitatory_names],
 
 # Save R Session
 
-At the end of any analysis, it is important to save your session information! This will let future users know which versions of packages are necessary in order to reproduce the same results.
+Remember to save your session information at the end of the analysis! This will let future users know which versions of packages are necessary in order to reproduce the same results.
 
 ```{r}
 #| eval: false
+# Create and save a text file with sessionInfo
+sink("results/sessionInfo_visiumHD.txt")
 sessionInfo()
+sink()
 ```
