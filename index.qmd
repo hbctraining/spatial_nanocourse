@@ -130,3 +130,14 @@ library(scattermore)
 sessionInfo()
 ```
 
+Copy the output of `sessioninfo()` and paste it in the input text box below or on [the website](https://hcbc.connect.hms.harvard.edu/Spatial_scRNAseq_nanocourse_sessionInfo_check/?showcase=0). Then click the “Check my sessionInfo()” button. It will let you know if you are missing any packages.
+Take a screenshot of the message confirming that all packages have been successfully installed ( you will get a message letting you know that “no packages are missing”), and email it to us before the first session.
+
+
+<p align="center">
+
+<iframe src="https://hcbc.connect.hms.harvard.edu/Spatial_scRNAseq_nanocourse_sessionInfo_check/?showcase=0" width="800px" height="800px" data-external="1">
+
+</iframe>
+
+</p>
