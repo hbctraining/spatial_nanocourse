@@ -457,7 +457,14 @@ And we can see what the top variables features are for the entire dataset. We wo
 VariableFeatures(object_filt)[1:15]
 ```
 
-If we look into the gene [Ttr](https://www.genecards.org/cgi-bin/carddisp.pl?gene=TTR), we can learn that it is "highly expressed in choroid plexus epithelial cells". If continue looking at the top variable genes, we would hope to see more genes with experimental or celltype specific relevance.
+If we look into the gene [Ttr](https://www.genecards.org/cgi-bin/carddisp.pl?gene=TTR), we can learn that it is "highly expressed in choroid plexus epithelial cells". We can visualize the expression of Ttr on the slide to see if we can already identify which cells belong to the choroid plexus.
+
+```{r}
+SpatialFeaturePlot(object_filt, "Ttr", pt.size.factor = 7)
+```
+
+
+If continue looking at the top variable genes, we would hope to see more genes with experimental or celltype specific relevance.
 
 ## Sketch Downsampling
 
@@ -841,6 +848,32 @@ The resultant clusters would be less spatially restricted (in other words less c
 :::
 :::
 
+Ultimately the aim here is to annotate the layers in the isocortex. Therefore we must ask ourselves which of our clustering resolutions best represent the layers in the dataset. Here, having known marker genes for the various layers is crucial in making that decision.
+
+For example, `Cux2` is a good marker gene for identifying Layers 2/3 of the isocortex. We can roughly identify this layer in on our slide by looking at the expression pattern:
+
+```{r}
+DefaultAssay(object_filt) <- "Spatial.016um"
+SpatialFeaturePlot(object_filt, "Cux2", pt.size.factor = 7,
+                   image.alpha = 0.5)
+```
+
+Which means that we can now assess which clustering algorithm is able better able to identify this population of cells. Ideally you would have more than one gene to make this justification. When we look at the expression scores for each cluster, we can see that Layers 2/3 are being represented in cluster 2 of BANKSY clusters and in cluster 7 of the Louvain/seurat clustering.
+
+```{r}
+Idents(object_filt) <- "banksy_cluster"
+p1 <- VlnPlot(object_filt, "Cux2", pt.size = 0) +
+  ggtitle("BANKSY clusters: Cux2") + NoLegend()
+
+Idents(object_filt) <- "seurat_cluster.projected"
+p2 <- VlnPlot(object_filt, "Cux2", pt.size = 0) +
+  ggtitle("Louvain Clusters: Cux2") + NoLegend()
+
+p1 + p2
+```
+
+
+
 ::: {.callout-note collapse="true"}
 # Cases where BANKSY may not work as well
 
@@ -993,7 +1026,7 @@ cortex <- AddMetaData(cortex, metadata = RCTD@results$results_df)
 #| label: load_cortex_RCTD
 #| echo: false
 # saveRDS(cortex, "results/cortex_RCTD.rds")
-cortex <- readRDS("results/cortex_RCTD.rds")
+cortex <- readRDS("data_processed/cortex_RCTD.rds")
 ```
 
 ::: {.callout-note collapse="true"}
